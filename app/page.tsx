@@ -1,60 +1,44 @@
-"use client"
-
-import { useState, useEffect } from "react"
+import { Suspense } from "react"
 import Image from "next/image"
 import { SiteHeader } from "@/components/layout/site-header"
 import { SiteFooter } from "@/components/layout/site-footer"
 import { FadeInSection } from "@/components/fade-in-section"
 import { CampaignCard } from "@/components/cards/campaign-card"
-import { ContactForm } from "@/components/contact-form"
+import { ContactForm } from "@/components/ContactForm"
 import { ImageSlider } from "@/components/image-slider"
-import { client, urlFor, queries } from "@/lib/sanity"
 import { Skeleton } from "@/components/ui/skeleton"
 import { PortableText } from "@/components/portable-text"
+import { USSection } from "@/components/USSection"
+import { getCampaigns, getAboutContent, getUSContent, getImageUrl } from "@/lib/api"
 
-export default function Home() {
-  const [campaigns, setCampaigns] = useState([])
-  const [aboutContent, setAboutContent] = useState(null)
-  const [aboutImages, setAboutImages] = useState([])
-  const [loading, setLoading] = useState(true)
+export const revalidate = 3600 // revalidate cada 1 hora
 
-  // Fetch campaigns and about content from Sanity
-  useEffect(() => {
-    async function fetchData() {
-      try {
-        setLoading(true)
+// Interfaces para los tipos de datos
+interface Campaign {
+  _id: string
+  title: string
+  client?: string
+  coverImage?: any
+  slug: string
+}
 
-        // Fetch campaigns
-        const campaignsData = await client.fetch(queries.getCampaigns)
-        console.log("Fetched campaigns:", campaignsData)
-        setCampaigns(campaignsData)
-
-        // Fetch about content
-        const aboutData = await client.fetch(`
-          *[_type == "about"][0] {
-            textES,
-            textEN,
-            aboutImages
-          }
-        `)
-        console.log("Fetched about:", aboutData)
-
-        if (aboutData) {
-          setAboutContent(aboutData)
-          setAboutImages(aboutData.aboutImages || [])
-        }
-      } catch (error) {
-        console.error("Error fetching data:", error)
-      } finally {
-        setLoading(false)
-      }
-    }
-
-    fetchData()
-  }, [])
+export default async function Home() {
+  // Fetch all data in parallel
+  const [campaignsData, aboutData, usData] = await Promise.all([
+    getCampaigns(),
+    getAboutContent(),
+    getUSContent()
+  ])
 
   // Use only the first 4 campaigns for the featured section
-  const featuredCampaigns = campaigns.slice(0, 4)
+  const featuredCampaigns = (campaignsData as Campaign[] || []).slice(0, 4)
+  
+  // Get about content
+  const aboutContent = aboutData || null
+  const aboutImages = aboutData?.aboutImages || []
+  
+  // Get US content
+  const usContent = usData || null
 
   return (
     <div className="flex min-h-screen flex-col">
@@ -63,23 +47,15 @@ export default function Home() {
         {/* Featured Campaigns - No title as requested */}
         <FadeInSection>
           <section className="container mx-auto px-4 sm:px-6 md:px-8 max-w-7xl mb-20">
-            {loading ? (
+            {featuredCampaigns.length > 0 ? (
               <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                {[1, 2, 3, 4].map((i) => (
-                  <div key={i} className="aspect-[3/4]">
-                    <Skeleton className="w-full h-full" />
-                  </div>
-                ))}
-              </div>
-            ) : featuredCampaigns.length > 0 ? (
-              <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6">
-                {featuredCampaigns.map((campaign, index) => (
+                {featuredCampaigns.map((campaign: Campaign, index: number) => (
                   <CampaignCard
                     key={campaign._id}
                     id={index + 1}
                     title={campaign.title}
                     client={campaign.client || "Client"}
-                    imageSrc={campaign.coverImage ? urlFor(campaign.coverImage).url() : "/placeholder.svg"}
+                    imageSrc={getImageUrl(campaign.coverImage)}
                     slug={campaign.slug}
                     priority={index < 2}
                   />
@@ -93,7 +69,7 @@ export default function Home() {
           </section>
         </FadeInSection>
 
-        {/* About Section - Removed "Learn more about us" button */}
+        {/* About Section */}
         <FadeInSection>
           <section id="about" className="py-20 md:py-32">
             <div className="container mx-auto px-4 sm:px-6 md:px-8 max-w-7xl">
@@ -101,40 +77,24 @@ export default function Home() {
                 <div className="max-w-prose">
                   <h2 className="text-3xl font-bold tracking-tight md:text-4xl uppercase mb-6">ABOUT TC MANAGEMENT</h2>
 
-                  {loading ? (
-                    <div className="space-y-4">
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-3/4" />
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-full" />
-                      <Skeleton className="h-4 w-2/3" />
-                    </div>
-                  ) : (
-                    <>
-                      {aboutContent && (
-                        <div>
-                          {/* Spanish content */}
-                          <div className="mb-6">
-                            <PortableText value={aboutContent.textES} language="es" />
-                          </div>
+                  {aboutContent && (
+                    <div>
+                      {/* Spanish content */}
+                      <div className="mb-6">
+                        <PortableText value={aboutContent.textES} language="es" />
+                      </div>
 
-                          {/* English content */}
-                          <div className="text-sm italic text-muted-foreground">
-                            <PortableText value={aboutContent.textEN} language="en" />
-                          </div>
-                        </div>
-                      )}
-                      {/* Removed "Learn more about us" button */}
-                    </>
+                      {/* English content */}
+                      <div className="text-sm italic text-muted-foreground">
+                        <PortableText value={aboutContent.textEN} language="en" />
+                      </div>
+                    </div>
                   )}
                 </div>
 
                 {/* Image slider from Sanity */}
                 <div>
-                  {loading ? (
-                    <div className="relative w-full h-[500px] md:h-[600px] bg-gray-200 animate-pulse rounded-md"></div>
-                  ) : aboutImages && aboutImages.length > 0 ? (
+                  {aboutImages && aboutImages.length > 0 ? (
                     <ImageSlider images={aboutImages} />
                   ) : (
                     <Image
@@ -151,17 +111,22 @@ export default function Home() {
             </div>
           </section>
         </FadeInSection>
+        
+        {/* US Section */}
+        <FadeInSection>
+          {usContent ? (
+            <USSection
+              sectionTitle={usContent.sectionTitle}
+              teamMembers={usContent.teamMembers}
+            />
+          ) : null}
+        </FadeInSection>
 
-        {/* Contact Form Section - Positioned at the bottom of the page */}
+        {/* Contact Form Section */}
         <FadeInSection>
           <section id="contact" className="py-20 bg-neutral-100 dark:bg-neutral-900">
             <div className="container mx-auto px-4 sm:px-6 md:px-8 max-w-7xl">
-              <div className="max-w-3xl mx-auto">
-                <h2 className="text-3xl font-bold tracking-tight md:text-4xl uppercase text-center mb-10">
-                  CONTACTANOS
-                </h2>
-                <ContactForm />
-              </div>
+              <ContactForm />
             </div>
           </section>
         </FadeInSection>

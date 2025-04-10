@@ -5,6 +5,7 @@ import { FadeInSection } from "@/components/fade-in-section"
 import { CampaignCard } from "@/components/cards/campaign-card"
 import { Button } from "@/components/ui/button"
 import { client, urlFor, queries } from "@/lib/sanity"
+import { ContactForm } from "@/components/ContactForm"
 
 // Campaign categories
 const CATEGORIES = ["All", "UGC", "Parade", "Production"]
@@ -89,6 +90,16 @@ export default function PortfolioClientPage() {
               <p>No campaigns found in this category. Add some in your Sanity Studio.</p>
             </div>
           )}
+        </FadeInSection>
+        
+        {/* Contact Form */}
+        <FadeInSection>
+          <div className="mt-20 py-10 bg-neutral-100 dark:bg-neutral-900 rounded-lg">
+            <ContactForm 
+              title="¿INTERESADO EN NUESTRA PRODUCCIÓN?"
+              subtitle="Contactanos para discutir tu próximo proyecto."
+            />
+          </div>
         </FadeInSection>
       </div>
     </main>

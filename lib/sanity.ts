@@ -120,4 +120,16 @@ export const queries = {
     logo,
     footerText
   }`,
+
+  // Get US section content
+  getUSSection: `*[_type == "usSection"][0] {
+    sectionTitle,
+    teamMembers[] {
+      name,
+      role,
+      bioES,
+      bioEN,
+      photo
+    }
+  }`,
 }
