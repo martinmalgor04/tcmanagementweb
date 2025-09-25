@@ -1,11 +1,13 @@
 import { createClient } from "next-sanity"
 import imageUrlBuilder from "@sanity/image-url"
 
+const isProd = process.env.NODE_ENV === "production"
+
 export const client = createClient({
-  projectId: process.env.NEXT_PUBLIC_SANITY_PROJECT_ID,
-  dataset: process.env.NEXT_PUBLIC_SANITY_DATASET,
+  projectId: isProd ? "be45cp0a" : process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "be45cp0a",
+  dataset: isProd ? "production" : process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
   apiVersion: "2023-05-03", // Using a stable API version
-  useCdn: process.env.NODE_ENV === "production",
+  useCdn: isProd,
 })
 
 // Helper function for generating image URLs with the Sanity Image pipeline

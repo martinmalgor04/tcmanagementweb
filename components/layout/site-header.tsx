@@ -35,7 +35,7 @@ export function SiteHeader() {
           {/* Use different logo based on theme */}
           {mounted && (
             <Image
-              src={resolvedTheme === "dark" ? "/images/tc-management-logo-black.png" : "/images/tc-management-logo-black.png"}
+              src={resolvedTheme === "dark" ? "/images/tc-management-logo-black.png" : "/images/tc-management-logo.png"}
               alt="TC Management"
               width={180}
               height={30}
