@@ -1,5 +1,5 @@
 import { createClient } from "next-sanity"
-import imageUrlBuilder from "@sanity/image-url"
+import { createImageUrlBuilder } from "@sanity/image-url"
 
 const isProd = process.env.NODE_ENV === "production"
 
@@ -12,7 +12,11 @@ export const client = createClient({
 })
 
 // Helper function for generating image URLs with the Sanity Image pipeline
-const builder = imageUrlBuilder(client)
+// Usando la nueva API (createImageUrlBuilder) en lugar del default export deprecado
+const builder = createImageUrlBuilder({
+  projectId: isProd ? "be45cp0a" : process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "be45cp0a",
+  dataset: isProd ? "production" : process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
+})
 
 export function urlFor(source: any) {
   if (!source) return null
@@ -21,34 +25,22 @@ export function urlFor(source: any) {
 
 // GROQ queries for fetching data
 export const queries = {
-  // Get all models, ordered by creation date
+  // Get all models for listing (optimized - only essential fields)
   getModels: `*[_type == "model"] | order(_createdAt desc) {
     _id,
     name,
     gender,
     profileImage,
-    mainDescriptionES,
-    mainDescriptionEN,
-    additionalImages,
-    height,
-    measurements,
-    "slug": slug.current,
-    location
+    "slug": slug.current
   }`,
 
-  // Get models filtered by gender
+  // Get models filtered by gender for listing (optimized - only essential fields)
   getModelsByGender: `*[_type == "model" && gender == $gender] | order(_createdAt desc) {
     _id,
     name,
     gender,
     profileImage,
-    mainDescriptionES,
-    mainDescriptionEN,
-    additionalImages,
-    height,
-    measurements,
-    "slug": slug.current,
-    location
+    "slug": slug.current
   }`,
 
   // Get a single model by slug
