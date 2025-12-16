@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button"
 import { PageLayout } from "@/components/layout/PageLayout"
 import { getImageUrl } from "@/lib/api"
 
-export const revalidate = 3600 // revalidate cada 1 hora
+export const revalidate = 60 // revalidate cada 1 minuto (backup si el webhook falla)
 
 export const metadata: Metadata = {
   title: "Men Models | TC Management – Agencia de Modelos",

@@ -1,60 +1,89 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { revalidatePath } from 'next/cache';
 
-// El secreto que usaremos para validar que la solicitud viene de Sanity
-const SANITY_WEBHOOK_SECRET = process.env.SANITY_WEBHOOK_SECRET || 'tu-secreto-aqui';
+// Endpoint GET para verificar que el webhook está funcionando
+export async function GET() {
+  return NextResponse.json({ 
+    status: 'ok', 
+    message: 'Revalidation endpoint is working',
+    configured: !!process.env.SANITY_WEBHOOK_SECRET 
+  });
+}
 
 export async function POST(request: NextRequest) {
   try {
+    // Verificar que el secret está configurado (validación en runtime)
+    const SANITY_WEBHOOK_SECRET = process.env.SANITY_WEBHOOK_SECRET;
+    
+    if (!SANITY_WEBHOOK_SECRET) {
+      console.error('SANITY_WEBHOOK_SECRET environment variable is not configured');
+      return NextResponse.json({ message: 'Server configuration error' }, { status: 500 });
+    }
+
     // Verificar el secreto para asegurarse que es una solicitud válida de Sanity
     const { searchParams } = new URL(request.url);
     const secret = searchParams.get('secret');
     
     if (secret !== SANITY_WEBHOOK_SECRET) {
+      console.error('Invalid secret provided');
       return NextResponse.json({ message: 'Invalid secret' }, { status: 401 });
     }
 
     // Obtener el cuerpo de la solicitud que contendrá detalles sobre qué cambió
     const body = await request.json();
-    console.log('Revalidation triggered by Sanity webhook:', body);
+    console.log('Revalidation triggered by Sanity webhook:', JSON.stringify(body, null, 2));
     
-    // Revalidar las rutas principales
-    const pathsToRevalidate = ['/', '/women', '/men', '/portfolio'];
+    // Usar un Set para evitar rutas duplicadas
+    const pathsToRevalidate = new Set(['/', '/women', '/men', '/portfolio']);
     
-    // Si el webhook incluye información sobre el tipo de documento que cambió,
-    // podríamos ser más específicos con qué rutas revalidar
+    // Si el webhook incluye información sobre el tipo de documento que cambió
     if (body._type) {
-      // Ejemplo: si se actualiza un modelo, revalidar solo esa categoría
-      if (body._type === 'model' && body.gender) {
-        pathsToRevalidate.push(`/${body.gender.toLowerCase()}`);
+      const docType = body._type;
+      
+      // Modelo actualizado
+      if (docType === 'model') {
+        // Revalidar ambas páginas de género por si acaso
+        pathsToRevalidate.add('/women');
+        pathsToRevalidate.add('/men');
         
-        // Si hay un slug, también revalidar la página del modelo
-        if (body.slug?.current) {
-          pathsToRevalidate.push(`/${body.gender.toLowerCase()}/${body.slug.current}`);
+        // Si tiene género específico y slug, revalidar la página individual
+        if (body.gender && body.slug?.current) {
+          const genderPath = body.gender.toLowerCase();
+          pathsToRevalidate.add(`/${genderPath}/${body.slug.current}`);
         }
       }
       
-      // Si se actualiza una campaña, revalidar el portafolio
-      if (body._type === 'campaign') {
-        pathsToRevalidate.push('/portfolio');
+      // Campaña actualizada
+      if (docType === 'campaign') {
+        pathsToRevalidate.add('/portfolio');
         
-        // Si hay un slug, también revalidar la página de la campaña
         if (body.slug?.current) {
-          pathsToRevalidate.push(`/portfolio/${body.slug.current}`);
+          pathsToRevalidate.add(`/portfolio/${body.slug.current}`);
         }
+      }
+      
+      // About o US Section actualizado - afecta la página principal
+      if (docType === 'about' || docType === 'usSection' || docType === 'settings') {
+        pathsToRevalidate.add('/');
       }
     }
     
-    // Revalidar todas las rutas afectadas
-    pathsToRevalidate.forEach(path => {
+    // Convertir Set a Array y revalidar todas las rutas
+    const pathsArray = Array.from(pathsToRevalidate);
+    
+    for (const path of pathsArray) {
       console.log(`Revalidating: ${path}`);
-      revalidatePath(path);
-    });
+      // Usar 'layout' para revalidación más agresiva que incluye el layout completo
+      revalidatePath(path, 'layout');
+    }
+    
+    console.log(`Successfully revalidated ${pathsArray.length} paths`);
     
     return NextResponse.json({ 
       revalidated: true, 
       message: 'Revalidation triggered successfully',
-      paths: pathsToRevalidate
+      paths: pathsArray,
+      documentType: body._type || 'unknown'
     });
   } catch (error) {
     console.error('Error during revalidation:', error);

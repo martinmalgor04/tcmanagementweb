@@ -11,7 +11,7 @@ import { PortableText } from "@/components/portable-text"
 import { USSection } from "@/components/USSection"
 import { getCampaigns, getAboutContent, getUSContent, getImageUrl } from "@/lib/api"
 
-export const revalidate = 3600 // revalidate cada 1 hora
+export const revalidate = 60 // revalidate cada 1 minuto (backup si el webhook falla)
 
 // Interfaces para los tipos de datos
 interface Campaign {

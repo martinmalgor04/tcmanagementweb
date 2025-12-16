@@ -7,7 +7,8 @@ export const client = createClient({
   projectId: isProd ? "be45cp0a" : process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "be45cp0a",
   dataset: isProd ? "production" : process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
   apiVersion: "2023-05-03", // Using a stable API version
-  useCdn: isProd,
+  // Desactivamos CDN para obtener datos frescos cuando el webhook revalida
+  useCdn: false,
 })
 
 // Helper function for generating image URLs with the Sanity Image pipeline
