@@ -43,6 +43,18 @@ export const queries = {
     "slug": slug.current
   }`,
 
+  // Get models with pagination
+  getModelsByGenderPaginated: `*[_type == "model" && gender == $gender] | order(_createdAt desc) [$start...$end] {
+    _id,
+    name,
+    gender,
+    profileImage,
+    "slug": slug.current
+  }`,
+
+  // Count total models by gender
+  countModelsByGender: `count(*[_type == "model" && gender == $gender])`,
+
   // Get a single model by slug
   getModelBySlug: `*[_type == "model" && slug.current == $slug][0] {
     _id,

@@ -8,9 +8,10 @@ interface ModelCardProps {
   division: string
   imageSrc: string
   slug: string
+  priority?: boolean
 }
 
-export function ModelCard({ id, name, division, imageSrc, slug }: ModelCardProps) {
+export function ModelCard({ id, name, division, imageSrc, slug, priority = false }: ModelCardProps) {
   return (
     <Link href={`/${division.toLowerCase()}/${slug}`} className="block group">
       <Card className="overflow-hidden border-0 rounded-none">
@@ -20,7 +21,7 @@ export function ModelCard({ id, name, division, imageSrc, slug }: ModelCardProps
             alt={name}
             fill
             sizes="(max-width: 640px) 50vw, (max-width: 1024px) 33vw, 25vw"
-            priority={typeof id === "number" && id <= 4}
+            priority={priority}
             className="object-cover transition-transform duration-300 group-hover:scale-105"
           />
           <div className="absolute inset-0 bg-gradient-to-t from-black/70 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-4">

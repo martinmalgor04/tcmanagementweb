@@ -1,10 +1,9 @@
 import type { Metadata } from "next"
 import { FadeInSection } from "@/components/fade-in-section"
 import { ModelCard } from "@/components/cards/model-card"
-import { getModels } from "@/lib/api"
-import { Button } from "@/components/ui/button"
+import { getModelsPaginated, getImageUrl } from "@/lib/api"
 import { PageLayout } from "@/components/layout/PageLayout"
-import { getImageUrl } from "@/lib/api"
+import { Pagination } from "@/components/pagination"
 
 export const revalidate = 60 // revalidate cada 1 minuto (backup si el webhook falla)
 
@@ -20,9 +19,16 @@ export const metadata: Metadata = {
   },
 }
 
-export default async function WomenPage() {
-  // Fetch women models usando la función optimizada
-  const womenModels = await getModels("Women")
+interface PageProps {
+  searchParams: Promise<{ page?: string }>
+}
+
+export default async function WomenPage({ searchParams }: PageProps) {
+  const params = await searchParams
+  const currentPage = Math.max(1, parseInt(params.page || "1", 10))
+  
+  // Fetch women models con paginación
+  const { models: womenModels, pagination } = await getModelsPaginated("Women", currentPage)
 
   return (
     <PageLayout 
@@ -35,7 +41,7 @@ export default async function WomenPage() {
           <div className="container mx-auto px-4 sm:px-6 md:px-8 max-w-7xl">
             {womenModels && womenModels.length > 0 ? (
               <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 md:gap-6 justify-items-center">
-                {womenModels.map((model: any) => (
+                {womenModels.map((model: any, index: number) => (
                   <ModelCard
                     key={model._id}
                     id={model._id}
@@ -43,6 +49,7 @@ export default async function WomenPage() {
                     division={model.gender}
                     imageSrc={getImageUrl(model.profileImage)}
                     slug={model.slug}
+                    priority={index < 4}
                   />
                 ))}
               </div>
@@ -52,45 +59,14 @@ export default async function WomenPage() {
               </div>
             )}
 
-            {womenModels && womenModels.length > 0 && (
-              <div className="mt-16 flex justify-center">
-                <div className="flex items-center gap-2">
-                  <Button variant="outline" size="icon" disabled>
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-4 w-4"
-                    >
-                      <path d="m15 18-6-6 6-6" />
-                    </svg>
-                  </Button>
-                  <Button variant="outline" className="bg-black text-white hover:bg-black/90">
-                    1
-                  </Button>
-                  <Button variant="outline" size="icon">
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      width="24"
-                      height="24"
-                      viewBox="0 0 24 24"
-                      fill="none"
-                      stroke="currentColor"
-                      strokeWidth="2"
-                      strokeLinecap="round"
-                      strokeLinejoin="round"
-                      className="h-4 w-4"
-                    >
-                      <path d="m9 18 6-6-6-6" />
-                    </svg>
-                  </Button>
-                </div>
+            {/* Paginación */}
+            {pagination.totalPages > 1 && (
+              <div className="mt-16">
+                <Pagination 
+                  currentPage={pagination.currentPage}
+                  totalPages={pagination.totalPages}
+                  basePath="/women"
+                />
               </div>
             )}
           </div>
