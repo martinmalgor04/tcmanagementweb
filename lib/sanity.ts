@@ -3,20 +3,20 @@ import { createImageUrlBuilder } from "@sanity/image-url"
 
 const isProd = process.env.NODE_ENV === "production"
 
+const projectId = isProd ? "be45cp0a" : process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "be45cp0a"
+const dataset = isProd ? "production" : process.env.NEXT_PUBLIC_SANITY_DATASET || "production"
+
 export const client = createClient({
-  projectId: isProd ? "be45cp0a" : process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "be45cp0a",
-  dataset: isProd ? "production" : process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
+  projectId,
+  dataset,
   apiVersion: "2023-05-03", // Using a stable API version
   // Desactivamos CDN para obtener datos frescos cuando el webhook revalida
   useCdn: false,
 })
 
 // Helper function for generating image URLs with the Sanity Image pipeline
-// Usando la nueva API (createImageUrlBuilder) en lugar del default export deprecado
-const builder = createImageUrlBuilder({
-  projectId: isProd ? "be45cp0a" : process.env.NEXT_PUBLIC_SANITY_PROJECT_ID || "be45cp0a",
-  dataset: isProd ? "production" : process.env.NEXT_PUBLIC_SANITY_DATASET || "production",
-})
+// Pasando el cliente directamente a createImageUrlBuilder
+const builder = createImageUrlBuilder(client)
 
 export function urlFor(source: any) {
   if (!source) return null
