@@ -22,8 +22,7 @@ const FOTO_TARSILA = `${CDN}/CEV/tarsila-cicconetti.jpg`
 const PRODUCTO = "Capital de Esencia Visual"
 const CTA_TEXT = "Comprar ahora"
 
-// {{PENDIENTE: URL de checkout (Hotmart / Stripe / MercadoPago)}}
-const CHECKOUT_URL = "#oferta"
+const CHECKOUT_URL = "https://mpago.la/2kr9Sh7"
 
 const PRECIO = "$19.999"
 const VALOR_ANCLA = "$49.999"
@@ -229,6 +228,7 @@ function CtaButton({
   return (
     <a
       href={href}
+      rel="noopener noreferrer"
       className={`cev-cta cev-shine relative inline-flex items-center justify-center gap-3 rounded-full bg-[#f5f4f2] px-10 py-4 text-sm font-bold uppercase tracking-[0.22em] text-[#070707] sm:px-12 sm:py-5 sm:text-base ${className}`}
     >
       {pulse && <span className="cev-pulse-ring" aria-hidden />}
@@ -415,7 +415,7 @@ export default function CapitalLanding() {
                   {VALOR_ANCLA}
                 </span>
               </div>
-              <CtaButton href="#oferta" pulse />
+              <CtaButton pulse />
               <p className="text-[11px] uppercase tracking-[0.25em] text-neutral-500">
                 Pago con {MEDIO_PAGO}
               </p>
