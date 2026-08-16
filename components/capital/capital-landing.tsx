@@ -321,7 +321,7 @@ export default function CapitalLanding() {
           </span>
         </div>
 
-        <div className="relative z-10 mx-auto grid w-full max-w-6xl flex-1 items-center gap-14 pt-14 md:grid-cols-[1fr_0.95fr] md:gap-16 lg:gap-20">
+        <div className="relative z-10 mx-auto grid w-full max-w-6xl flex-1 items-start gap-14 pt-14 md:grid-cols-[1fr_0.95fr] md:gap-16 lg:gap-20">
           <div className="max-w-xl text-center md:justify-self-start md:text-left">
             <p
               className="cev-fade-blur mb-6 text-[11px] font-medium uppercase tracking-[0.5em] text-neutral-400"
@@ -381,7 +381,7 @@ export default function CapitalLanding() {
           </div>
 
           <div
-            className="cev-fade-blur relative -mt-8 self-start sm:-mt-10 md:-mt-20"
+            className="cev-fade-blur relative mt-2 md:mt-[3.25rem]"
             style={{ "--cev-delay": "650ms" } as CSSProperties}
           >
             <ProductMockup />
