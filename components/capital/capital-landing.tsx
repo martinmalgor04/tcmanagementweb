@@ -26,13 +26,11 @@ const CTA_TEXT = "Comprar ahora"
 const CHECKOUT_URL = "#oferta"
 
 const PRECIO = "$19.999"
-const VALOR_ANCLA = "$39.999"
+const VALOR_ANCLA = "$49.999"
+const MEDIO_PAGO = "Mercado Pago"
 
-// {{PENDIENTE: días de garantía (7–14)}}
-const GARANTIA_DIAS = "{{PENDIENTE: días de garantía}}"
-
-// {{PENDIENTE: urgencia real — bono de lanzamiento / fecha límite}}
-const URGENCIA = "{{PENDIENTE: bono de lanzamiento o fecha límite}}"
+/** Medianos de septiembre 2026 (Argentina). */
+const LANZAMIENTO_HASTA = Date.parse("2026-09-15T23:59:59-03:00")
 
 /* ============================================================
    Hooks de animación
@@ -132,6 +130,67 @@ function useStickyCta() {
   return show
 }
 
+function useCountdown(targetMs: number) {
+  const tick = useCallback(() => {
+    const s = Math.max(0, Math.floor((targetMs - Date.now()) / 1000))
+    return {
+      days: Math.floor(s / 86400),
+      hours: Math.floor((s % 86400) / 3600),
+      minutes: Math.floor((s % 3600) / 60),
+      seconds: s % 60,
+      done: s <= 0,
+    }
+  }, [targetMs])
+
+  const [left, setLeft] = useState(tick)
+  const [ready, setReady] = useState(false)
+
+  useEffect(() => {
+    setLeft(tick())
+    setReady(true)
+    const id = setInterval(() => setLeft(tick()), 1000)
+    return () => clearInterval(id)
+  }, [tick])
+
+  return { ...left, ready }
+}
+
+function pad2(n: number) {
+  return String(n).padStart(2, "0")
+}
+
+function Countdown() {
+  const { days, hours, minutes, seconds, ready } = useCountdown(LANZAMIENTO_HASTA)
+  const units = [
+    { n: days, label: "Días" },
+    { n: hours, label: "Hs" },
+    { n: minutes, label: "Min" },
+    { n: seconds, label: "Seg" },
+  ]
+
+  return (
+    <div
+      className="mt-8 flex items-stretch justify-center gap-3 sm:gap-4"
+      aria-live="polite"
+      aria-label="Cuenta regresiva hasta el 15 de septiembre"
+    >
+      {units.map((u) => (
+        <div
+          key={u.label}
+          className="min-w-[4.25rem] rounded-sm border border-white/15 bg-white/[0.03] px-3 py-4 sm:min-w-[5rem] sm:px-4"
+        >
+          <p className="font-mono text-3xl font-bold tabular-nums tracking-tight sm:text-4xl">
+            {ready ? pad2(u.n) : "––"}
+          </p>
+          <p className="mt-2 text-[9px] uppercase tracking-[0.28em] text-neutral-500">
+            {u.label}
+          </p>
+        </div>
+      ))}
+    </div>
+  )
+}
+
 /* ============================================================
    Piezas reutilizables
    ============================================================ */
@@ -198,10 +257,6 @@ function SectionLabel({ children }: { children: ReactNode }) {
       {children}
     </p>
   )
-}
-
-function Pending({ children }: { children: ReactNode }) {
-  return <span className="cev-pending">{children}</span>
 }
 
 /* ============================================================
@@ -278,24 +333,11 @@ export default function CapitalLanding() {
     },
     {
       q: "¿Qué formato tiene?",
-      a: "Manual digital de 36 páginas, visual y directo al punto: 8 colores con su mensaje, paletas que funcionan, código de estampas, fórmulas de prendas, guía de accesorios, la secuencia de 7 pasos y el checklist del espejo. Lo leés en una tarde y lo usás toda la vida.",
-    },
-    {
-      q: "¿Tiene garantía?",
-      a: (
-        <>
-          Sí. Tenés <Pending>{GARANTIA_DIAS}</Pending> para leerlo y aplicarlo. Si
-          no cambió tu forma de vestirte, te devolvemos el 100% sin preguntas.
-        </>
-      ),
+      a: "Manual digital, visual y directo al punto: 8 colores con su mensaje, paletas que funcionan, código de estampas, fórmulas de prendas, guía de accesorios, la secuencia de 7 pasos y el checklist del espejo. Lo leés en una tarde y lo usás toda la vida.",
     },
     {
       q: "¿Los medios de pago?",
-      a: (
-        <>
-          <Pending>{"{{PENDIENTE: medios de pago — tarjeta, MercadoPago, transferencia}}"}</Pending>
-        </>
-      ),
+      a: "Se paga por Mercado Pago: tarjeta de crédito o débito, dinero en cuenta o el medio que tengas habilitado ahí.",
     },
   ]
 
@@ -369,13 +411,13 @@ export default function CapitalLanding() {
                 <span className="text-4xl font-bold tracking-tight sm:text-5xl">
                   {PRECIO}
                 </span>
-                <span className="pb-1 text-sm text-neutral-500 line-through">
+                <span className="pb-1 text-sm text-red-600 line-through">
                   {VALOR_ANCLA}
                 </span>
               </div>
               <CtaButton href="#oferta" pulse />
               <p className="text-[11px] uppercase tracking-[0.25em] text-neutral-500">
-                Descarga inmediata · Garantía de <Pending>{GARANTIA_DIAS}</Pending>
+                Pago con {MEDIO_PAGO}
               </p>
             </div>
           </div>
@@ -491,8 +533,7 @@ export default function CapitalLanding() {
                 palabras: colores, estampas, prendas y accesorios como un idioma
                 que cualquiera puede aprender a hablar. Este manual destila ese
                 método para que lo apliques sola, todas las mañanas, frente a tu
-                propio placard.{" "}
-                <Pending>{"{{PENDIENTE: credenciales — años de trayectoria, clientas, formación}}"}</Pending>
+                propio placard.
               </p>
             </Reveal>
           </div>
@@ -550,11 +591,6 @@ export default function CapitalLanding() {
               </Reveal>
             ))}
           </div>
-          <Reveal delay={120}>
-            <p className="mt-8 text-sm uppercase tracking-[0.25em] text-neutral-500">
-              Manual digital · 36 páginas · Lectura de una tarde, uso de por vida
-            </p>
-          </Reveal>
         </div>
       </section>
 
@@ -603,35 +639,6 @@ export default function CapitalLanding() {
         </div>
       </section>
 
-      {/* ============ 7 · PRUEBA SOCIAL ============ */}
-      <section className="border-y border-white/10 bg-white/[0.02] px-6 py-24 sm:py-32">
-        <div className="mx-auto max-w-5xl">
-          <Reveal>
-            <SectionLabel>Resultados</SectionLabel>
-          </Reveal>
-          <Reveal delay={80}>
-            <h2 className="text-3xl font-bold uppercase tracking-tight sm:text-4xl">
-              Lo que pasa cuando tu imagen dice lo correcto
-            </h2>
-          </Reveal>
-          <div className="mt-14 grid gap-6 sm:grid-cols-3">
-            {[1, 2, 3].map((n) => (
-              <Reveal key={n} delay={n * 100}>
-                <figure className="flex h-full flex-col justify-between rounded-sm border border-white/10 bg-[#0a0a0a] p-8">
-                  {/* {{PENDIENTE: testimonios reales — nombre, resultado, captura/video}} */}
-                  <blockquote className="leading-relaxed text-neutral-300">
-                    <Pending>{`{{PENDIENTE: testimonio ${n} — texto o captura}}`}</Pending>
-                  </blockquote>
-                  <figcaption className="mt-6 text-[11px] uppercase tracking-[0.3em] text-neutral-500">
-                    <Pending>{`{{PENDIENTE: nombre ${n}}}`}</Pending>
-                  </figcaption>
-                </figure>
-              </Reveal>
-            ))}
-          </div>
-        </div>
-      </section>
-
       {/* ============ 8 · OFERTA ============ */}
       <section id="oferta" className="relative scroll-mt-10 overflow-hidden px-6 py-24 sm:py-36">
         <div className="cev-orb cev-orb-b left-1/2 top-0 -translate-x-1/2" aria-hidden />
@@ -646,21 +653,21 @@ export default function CapitalLanding() {
           </Reveal>
           <Reveal delay={140}>
             <p className="mt-6 max-w-xl leading-relaxed text-neutral-400">
-              El método completo — color, estampas, prendas y accesorios — en 36
-              páginas que leés en una tarde y usás toda la vida. Un solo pago,
-              descarga inmediata.
+              El método completo — color, estampas, prendas y accesorios — que
+              leés en una tarde y usás toda la vida. Un solo pago.
             </p>
           </Reveal>
           <Reveal delay={200}>
             <div className="mt-10 flex flex-col items-center gap-3 md:items-start">
               <span className="text-sm uppercase tracking-[0.3em] text-neutral-500">
-                Valor total <span className="line-through">{VALOR_ANCLA}</span>
+                Valor total{" "}
+                <span className="text-red-600 line-through">{VALOR_ANCLA}</span>
               </span>
               <span className="text-6xl font-bold tracking-tight sm:text-7xl">
                 {PRECIO}
               </span>
               <span className="mt-5 text-xs uppercase tracking-[0.25em] text-neutral-600">
-                Pago único · Sin suscripción
+                Pago único · {MEDIO_PAGO}
               </span>
             </div>
           </Reveal>
@@ -670,37 +677,6 @@ export default function CapitalLanding() {
             </div>
           </Reveal>
         </div>
-      </section>
-
-      {/* ============ 9 · GARANTÍA ============ */}
-      <section className="px-6 pb-24 sm:pb-32">
-        <Reveal className="mx-auto max-w-3xl">
-          <div className="flex flex-col items-center gap-6 rounded-sm border border-white/15 bg-white/[0.03] p-10 text-center sm:flex-row sm:text-left">
-            <svg
-              className="h-14 w-14 shrink-0 text-[#f5f4f2]"
-              viewBox="0 0 24 24"
-              fill="none"
-              stroke="currentColor"
-              strokeWidth={1.4}
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              aria-hidden
-            >
-              <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10Z" />
-              <path d="m9 12 2 2 4-4" />
-            </svg>
-            <div>
-              <h3 className="text-xl font-bold uppercase tracking-tight">
-                Garantía total de <Pending>{GARANTIA_DIAS}</Pending>
-              </h3>
-              <p className="mt-3 leading-relaxed text-neutral-400">
-                Leé el manual, aplicá la secuencia frente a tu placard y mirate
-                con ojos nuevos. Si no sentís que cambió tu forma de vestirte, te
-                devolvemos el 100%. El riesgo lo asumimos nosotros.
-              </p>
-            </div>
-          </div>
-        </Reveal>
       </section>
 
       {/* ============ 10 · FAQ ============ */}
@@ -745,10 +721,11 @@ export default function CapitalLanding() {
           <p className="text-[11px] font-medium uppercase tracking-[0.45em] text-neutral-500">
             Por tiempo limitado
           </p>
-          <p className="mt-5 text-2xl font-bold uppercase leading-snug tracking-tight sm:text-3xl">
-            <Pending>{URGENCIA}</Pending>
+          <p className="mt-4 text-[11px] uppercase tracking-[0.35em] text-neutral-400">
+            El precio de lanzamiento vence el 15 de septiembre
           </p>
-          <p className="mt-4 text-neutral-400">
+          <Countdown />
+          <p className="mt-6 text-neutral-400">
             Cuando termina el lanzamiento, el precio sube y el bono desaparece.
           </p>
         </Reveal>
@@ -780,7 +757,7 @@ export default function CapitalLanding() {
             <div className="mt-10 flex flex-col items-center gap-5">
               <CtaButton pulse />
               <p className="text-[11px] uppercase tracking-[0.25em] text-neutral-500">
-                {PRECIO} · Garantía de <Pending>{GARANTIA_DIAS}</Pending>
+                {PRECIO} · {MEDIO_PAGO}
               </p>
             </div>
           </Reveal>

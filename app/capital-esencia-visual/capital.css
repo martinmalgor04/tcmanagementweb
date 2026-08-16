@@ -295,10 +295,3 @@
 .cev-sticky-cta.cev-visible {
   transform: translateY(0);
 }
-
-/* ---------- placeholder de dato pendiente ---------- */
-.cev-pending {
-  font-style: italic;
-  color: #b8b4ac;
-  border-bottom: 1px dashed rgba(184, 180, 172, 0.55);
-}
