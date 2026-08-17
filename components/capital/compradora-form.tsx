@@ -4,6 +4,12 @@ import { useMemo, useState, type FormEvent } from "react"
 
 type Status = "idle" | "sending" | "ok" | "error"
 
+type Result = {
+  access: boolean
+  accessUrl: string | null
+  emailStatus: "sent" | "queued" | "failed" | "skipped"
+}
+
 const fieldClass =
   "w-full rounded-sm border border-white/15 bg-white/[0.04] px-4 py-3 text-sm text-[#f5f4f2] outline-none transition placeholder:text-neutral-600 focus:border-[#c8b48a]/50"
 
@@ -22,6 +28,7 @@ export default function CompradoraForm() {
 
   const [status, setStatus] = useState<Status>("idle")
   const [error, setError] = useState("")
+  const [result, setResult] = useState<Result | null>(null)
 
   async function onSubmit(e: FormEvent<HTMLFormElement>) {
     e.preventDefault()
@@ -52,6 +59,11 @@ export default function CompradoraForm() {
         setStatus("error")
         return
       }
+      setResult({
+        access: Boolean(body.access),
+        accessUrl: body.accessUrl ?? null,
+        emailStatus: body.emailStatus ?? "skipped",
+      })
       setStatus("ok")
     } catch {
       setError("Sin conexión. Probá de nuevo.")
@@ -64,11 +76,21 @@ export default function CompradoraForm() {
       <div className="border border-white/15 bg-white/[0.03] px-8 py-12 text-center">
         <p className="text-[11px] uppercase tracking-[0.4em] text-[#c8b48a]">Listo</p>
         <h2 className="mt-4 text-2xl font-bold uppercase tracking-tight">
-          Datos guardados
+          {result?.access ? "Acceso habilitado" : "Datos guardados"}
         </h2>
         <p className="mx-auto mt-4 max-w-sm leading-relaxed text-neutral-400">
-          En breve te llega el manual al mail que cargaste. Si no aparece, mirá spam.
+          {result?.access
+            ? "Te mandamos el link de acceso al mail que cargaste. Si no aparece, mirá spam."
+            : "Estamos confirmando tu pago. Apenas se acredite te llega el acceso al mail que cargaste."}
         </p>
+        {result?.accessUrl && (
+          <a
+            href={result.accessUrl}
+            className="cev-cta cev-shine relative mt-8 inline-flex items-center justify-center rounded-full bg-[#f5f4f2] px-10 py-4 text-sm font-bold uppercase tracking-[0.22em] text-[#070707]"
+          >
+            Entrar ahora
+          </a>
+        )}
       </div>
     )
   }
