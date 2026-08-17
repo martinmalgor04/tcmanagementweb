@@ -96,7 +96,8 @@ function accessEmailText(args: {
     "",
     args.accessUrl,
     "",
-    `El link es personal y vence en ${ACCESS_TOKEN_TTL_DAYS} días. Una vez que entrás, tu navegador queda habilitado.`,
+    "Guardá este mail: el link es tu llave y es personal, no lo compartas.",
+    "Cuando lo abrís, ese navegador queda habilitado y podés volver cuando quieras.",
     "",
     "TC Management",
   ].join("\n")
@@ -142,8 +143,8 @@ function accessEmailHtml(args: {
             </tr>
             <tr>
               <td style="font-size:13px;line-height:1.7;color:#737373">
-                El link es personal y vence en ${ACCESS_TOKEN_TTL_DAYS} días. Cuando lo abrís, tu navegador
-                queda habilitado y podés volver cuando quieras.<br /><br />
+                Guardá este mail: el link es tu llave y es personal, no lo compartas. Cuando lo
+                abrís, ese navegador queda habilitado y podés volver cuando quieras.<br /><br />
                 Si el botón no anda, copiá esta dirección:<br />
                 <span style="color:#a3a3a3;word-break:break-all">${args.accessUrl}</span>
               </td>

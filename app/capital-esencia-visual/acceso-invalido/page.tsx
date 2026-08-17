@@ -22,8 +22,8 @@ export default function AccesoInvalidoPage() {
           Ese link ya no sirve
         </h1>
         <p className="mt-4 leading-relaxed text-neutral-400">
-          Los links de acceso vencen y se pueden usar unas pocas veces. Poné el mail
-          con el que compraste y te mandamos uno nuevo.
+          Puede que lo hayas reemplazado por uno más nuevo. Poné el mail con el que
+          compraste y te mandamos otro al instante.
         </p>
         <div className="mt-10">
           <ReenviarAccesoForm />

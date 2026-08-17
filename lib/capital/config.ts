@@ -11,13 +11,21 @@ export const ACCESS_PATH = "/capital-esencia-visual/manual"
 export const ACCESS_ENTRY_PATH = "/capital-esencia-visual/acceso"
 export const ACCESS_INVALID_PATH = "/capital-esencia-visual/acceso-invalido"
 
-/** El link del mail vive 7 días y admite 3 canjes. */
-export const ACCESS_TOKEN_TTL_DAYS = 7
-export const ACCESS_TOKEN_MAX_USES = 3
+/**
+ * El link del mail es la llave de la compradora, no un pase de un solo uso: el
+ * manual se vuelve a consultar y cada dispositivo nuevo gasta un canje. Con
+ * pocos usos, abrirlo desde el mail del celular y después desde la compu ya
+ * dejaba a la clienta afuera.
+ *
+ * Lo que protege el contenido no es la escasez del link sino que es personal y
+ * se puede revocar. Si uno se filtra, se da de baja ese y listo.
+ */
+export const ACCESS_TOKEN_TTL_DAYS = 365
+export const ACCESS_TOKEN_MAX_USES = 50
 
-/** Una vez adentro, la sesión del navegador dura 30 días. */
+/** Una vez adentro, el navegador queda habilitado y no hace falta el link. */
 export const ACCESS_COOKIE_NAME = "cev_access"
-export const ACCESS_COOKIE_TTL_DAYS = 30
+export const ACCESS_COOKIE_TTL_DAYS = 365
 
 export const DEFAULT_FROM_EMAIL = "TC Management <hola@tcmanagement.com.ar>"
 export const SUPPORT_WHATSAPP = "https://wa.me/5493624000000"
