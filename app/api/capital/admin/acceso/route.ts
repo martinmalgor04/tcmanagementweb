@@ -7,12 +7,11 @@ import {
   getProduct,
   grantEntitlement,
   hasActiveEntitlement,
-  issueAccessLink,
   recordOrder,
   upsertCustomer,
 } from "@/lib/capital/access"
 import { PRODUCT_SLUG, adminToken } from "@/lib/capital/config"
-import { sendAccessEmail } from "@/lib/capital/email"
+import { deliverAccess, issueAccessLinkOnly } from "@/lib/capital/deliver"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -81,12 +80,14 @@ export async function POST(req: Request) {
     )
   }
 
-  const accessUrl = await issueAccessLink(customer.id, product.id)
+  const delivered = parsed.data.send
+    ? await deliverAccess({ customer, product, orderId: null })
+    : { accessUrl: await issueAccessLinkOnly(customer, product), emailStatus: null }
 
-  let emailStatus: string | null = null
-  if (parsed.data.send) {
-    emailStatus = await sendAccessEmail({ customer, product, accessUrl, orderId: null })
-  }
-
-  return NextResponse.json({ ok: true, customerId: customer.id, accessUrl, emailStatus })
+  return NextResponse.json({
+    ok: true,
+    customerId: customer.id,
+    accessUrl: delivered.accessUrl,
+    emailStatus: delivered.emailStatus,
+  })
 }

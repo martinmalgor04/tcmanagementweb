@@ -10,12 +10,11 @@ import {
   type Product,
   getProduct,
   grantEntitlement,
-  issueAccessLink,
   recordOrder,
   upsertCustomer,
 } from "./access"
 import { PRODUCT_SLUG } from "./config"
-import { sendAccessEmail } from "./email"
+import { deliverAccess } from "./deliver"
 import { checkPayment } from "./mercadopago"
 
 export type FulfillInput = {
@@ -77,11 +76,9 @@ export async function fulfillPurchase(input: FulfillInput): Promise<FulfillResul
   }
 
   await grantEntitlement(customer.id, product.id, order.id)
-  const accessUrl = await issueAccessLink(customer.id, product.id)
-  const emailStatus = await sendAccessEmail({
+  const { accessUrl, emailStatus } = await deliverAccess({
     customer,
     product,
-    accessUrl,
     orderId: order.id,
   })
 

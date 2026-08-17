@@ -1,9 +1,9 @@
 import { NextResponse } from "next/server"
 import { z } from "zod"
 
-import { findCustomerByEmail, getProduct, hasActiveEntitlement, issueAccessLink } from "@/lib/capital/access"
+import { findCustomerByEmail, getProduct, hasActiveEntitlement } from "@/lib/capital/access"
 import { PRODUCT_SLUG } from "@/lib/capital/config"
-import { sendAccessEmail } from "@/lib/capital/email"
+import { deliverAccess } from "@/lib/capital/deliver"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -44,8 +44,7 @@ export async function POST(req: Request) {
 
     if (!(await hasActiveEntitlement(customer.id, product.id))) return ok
 
-    const accessUrl = await issueAccessLink(customer.id, product.id)
-    await sendAccessEmail({ customer, product, accessUrl, orderId: null })
+    await deliverAccess({ customer, product, orderId: null })
   } catch (error) {
     console.error("[capital] reenvío de acceso falló", error)
   }

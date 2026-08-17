@@ -10,7 +10,7 @@ import { insert, update } from "./db"
 import type { Customer, Product } from "./access"
 
 type EmailTemplate = "purchase_access" | "reminder" | "custom"
-type EmailStatus = "queued" | "sent" | "failed"
+export type EmailStatus = "queued" | "sent" | "failed"
 
 type EmailEvent = { id: string }
 

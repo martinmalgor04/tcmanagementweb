@@ -66,10 +66,27 @@ export function siteUrl(): string {
   return "http://localhost:3000"
 }
 
+const FROM_PLAIN = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/
+const FROM_NAMED = /^[^<>]+<[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+>$/
+
+/**
+ * Resend rechaza el envío entero si el remitente no tiene forma de mail, y el
+ * síntoma es que la compradora paga y no recibe nada. Ante un valor mal cargado
+ * preferimos mandar desde la dirección conocida antes que no mandar.
+ */
+function normalizeFrom(raw: string | undefined): string {
+  const value = (raw ?? "").trim().replace(/^["']|["']$/g, "").trim()
+  if (FROM_PLAIN.test(value) || FROM_NAMED.test(value)) return value
+  if (value) {
+    console.warn(`[capital] CAPITAL_FROM_EMAIL=${JSON.stringify(value)} no es válido, se usa ${DEFAULT_FROM_EMAIL}`)
+  }
+  return DEFAULT_FROM_EMAIL
+}
+
 export function resendConfig() {
   const apiKey = process.env.RESEND_API_KEY
   if (!apiKey) return null
-  return { apiKey, from: process.env.CAPITAL_FROM_EMAIL || DEFAULT_FROM_EMAIL }
+  return { apiKey, from: normalizeFrom(process.env.CAPITAL_FROM_EMAIL) }
 }
 
 /** Sin este token no se puede confirmar un pago contra Mercado Pago. */

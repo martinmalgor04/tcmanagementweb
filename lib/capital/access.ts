@@ -185,25 +185,19 @@ export async function hasActiveEntitlement(customerId: string, productId: string
 }
 
 /**
- * Genera un magic link nuevo y da de baja los anteriores que sigan vivos, para
- * que un link viejo reenviado por WhatsApp deje de servir.
+ * Genera un magic link nuevo. No toca los anteriores: la baja va aparte y
+ * después de que el mail salga, así un envío fallido no deja a la compradora
+ * sin el link que ya tenía. Ver deliverAccess.
  */
-export async function issueAccessLink(customerId: string, productId: string): Promise<string> {
+export async function issueAccessLink(
+  customerId: string,
+  productId: string,
+): Promise<{ url: string; tokenId: string }> {
   const now = new Date()
-
-  const live = await select<{ id: string }>(
-    "access_tokens",
-    `customer_id=eq.${customerId}&product_id=eq.${productId}` +
-      `&revoked_at=is.null&expires_at=gt.${now.toISOString()}&select=id`,
-  )
-  for (const token of live) {
-    await update("access_tokens", `id=eq.${token.id}`, { revoked_at: now.toISOString() })
-  }
-
   const { raw, hash } = createAccessToken()
   const expiresAt = new Date(now.getTime() + ACCESS_TOKEN_TTL_DAYS * 24 * 60 * 60 * 1000)
 
-  await insert("access_tokens", {
+  const token = await insert<{ id: string }>("access_tokens", {
     customer_id: customerId,
     product_id: productId,
     token_hash: hash,
@@ -211,7 +205,31 @@ export async function issueAccessLink(customerId: string, productId: string): Pr
     max_uses: ACCESS_TOKEN_MAX_USES,
   })
 
-  return `${siteUrl()}${ACCESS_ENTRY_PATH}?token=${encodeURIComponent(raw)}`
+  return {
+    url: `${siteUrl()}${ACCESS_ENTRY_PATH}?token=${encodeURIComponent(raw)}`,
+    tokenId: token.id,
+  }
+}
+
+/**
+ * Da de baja los links vivos salvo el que se acaba de entregar, para que uno
+ * viejo reenviado por WhatsApp deje de servir.
+ */
+export async function revokePreviousAccessTokens(
+  customerId: string,
+  productId: string,
+  keepTokenId: string,
+): Promise<void> {
+  const now = new Date()
+
+  const live = await select<{ id: string }>(
+    "access_tokens",
+    `customer_id=eq.${customerId}&product_id=eq.${productId}` +
+      `&revoked_at=is.null&expires_at=gt.${now.toISOString()}&id=neq.${keepTokenId}&select=id`,
+  )
+  for (const token of live) {
+    await update("access_tokens", `id=eq.${token.id}`, { revoked_at: now.toISOString() })
+  }
 }
 
 /**

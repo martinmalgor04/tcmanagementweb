@@ -6,12 +6,11 @@ import {
   findOrderByPaymentId,
   getProduct,
   grantEntitlement,
-  issueAccessLink,
   recordOrder,
   upsertCustomer,
 } from "@/lib/capital/access"
 import { PRODUCT_SLUG } from "@/lib/capital/config"
-import { sendAccessEmail } from "@/lib/capital/email"
+import { deliverAccess } from "@/lib/capital/deliver"
 import { fetchPayment } from "@/lib/capital/mercadopago"
 
 export const runtime = "nodejs"
@@ -98,8 +97,7 @@ async function processPayment(paymentId: string) {
   if (status !== "paid") return
 
   await grantEntitlement(customer.id, product.id, order.id)
-  const accessUrl = await issueAccessLink(customer.id, product.id)
-  await sendAccessEmail({ customer, product, accessUrl, orderId: order.id })
+  await deliverAccess({ customer, product, orderId: order.id })
 }
 
 /**
