@@ -1,6 +1,4 @@
 import type { Metadata } from "next"
-import ManualShell from "@/components/capital/manual-shell"
-import "../capital.css"
 
 export const metadata: Metadata = {
   title: "Capital de Esencia Visual — Manual",
@@ -14,37 +12,32 @@ export const metadata: Metadata = {
 
 const CDN = "https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev"
 const LOGO_WORDMARK = `${CDN}/LOGOS/tc-wordmark-white.png`
+const CONTENT_PATH = "/capital-esencia-visual/manual/contenido"
 
+/**
+ * El manual es un documento completo, con su propio head, estilos y scripts.
+ * Va en un iframe y no inyectado en la página para que su CSS no choque con el
+ * del sitio y para que se vea exactamente como fue diseñado. El iframe apunta a
+ * una ruta propia, que vuelve a validar el acceso por su cuenta.
+ */
 export default function ManualPage() {
   return (
-    <div className="capital-landing cev-grain relative min-h-[100svh] px-6 py-12 font-[inherit]">
-      <div className="relative z-10 mx-auto w-full max-w-5xl">
-        <header className="flex items-center justify-between gap-6">
-          <img src={LOGO_WORDMARK} alt="TC Management" className="h-5 w-auto sm:h-7" />
-          <a
-            href="/capital-esencia-visual/salir"
-            className="text-[10px] uppercase tracking-[0.3em] text-neutral-500 transition hover:text-neutral-300"
-          >
-            Salir
-          </a>
-        </header>
+    <div className="flex h-[100svh] flex-col bg-black">
+      <header className="flex shrink-0 items-center justify-between gap-6 border-b border-white/10 px-5 py-3">
+        <img src={LOGO_WORDMARK} alt="TC Management" className="h-4 w-auto" />
+        <a
+          href="/capital-esencia-visual/salir"
+          className="text-[10px] uppercase tracking-[0.3em] text-neutral-500 transition hover:text-neutral-300"
+        >
+          Salir
+        </a>
+      </header>
 
-        <p className="mt-16 text-[11px] font-medium uppercase tracking-[0.45em] text-neutral-500">
-          Manual digital
-        </p>
-        <h1 className="mt-4 text-4xl font-bold uppercase leading-[0.95] tracking-tight sm:text-6xl">
-          Capital de
-          <br />
-          Esencia Visual
-        </h1>
-        <p className="mt-6 max-w-xl leading-relaxed text-neutral-400">
-          El poder de los símbolos y los colores en la estrategia de la vestimenta.
-        </p>
-
-        <div className="mt-16">
-          <ManualShell />
-        </div>
-      </div>
+      <iframe
+        src={CONTENT_PATH}
+        title="Capital de Esencia Visual — Manual digital"
+        className="min-h-0 w-full flex-1 border-0"
+      />
     </div>
   )
 }

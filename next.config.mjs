@@ -22,6 +22,11 @@ const nextConfig = {
   images: {
     unoptimized: true,
   },
+  // El manual se lee del disco en runtime. Sin esto Next no lo detecta como
+  // dependencia y en Vercel la función se despliega sin el archivo.
+  outputFileTracingIncludes: {
+    "/capital-esencia-visual/manual/contenido": ["./content/**/*"],
+  },
   experimental: {
     webpackBuildWorker: true,
     parallelServerBuildTraces: true,

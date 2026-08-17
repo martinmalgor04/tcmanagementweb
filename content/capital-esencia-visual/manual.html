@@ -1,0 +1,3806 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Capital de Esencia Visual · Manual digital — TC Management</title>
+<meta name="description" content="Manual digital de Tarsila Cicconetti para TC Management: el poder de los símbolos y los colores en la estrategia de comunicación de la vestimenta. Somos Esencia · Somos TC.">
+<meta property="og:title" content="Capital de Esencia Visual · Manual digital">
+<meta property="og:description" content="El poder de los símbolos y los colores en la estrategia de comunicación de la vestimenta. Por Tarsila Cicconetti · TC Management.">
+<meta property="og:type" content="article">
+<meta property="og:site_name" content="TC Management">
+<meta property="og:locale" content="es_AR">
+<meta property="og:url" content="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/index.html">
+<meta property="og:image" content="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/og-cover.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<link rel="canonical" href="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/index.html">
+<meta name="theme-color" content="#EFE9DF">
+<meta name="theme-color" media="(prefers-color-scheme: dark)" content="#211B16">
+<link rel="icon" type="image/png" href="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/favicon.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Gloock&family=Fraunces:ital,opsz,wght@1,9..144,300..600&family=Montserrat:wght@300;400;500;600;700&display=swap">
+<script>document.documentElement.classList.add('js');try{if(localStorage.getItem('cev-nav')==='folded')document.documentElement.classList.add('nav-folded')}catch(e){}</script>
+<style>
+/* ============================================================
+   CAPITAL DE ESENCIA VISUAL · shell
+   Tokens + layout + componentes compartidos (spec §1, §2, §4)
+   ============================================================ */
+
+:root{
+  --cream:#EFE9DF;        /* fondo base editorial */
+  --cream-2:#F4F0E8;      /* tarjetas / paneles claros */
+  --ink:#1A1714;          /* texto principal sobre crema */
+  --ink-soft:#4A4139;     /* texto secundario sobre crema */
+  --dark:#211B16;         /* fondo secciones oscuras */
+  --dark-2:#2A231D;       /* paneles sobre oscuro */
+  --paper-dark:#EDE6DA;   /* texto principal sobre oscuro */
+  --gold:#B8862F;         /* acento dorado */
+  --gold-soft:#C9A15C;    /* dorado claro (kickers sobre oscuro) */
+  --brown:#7A5A44;        /* marrón editorial (labels sobre crema) */
+  --line:rgba(26,23,20,.16);
+  --line-dark:rgba(237,230,218,.18);
+  /* colores del manual (capítulo colores / paletas / arquetipos) */
+  --c-negro:#1A1714; --c-blanco:#F4F0E8; --c-camel:#A9805A; --c-rojo:#8E2C2C;
+  --c-azul:#2E4257; --c-verde:#3F5347; --c-rosa:#DBB1AA; --c-dorado:#B8862F;
+  --c-borravino:#5C2438; --c-mostaza:#C9902E; --c-terracota:#B45E38;
+  --nav-w:264px;
+}
+
+/* ---------- Base ---------- */
+*,*::before,*::after{box-sizing:border-box}
+html{scroll-behavior:smooth;scrollbar-color:rgba(122,90,68,.4) transparent}
+body{
+  margin:0;
+  font-family:Montserrat,'Helvetica Neue',Arial,sans-serif;
+  font-size:16px;line-height:1.6;
+  background:var(--cream);color:var(--ink);
+  -webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;
+  overflow-x:hidden;
+}
+h1,h2,h3,h4,h5,h6,p,figure,blockquote,ul,ol,dl,dd{margin:0}
+img{max-width:100%;height:auto}
+a{color:inherit}
+button{font:inherit;color:inherit}
+[hidden]{display:none!important}
+
+::selection{background:var(--ink);color:var(--cream)}
+.chapter--dark ::selection{background:var(--paper-dark);color:var(--ink)}
+
+:focus-visible{outline:2px solid var(--gold);outline-offset:3px;border-radius:2px}
+:focus:not(:focus-visible){outline:none}
+
+/* Scrollbar sutil */
+::-webkit-scrollbar{width:10px;height:10px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(122,90,68,.32);border-radius:8px;border:3px solid var(--cream)}
+::-webkit-scrollbar-thumb:hover{background:rgba(122,90,68,.55)}
+
+html.drawer-open,html.drawer-open body{overflow:hidden}
+
+/* ---------- Skip link ---------- */
+.skip-link{
+  position:fixed;top:12px;left:12px;z-index:500;
+  background:var(--ink);color:var(--cream);text-decoration:none;
+  font:600 .72rem/1 Montserrat,sans-serif;letter-spacing:.14em;text-transform:uppercase;
+  padding:12px 18px;border-radius:999px;
+  transform:translateY(-220%);transition:transform .2s ease;
+}
+.skip-link:focus{transform:none;outline:2px solid var(--gold);outline-offset:3px}
+
+/* ---------- Barra de progreso ---------- */
+#progress-bar{
+  position:fixed;top:0;left:0;height:3px;width:0;
+  background:var(--gold);z-index:400;
+  transition:width .12s linear;
+}
+
+/* ---------- Sidebar desktop ---------- */
+.side-nav{
+  position:fixed;top:0;bottom:0;left:0;width:var(--nav-w);
+  display:none;flex-direction:column;
+  background:var(--cream);border-right:1px solid var(--line);
+  padding:32px 28px 24px;z-index:120;
+}
+.side-nav__logo{display:inline-block;width:max-content;margin:0 0 36px}
+.side-nav__logo img{display:block;height:30px;width:auto}
+.side-nav__nav{flex:1;min-height:0;overflow-y:auto;padding-right:8px;scrollbar-width:thin}
+.side-nav__nav::-webkit-scrollbar{width:6px}
+.side-nav__nav::-webkit-scrollbar-thumb{border-width:1px}
+.side-nav__foot{
+  margin:20px 0 0;padding-top:18px;border-top:1px solid var(--line);
+  font:600 .625rem/1.6 Montserrat,sans-serif;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--ink-soft);
+}
+
+/* ---------- Índice desplegable (desktop) ---------- */
+.nav-fold,.nav-unfold{
+  display:none;width:32px;height:32px;padding:0;
+  border:1px solid var(--line);border-radius:50%;
+  background:var(--cream);color:var(--ink-soft);cursor:pointer;
+  place-items:center;transition:color .25s ease,border-color .25s ease;
+}
+.nav-fold svg,.nav-unfold svg{width:13px;height:13px;display:block}
+.nav-fold:hover,.nav-unfold:hover{color:var(--brown);border-color:var(--brown)}
+.nav-fold:focus-visible,.nav-unfold:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+.nav-fold{position:absolute;top:31px;right:16px}
+.nav-unfold{position:fixed;top:16px;left:14px;z-index:130;box-shadow:0 1px 6px rgba(26,23,20,.08)}
+
+/* ---------- Índice (compartido sidebar + drawer) ---------- */
+.toc__group{margin:0 0 24px}
+.toc__group:last-child{margin-bottom:8px}
+.toc__label{
+  font:600 .625rem/1.4 Montserrat,sans-serif;letter-spacing:.24em;
+  text-transform:uppercase;color:var(--brown);margin:0 0 10px;
+}
+.toc__list{list-style:none;margin:0;padding:0}
+.toc__link{
+  position:relative;display:flex;align-items:baseline;
+  padding:7px 0;color:var(--ink-soft);text-decoration:none;
+  font-weight:500;font-size:.8rem;line-height:1.4;
+  transition:color .25s ease;
+}
+.toc__link::before{
+  content:"";flex:none;align-self:center;
+  width:0;height:1px;background:var(--gold);
+  margin-right:0;transition:width .3s ease,margin-right .3s ease;
+}
+.toc__link:hover{color:var(--ink)}
+.toc__link.is-active{color:var(--ink)}
+.toc__link.is-active::before{width:14px;margin-right:9px}
+
+/* ---------- Topbar + drawer mobile ---------- */
+.topbar{
+  position:fixed;top:0;left:0;right:0;height:64px;z-index:200;
+  display:flex;align-items:center;justify-content:space-between;
+  padding:0 14px 0 22px;
+  background:rgba(239,233,223,.92);
+  -webkit-backdrop-filter:blur(10px);backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+.topbar__logo{display:inline-flex;align-items:center;min-height:44px}
+.topbar__logo img{display:block;height:24px;width:auto}
+.topbar__menu{
+  appearance:none;-webkit-appearance:none;background:none;border:0;padding:0;
+  width:48px;height:48px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:7px;cursor:pointer;
+}
+.topbar__menu span{display:block;width:22px;height:1.5px;background:var(--ink);transition:transform .3s ease,opacity .3s ease}
+
+.scrim{
+  position:fixed;inset:0;z-index:240;
+  background:rgba(26,23,20,.5);
+  opacity:0;pointer-events:none;transition:opacity .35s ease;
+}
+.scrim.is-show{opacity:1;pointer-events:auto}
+
+.drawer{
+  position:fixed;top:0;bottom:0;left:0;z-index:260;
+  width:min(320px,86vw);
+  display:flex;flex-direction:column;
+  background:var(--cream);border-right:1px solid var(--line);
+  box-shadow:0 0 48px rgba(26,23,20,.22);
+  padding:16px 26px 24px;
+  transform:translateX(-103%);visibility:hidden;
+  transition:transform .38s cubic-bezier(.22,.7,.3,1),visibility 0s linear .38s;
+}
+.drawer.is-open{
+  transform:none;visibility:visible;
+  transition:transform .38s cubic-bezier(.22,.7,.3,1);
+}
+.drawer__head{display:flex;align-items:center;justify-content:space-between;margin:0 0 24px}
+.drawer__head img{display:block;height:24px;width:auto}
+.drawer__close{
+  appearance:none;-webkit-appearance:none;background:none;
+  border:1px solid var(--line);border-radius:999px;
+  width:44px;height:44px;display:flex;align-items:center;justify-content:center;
+  cursor:pointer;color:var(--ink);transition:border-color .25s ease,color .25s ease;
+}
+.drawer__close:hover{border-color:var(--gold);color:var(--gold)}
+.drawer__close svg{width:16px;height:16px}
+.drawer__nav{flex:1;min-height:0;overflow-y:auto;padding-right:6px}
+.drawer .toc__link{padding:11px 0;font-size:.95rem}
+.drawer__foot{
+  margin:16px 0 0;padding-top:16px;border-top:1px solid var(--line);
+  font:600 .625rem/1.6 Montserrat,sans-serif;letter-spacing:.22em;
+  text-transform:uppercase;color:var(--ink-soft);
+}
+
+/* ---------- Main / capítulos ---------- */
+#cev{padding-top:64px}
+.chapter{
+  position:relative;
+  background:var(--cream);color:var(--ink);
+  transition:background-color .4s ease,color .4s ease;
+  scroll-margin-top:76px;
+}
+.chapter--dark{background:var(--dark);color:var(--paper-dark)}
+
+.wrap{
+  max-width:1060px;margin-inline:auto;
+  padding:clamp(64px,10vh,120px) clamp(20px,5vw,56px);
+}
+
+@media (min-width:1080px){
+  .side-nav{display:flex;transition:transform .4s ease}
+  .topbar,.drawer,.scrim{display:none}
+  #cev{margin-left:var(--nav-w);padding-top:0;transition:margin-left .4s ease}
+  .chapter{scroll-margin-top:12px}
+  .nav-fold{display:grid}
+  html.nav-folded .side-nav{transform:translateX(-100%);visibility:hidden;transition:transform .4s ease,visibility 0s .4s}
+  html.nav-folded #cev{margin-left:0}
+  html.nav-folded .nav-unfold{display:grid}
+}
+@media (prefers-reduced-motion:reduce){
+  .side-nav,#cev{transition:none}
+}
+
+/* ---------- Tipografía compartida ---------- */
+.kicker{
+  display:block;
+  font-family:Montserrat,sans-serif;font-weight:600;
+  font-size:.71rem;letter-spacing:.22em;text-transform:uppercase;
+  color:var(--brown);margin:0 0 18px;
+}
+.chapter--dark .kicker{color:var(--gold-soft)}
+
+.display{
+  font-family:Gloock,Georgia,serif;font-weight:400;
+  font-size:clamp(2.2rem,5vw,4rem);line-height:1.05;
+  letter-spacing:.004em;margin:0 0 22px;
+}
+
+.quote-serif{font-family:Fraunces,Georgia,serif;font-style:italic;font-weight:350}
+
+.lede{
+  font-family:Fraunces,Georgia,serif;font-style:italic;font-weight:350;
+  font-size:clamp(1.15rem,2.2vw,1.5rem);line-height:1.55;
+  color:var(--ink-soft);margin:0 0 18px;
+}
+.chapter--dark .lede{color:rgba(237,230,218,.82)}
+
+.prose{
+  font-family:Montserrat,sans-serif;font-weight:400;
+  font-size:.97rem;line-height:1.75;max-width:62ch;
+}
+.prose>*+*{margin-top:1.05em}
+.prose strong{font-weight:600}
+.chapter--dark .prose{color:rgba(237,230,218,.92)}
+
+/* ---------- Separadores y marcos ---------- */
+.star-sep{
+  display:block;text-align:center;color:var(--gold);
+  font-size:1.05rem;line-height:1;margin:30px auto;
+}
+.star-sep:empty::before{content:"✦"}
+
+.frame{position:relative;border:1px solid var(--line)}
+.frame::before{
+  content:"";position:absolute;inset:7px;
+  border:1px solid var(--line);pointer-events:none;
+}
+.chapter--dark .frame,
+.chapter--dark .frame::before{border-color:var(--line-dark)}
+
+/* ---------- Grids ---------- */
+.grid-2,.grid-3,.grid-4{display:grid;gap:28px}
+.grid-2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.grid-3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.grid-4{grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:980px){
+  .grid-3,.grid-4{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:720px){
+  .grid-2,.grid-3{grid-template-columns:1fr}
+}
+@media (max-width:520px){
+  .grid-4{grid-template-columns:1fr}
+}
+
+/* ---------- Paneles ---------- */
+.card{
+  background:var(--cream-2);border:1px solid var(--line);
+  border-radius:2px;padding:28px;
+}
+.chapter--dark .card{background:var(--dark-2);border-color:var(--line-dark)}
+
+.rule-card{
+  background:var(--cream-2);border:1px solid var(--line);
+  border-left:3px solid var(--gold);border-radius:2px;
+  padding:24px 28px;
+}
+.chapter--dark .rule-card{background:var(--dark-2);border-color:var(--line-dark);border-left-color:var(--gold-soft)}
+
+.formula-band{
+  background:var(--cream-2);border-left:3px solid var(--brown);
+  padding:28px 32px;
+}
+.formula-band .kicker{margin-bottom:12px}
+.formula-band em,.formula-band i{
+  font-family:Fraunces,Georgia,serif;font-style:italic;font-weight:350;
+  font-size:1.18rem;line-height:1.55;
+}
+.chapter--dark .formula-band{background:var(--dark-2);border-left-color:var(--gold-soft)}
+
+/* ---------- Icon cards ---------- */
+.icon-card{
+  display:flex;flex-direction:column;align-items:center;
+  text-align:center;gap:14px;padding:8px 4px;
+}
+.icon-card svg{width:64px;height:64px;flex:none;color:var(--ink)}
+.chapter--dark .icon-card svg{color:var(--paper-dark)}
+.icon-card .kicker{margin:0}
+.icon-card p,.icon-card figcaption{
+  font-size:.8125rem;line-height:1.6;color:var(--ink-soft);
+  max-width:26ch;margin:0;
+}
+.chapter--dark .icon-card p,.chapter--dark .icon-card figcaption{color:rgba(237,230,218,.75)}
+
+/* ---------- Hex chips (copiar al portapapeles) ---------- */
+[data-copy]{cursor:pointer}
+.hex-chip{
+  appearance:none;-webkit-appearance:none;background:transparent;
+  display:inline-flex;align-items:center;gap:.5em;
+  font-family:ui-monospace,'SF Mono',Menlo,Consolas,monospace;
+  font-size:.75rem;letter-spacing:.08em;
+  color:var(--ink-soft);border:1px solid var(--line);border-radius:999px;
+  padding:7px 14px;cursor:pointer;
+  transition:color .25s ease,border-color .25s ease;
+}
+.hex-chip:hover{color:var(--brown);border-color:var(--gold)}
+.chapter--dark .hex-chip{color:rgba(237,230,218,.85);border-color:var(--line-dark)}
+.chapter--dark .hex-chip:hover{color:var(--gold-soft);border-color:var(--gold-soft)}
+
+/* ---------- Tag row ---------- */
+.tag-row{
+  display:flex;flex-wrap:wrap;align-items:baseline;
+  column-gap:.55em;row-gap:.3em;
+  font-family:Fraunces,Georgia,serif;font-style:italic;font-weight:350;
+  font-size:1.02rem;color:var(--ink-soft);
+}
+.tag-row>*{margin:0}
+.tag-row>*+*::before{content:"·";color:var(--gold);margin-right:.55em}
+.chapter--dark .tag-row{color:rgba(237,230,218,.8)}
+
+/* ---------- Número de página editorial ---------- */
+.pagenum{
+  font-family:Fraunces,Georgia,serif;font-style:italic;font-weight:350;
+  font-size:.9rem;letter-spacing:.04em;color:var(--brown);
+}
+.chapter--dark .pagenum{color:var(--gold-soft)}
+
+/* ---------- Reveal ---------- */
+.js [data-reveal]{opacity:0;transform:translateY(14px);transition:opacity .6s ease,transform .6s ease}
+.js [data-reveal][data-reveal-delay="1"]{transition-delay:90ms}
+.js [data-reveal][data-reveal-delay="2"]{transition-delay:180ms}
+.js [data-reveal][data-reveal-delay="3"]{transition-delay:270ms}
+.js [data-reveal].is-in{opacity:1;transform:none}
+
+/* ---------- Toast ---------- */
+.toast{
+  position:fixed;left:50%;bottom:34px;z-index:450;
+  transform:translate(-50%,14px);
+  background:var(--ink);color:var(--cream);
+  font:600 .72rem/1 Montserrat,sans-serif;letter-spacing:.18em;text-transform:uppercase;
+  padding:13px 22px;border-radius:999px;white-space:nowrap;
+  opacity:0;pointer-events:none;
+  transition:opacity .3s ease,transform .3s ease;
+}
+.toast.is-show{opacity:1;transform:translate(-50%,0)}
+.toast .toast__star{color:var(--gold-soft)}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto}
+  *,*::before,*::after{animation:none!important;transition:none!important}
+  .js [data-reveal]{opacity:1;transform:none}
+}
+
+/* ---------- Print ---------- */
+@media print{
+  #progress-bar,.side-nav,.nav-unfold,.topbar,.drawer,.scrim,.toast,.skip-link{display:none!important}
+  html,body{background:#fff}
+  #cev{margin-left:0!important;padding-top:0!important}
+  .chapter{break-before:page;page-break-before:always;background:#fff!important;color:var(--ink)!important}
+  .chapter:first-of-type{break-before:auto;page-break-before:auto}
+  .chapter--dark .kicker{color:var(--brown)!important}
+  .chapter--dark .lede{color:var(--ink-soft)!important}
+  .chapter--dark .prose{color:var(--ink)!important}
+  .chapter--dark .card,.chapter--dark .rule-card,.chapter--dark .formula-band{background:#fff!important;border-color:var(--line)!important}
+  .chapter--dark .frame,.chapter--dark .frame::before{border-color:var(--line)!important}
+  .chapter--dark .icon-card svg{color:var(--ink)!important}
+  /* legibilidad total de secciones oscuras impresas */
+  .chapter--dark,.chapter--dark *{color:var(--ink)!important}
+  .chapter--dark .kicker,.chapter--dark .pagenum,.chapter--dark .star-sep,
+  .chapter--dark .intro-quote em,.chapter--dark .final-quote em,
+  .chapter--dark .tp-sub,.chapter--dark .tp-num,.chapter--dark .tp-dl dt,
+  .chapter--dark .final-name,.chapter--dark .footer-legend{color:var(--brown)!important}
+  #tres-preguntas .tp-widget{background:#fff!important;border:1px solid var(--line)!important}
+  #tres-preguntas .tp-goal,#tres-preguntas .tp-result,#tres-preguntas .tp-dl>div{border-color:var(--line)!important}
+  #tres-preguntas .tp-goal[aria-pressed="true"]{background:transparent!important}
+  #cierre-construir .cc-band{background:#fff!important;color:var(--ink)!important;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  #cierre-construir .cc-band *{color:var(--ink)!important}
+  #cierre-construir .cc-band .kicker,#cierre-construir .cc-band .cc-num{color:var(--brown)!important}
+  #espejo .esp-reset{display:none}
+  #final .final-footer img{filter:invert(1) grayscale(1)}
+  #colores .rule6030-bar span,#colores .rule6030-legend i,#colores .spread-swatch,#colores .swatch-col,
+  #arquetipos .arq-swatch,#tres-preguntas .tp-swatch,#parte-1 .p1-ticks span{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .js [data-reveal]{opacity:1!important;transform:none!important;transition:none!important}
+  .wrap{padding-top:48px;padding-bottom:48px}
+  a{text-decoration:none;color:inherit}
+}
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#cev">Saltar al contenido</a>
+
+<div id="progress-bar" role="presentation" aria-hidden="true"></div>
+
+<!-- ============ Sidebar desktop ============ -->
+<aside class="side-nav" id="side-nav">
+  <button type="button" class="nav-fold" id="nav-fold" aria-controls="side-nav" aria-expanded="true" aria-label="Plegar el índice">
+    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10 3L5 8l5 5"/></svg>
+  </button>
+  <a class="side-nav__logo" href="#portada" aria-label="Capital de Esencia Visual — volver a la portada">
+    <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/tc-logo-black.png" alt="TC Management" width="1200" height="143">
+  </a>
+  <nav class="side-nav__nav toc" aria-label="Índice del manual">
+    <div class="toc__group">
+      <p class="toc__label">Fundamentos</p>
+      <ul class="toc__list">
+        <li><a class="toc__link" href="#fundamentos-1">Vestirnos nos anuncia</a></li>
+        <li><a class="toc__link" href="#fundamentos-2">La esencia primero</a></li>
+        <li><a class="toc__link" href="#tres-preguntas">Tres preguntas</a></li>
+      </ul>
+    </div>
+    <div class="toc__group">
+      <p class="toc__label">Parte I — El color</p>
+      <ul class="toc__list">
+        <li><a class="toc__link" href="#colores">La psicología del color</a></li>
+        <li><a class="toc__link" href="#paletas">Paletas que funcionan</a></li>
+      </ul>
+    </div>
+    <div class="toc__group">
+      <p class="toc__label">Parte II — Las estampas</p>
+      <ul class="toc__list">
+        <li><a class="toc__link" href="#estampas-codigo">El código</a></li>
+        <li><a class="toc__link" href="#estampas-lenguaje">El lenguaje</a></li>
+      </ul>
+    </div>
+    <div class="toc__group">
+      <p class="toc__label">Parte III — La prenda</p>
+      <ul class="toc__list">
+        <li><a class="toc__link" href="#prendas-autoridad">Autoridad</a></li>
+        <li><a class="toc__link" href="#prendas-conexion">Conexión</a></li>
+        <li><a class="toc__link" href="#arquetipos">Arquetipos</a></li>
+      </ul>
+    </div>
+    <div class="toc__group">
+      <p class="toc__label">Parte IV — Los accesorios</p>
+      <ul class="toc__list">
+        <li><a class="toc__link" href="#accesorios">Aro · Collar · Brazalete · Lente</a></li>
+      </ul>
+    </div>
+    <div class="toc__group">
+      <p class="toc__label">Cierre</p>
+      <ul class="toc__list">
+        <li><a class="toc__link" href="#cierre-construir">Construir tu capital</a></li>
+        <li><a class="toc__link" href="#espejo">El espejo</a></li>
+        <li><a class="toc__link" href="#final">La asesoría 1 a 1</a></li>
+      </ul>
+    </div>
+  </nav>
+  <p class="side-nav__foot">Somos esencia · Somos TC.</p>
+</aside>
+
+<button type="button" class="nav-unfold" id="nav-unfold" aria-controls="side-nav" aria-label="Desplegar el índice">
+  <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 3l5 5-5 5"/></svg>
+</button>
+
+<!-- ============ Topbar + drawer mobile ============ -->
+<header class="topbar">
+  <a class="topbar__logo" href="#portada" aria-label="Capital de Esencia Visual — volver a la portada">
+    <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/tc-logo-black.png" alt="TC Management" width="1200" height="143">
+  </a>
+  <button class="topbar__menu" id="menu-btn" type="button" aria-expanded="false" aria-controls="drawer" aria-label="Abrir índice">
+    <span aria-hidden="true"></span>
+    <span aria-hidden="true"></span>
+  </button>
+</header>
+
+<div class="scrim" id="scrim" aria-hidden="true"></div>
+
+<aside class="drawer" id="drawer" role="dialog" aria-modal="true" aria-hidden="true" aria-label="Índice del manual">
+  <div class="drawer__head">
+    <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/tc-logo-black.png" alt="TC Management" width="1200" height="143">
+    <button class="drawer__close" id="drawer-close" type="button" aria-label="Cerrar índice">
+      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" aria-hidden="true">
+        <path d="M2 2l12 12M14 2L2 14"/>
+      </svg>
+    </button>
+  </div>
+  <nav class="drawer__nav toc" aria-label="Índice del manual">
+    <div class="toc__group">
+      <p class="toc__label">Fundamentos</p>
+      <ul class="toc__list">
+        <li><a class="toc__link" href="#fundamentos-1">Vestirnos nos anuncia</a></li>
+        <li><a class="toc__link" href="#fundamentos-2">La esencia primero</a></li>
+        <li><a class="toc__link" href="#tres-preguntas">Tres preguntas</a></li>
+      </ul>
+    </div>
+    <div class="toc__group">
+      <p class="toc__label">Parte I — El color</p>
+      <ul class="toc__list">
+        <li><a class="toc__link" href="#colores">La psicología del color</a></li>
+        <li><a class="toc__link" href="#paletas">Paletas que funcionan</a></li>
+      </ul>
+    </div>
+    <div class="toc__group">
+      <p class="toc__label">Parte II — Las estampas</p>
+      <ul class="toc__list">
+        <li><a class="toc__link" href="#estampas-codigo">El código</a></li>
+        <li><a class="toc__link" href="#estampas-lenguaje">El lenguaje</a></li>
+      </ul>
+    </div>
+    <div class="toc__group">
+      <p class="toc__label">Parte III — La prenda</p>
+      <ul class="toc__list">
+        <li><a class="toc__link" href="#prendas-autoridad">Autoridad</a></li>
+        <li><a class="toc__link" href="#prendas-conexion">Conexión</a></li>
+        <li><a class="toc__link" href="#arquetipos">Arquetipos</a></li>
+      </ul>
+    </div>
+    <div class="toc__group">
+      <p class="toc__label">Parte IV — Los accesorios</p>
+      <ul class="toc__list">
+        <li><a class="toc__link" href="#accesorios">Aro · Collar · Brazalete · Lente</a></li>
+      </ul>
+    </div>
+    <div class="toc__group">
+      <p class="toc__label">Cierre</p>
+      <ul class="toc__list">
+        <li><a class="toc__link" href="#cierre-construir">Construir tu capital</a></li>
+        <li><a class="toc__link" href="#espejo">El espejo</a></li>
+        <li><a class="toc__link" href="#final">La asesoría 1 a 1</a></li>
+      </ul>
+    </div>
+  </nav>
+  <p class="drawer__foot">Somos esencia · Somos TC.</p>
+</aside>
+
+<!-- ============ Contenido ============ -->
+<main id="cev" tabindex="-1">
+<!-- == 01-portada.html == -->
+<!-- ════════════════════════════════════════════════════════════════════
+     01 · PORTADA / INTRO / ÍNDICE — Capital de Esencia Visual
+     Fragmento según contrato spec.md §3. Sin JS propio (nada interactivo:
+     reveal, scroll suave y scrollspy los maneja el shell).
+     ════════════════════════════════════════════════════════════════════ -->
+<style>
+  /* ── PORTADA ──────────────────────────────────────────────────────── */
+  #portada{
+    min-height:92vh;
+    min-height:92svh;
+    display:flex;
+    flex-direction:column;
+  }
+  #portada .portada-frame{
+    flex:1;
+    display:flex;
+    margin:clamp(12px,2.4vw,28px);
+  }
+  #portada .wrap{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    justify-content:center;
+    text-align:center;
+  }
+  #portada .portada-kicker{
+    letter-spacing:.34em;
+    padding-left:.34em; /* compensa el tracking final para centrar ópticamente */
+    margin:0 0 clamp(36px,6vh,64px);
+  }
+  #portada .portada-title{
+    font-size:clamp(1.75rem,6.4vw,4.7rem);
+    line-height:1.22;
+    letter-spacing:.13em;
+    text-transform:uppercase;
+    padding-left:.13em;
+    text-wrap:balance;
+    margin:0;
+  }
+  #portada .star-sep{
+    margin:clamp(26px,4.5vh,46px) auto;
+  }
+  #portada .portada-bajada{
+    color:var(--brown);
+    max-width:34ch;
+    margin:0 auto;
+    text-wrap:balance;
+  }
+  #portada .portada-autora{
+    font-family:Montserrat,sans-serif;
+    font-weight:600;
+    font-size:.8rem;
+    letter-spacing:.34em;
+    padding-left:.34em;
+    text-transform:uppercase;
+    color:var(--ink);
+    margin:clamp(40px,6.5vh,72px) 0 0;
+  }
+  #portada .portada-pie{
+    font-family:Montserrat,sans-serif;
+    font-weight:600;
+    font-size:.66rem;
+    letter-spacing:.3em;
+    padding-left:.3em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+    margin:clamp(20px,3.5vh,40px) 0 0;
+  }
+  @media (max-width:520px){
+    #portada .portada-title br{display:none;}          /* que fluya en 3 líneas */
+    #portada .portada-title{font-size:clamp(1.5rem,7vw,1.75rem);letter-spacing:.09em;padding-left:.09em;}
+  }
+
+  /* ── INTRO (oscura) ───────────────────────────────────────────────── */
+  #intro{
+    display:flex;
+    align-items:center;
+    min-height:76vh;
+  }
+  #intro .wrap{
+    width:100%;
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    text-align:center;
+  }
+  #intro .intro-kicker{
+    color:var(--gold-soft);
+    letter-spacing:.3em;
+    padding-left:.3em;
+    margin:0;
+  }
+  #intro .intro-quote{
+    margin:clamp(30px,5.5vh,56px) 0 clamp(28px,5vh,48px);
+    padding:0;
+    border:0;
+  }
+  #intro .intro-quote p{
+    font-family:Fraunces,serif;
+    font-style:italic;
+    font-weight:450;
+    font-size:clamp(1.8rem,4.6vw,3.2rem);
+    line-height:1.32;
+    color:var(--paper-dark);
+    text-wrap:balance;
+    margin:0;
+  }
+  #intro .intro-quote em{
+    font-style:italic;
+    color:var(--gold-soft);
+  }
+  #intro .intro-text{
+    color:var(--paper-dark);
+    max-width:54ch;
+    margin:0 auto;
+    text-align:center;
+  }
+  #intro .intro-text strong{
+    font-weight:600;
+    color:var(--cream-2);
+  }
+  #intro .intro-pie{
+    color:var(--gold-soft);
+    font-size:.66rem;
+    letter-spacing:.32em;
+    padding-left:.32em;
+    margin:clamp(36px,6vh,60px) 0 0;
+  }
+
+  /* ── ÍNDICE ───────────────────────────────────────────────────────── */
+  #indice .indice-head .display{
+    margin:12px 0 20px;
+  }
+  #indice .indice-head .kicker{margin:0;}
+  #indice .indice-lede{
+    color:var(--brown);
+    margin:0;
+  }
+  #indice .indice-grid{
+    margin-top:clamp(44px,7vh,76px);
+    display:grid;
+    grid-template-columns:repeat(2,minmax(0,1fr));
+    gap:clamp(36px,6vh,56px) clamp(40px,6vw,88px);
+  }
+  #indice .indice-group-title{
+    margin:0;
+    padding-bottom:12px;
+    border-bottom:1px solid var(--line);
+  }
+  #indice .indice-list{
+    list-style:none;
+    margin:0;
+    padding:0;
+  }
+  #indice .indice-link{
+    display:grid;
+    grid-template-columns:2.4rem minmax(0,1fr);
+    align-items:baseline;
+    column-gap:10px;
+    padding:16px 0 15px;
+    border-bottom:1px solid var(--line);
+    text-decoration:none;
+    transition:border-color .25s ease;
+  }
+  #indice .indice-num{
+    font-family:Fraunces,serif;
+    font-style:italic;
+    font-size:1rem;
+    line-height:1;
+    color:var(--brown);
+    transition:color .25s ease;
+  }
+  #indice .indice-txt{
+    display:block;
+    transition:transform .3s ease;
+  }
+  #indice .indice-title{
+    display:block;
+    font-family:Montserrat,sans-serif;
+    font-weight:500;
+    font-size:.95rem;
+    line-height:1.4;
+    letter-spacing:.01em;
+    color:var(--ink);
+    transition:color .25s ease;
+  }
+  #indice .indice-sub{
+    display:block;
+    margin-top:5px;
+    font-family:Montserrat,sans-serif;
+    font-weight:600;
+    font-size:.64rem;
+    letter-spacing:.2em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  #indice .indice-link:hover,
+  #indice .indice-link:focus-visible{
+    border-bottom-color:var(--gold);
+  }
+  #indice .indice-link:hover .indice-num,
+  #indice .indice-link:focus-visible .indice-num{
+    color:var(--gold);
+  }
+  #indice .indice-link:hover .indice-title,
+  #indice .indice-link:focus-visible .indice-title{
+    color:var(--brown);
+  }
+  #indice .indice-link:hover .indice-txt,
+  #indice .indice-link:focus-visible .indice-txt{
+    transform:translateX(5px);
+  }
+  #indice .indice-link:focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:4px;
+  }
+  @media (max-width:860px){
+    #indice .indice-grid{grid-template-columns:1fr;gap:40px;}
+  }
+  @media (prefers-reduced-motion:reduce){
+    #indice .indice-link,
+    #indice .indice-num,
+    #indice .indice-txt,
+    #indice .indice-title{transition:none;}
+    #indice .indice-link:hover .indice-txt,
+    #indice .indice-link:focus-visible .indice-txt{transform:none;}
+  }
+</style>
+
+<!-- ─── PORTADA ─────────────────────────────────────────────────────── -->
+<section class="chapter" id="portada" aria-label="Portada del manual">
+  <div class="portada-frame frame">
+    <div class="wrap">
+      <p class="kicker portada-kicker" data-reveal>Manual</p>
+      <h1 class="display portada-title" data-reveal data-reveal-delay="1">Capital de <br>Esencia Visual</h1>
+      <div class="star-sep" aria-hidden="true" data-reveal data-reveal-delay="2">✦</div>
+      <p class="lede portada-bajada" data-reveal data-reveal-delay="2">El poder de los símbolos y los colores en la estrategia de comunicación de la vestimenta</p>
+      <p class="portada-autora" data-reveal data-reveal-delay="3">Tarsila Cicconetti</p>
+      <p class="portada-pie" data-reveal data-reveal-delay="3">Somos Esencia · Somos TC.</p>
+    </div>
+  </div>
+</section>
+
+<!-- ─── INTRO ───────────────────────────────────────────────────────── -->
+<section class="chapter chapter--dark" id="intro" aria-label="Introducción">
+  <div class="wrap">
+    <p class="kicker intro-kicker" data-reveal>Somos Esencia · Somos TC.</p>
+    <blockquote class="intro-quote" data-reveal data-reveal-delay="1">
+      <p>Vestirse no es cubrirse.<br>Es <em>hablar</em> antes de decir<br>una sola palabra.</p>
+    </blockquote>
+    <p class="prose intro-text" data-reveal data-reveal-delay="2">Antes de que abras la boca, tu ropa ya dijo quién sos, a qué venís y cuál es tu postura y energía en un lugar. Este manual no trata de moda: trata de <strong>intención</strong>. De aprender a elegir —con conciencia— los colores, las telas y los símbolos que traducen tu esencia en imagen.</p>
+    <p class="kicker intro-pie" data-reveal data-reveal-delay="3">El placer es nuestro de que seas parte</p>
+  </div>
+</section>
+
+<!-- ─── ÍNDICE ──────────────────────────────────────────────────────── -->
+<section class="chapter" id="indice" aria-label="Índice de contenidos">
+  <div class="wrap">
+    <header class="indice-head">
+      <p class="kicker" data-reveal>Contenido</p>
+      <h2 class="display" data-reveal>Índice</h2>
+      <p class="lede indice-lede" data-reveal data-reveal-delay="1">Cuatro lenguajes para una misma esencia.</p>
+    </header>
+
+    <nav class="indice-nav" aria-label="Índice del manual">
+      <div class="indice-grid">
+
+        <div class="indice-group" data-reveal data-reveal-delay="1">
+          <h3 class="kicker indice-group-title">Fundamentos</h3>
+          <ul class="indice-list">
+            <li>
+              <a class="indice-link" href="#fundamentos-1">
+                <span class="indice-num" aria-hidden="true">I</span>
+                <span class="indice-txt">
+                  <span class="indice-title">Vestirnos nos anuncia</span>
+                  <span class="indice-sub">La imagen como mensaje</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="indice-link" href="#fundamentos-2">
+                <span class="indice-num" aria-hidden="true">II</span>
+                <span class="indice-txt">
+                  <span class="indice-title">La esencia primero</span>
+                  <span class="indice-sub">Las preguntas antes del espejo</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="indice-link" href="#tres-preguntas">
+                <span class="indice-num" aria-hidden="true">III</span>
+                <span class="indice-txt">
+                  <span class="indice-title">Tres preguntas</span>
+                  <span class="indice-sub">La brújula del método</span>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="indice-group" data-reveal data-reveal-delay="2">
+          <h3 class="kicker indice-group-title">Parte I — El color</h3>
+          <ul class="indice-list">
+            <li>
+              <a class="indice-link" href="#colores">
+                <span class="indice-num" aria-hidden="true">·</span>
+                <span class="indice-txt">
+                  <span class="indice-title">La psicología del color</span>
+                  <span class="indice-sub">Ocho colores, ocho mensajes</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="indice-link" href="#paletas">
+                <span class="indice-num" aria-hidden="true">·</span>
+                <span class="indice-txt">
+                  <span class="indice-title">Paletas que funcionan</span>
+                  <span class="indice-sub">Combinaciones con intención</span>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="indice-group" data-reveal data-reveal-delay="1">
+          <h3 class="kicker indice-group-title">Parte II — Las estampas</h3>
+          <ul class="indice-list">
+            <li>
+              <a class="indice-link" href="#estampas-codigo">
+                <span class="indice-num" aria-hidden="true">·</span>
+                <span class="indice-txt">
+                  <span class="indice-title">El código de las estampas</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="indice-link" href="#estampas-lenguaje">
+                <span class="indice-num" aria-hidden="true">·</span>
+                <span class="indice-txt">
+                  <span class="indice-title">El lenguaje de las estampas</span>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="indice-group" data-reveal data-reveal-delay="2">
+          <h3 class="kicker indice-group-title">Parte III — La prenda</h3>
+          <ul class="indice-list">
+            <li>
+              <a class="indice-link" href="#prendas-autoridad">
+                <span class="indice-num" aria-hidden="true">·</span>
+                <span class="indice-txt">
+                  <span class="indice-title">Prendas de autoridad</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="indice-link" href="#prendas-conexion">
+                <span class="indice-num" aria-hidden="true">·</span>
+                <span class="indice-txt">
+                  <span class="indice-title">Prendas de conexión</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="indice-link" href="#arquetipos">
+                <span class="indice-num" aria-hidden="true">·</span>
+                <span class="indice-txt">
+                  <span class="indice-title">Tus arquetipos de estilo</span>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="indice-group" data-reveal data-reveal-delay="1">
+          <h3 class="kicker indice-group-title">Parte IV — Los accesorios</h3>
+          <ul class="indice-list">
+            <li>
+              <a class="indice-link" href="#accesorios">
+                <span class="indice-num" aria-hidden="true">·</span>
+                <span class="indice-txt">
+                  <span class="indice-title">Aro · Collar · Brazalete · Lente</span>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+        <div class="indice-group" data-reveal data-reveal-delay="2">
+          <h3 class="kicker indice-group-title">Cierre</h3>
+          <ul class="indice-list">
+            <li>
+              <a class="indice-link" href="#cierre-construir">
+                <span class="indice-num" aria-hidden="true">·</span>
+                <span class="indice-txt">
+                  <span class="indice-title">Construir tu capital</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="indice-link" href="#espejo">
+                <span class="indice-num" aria-hidden="true">·</span>
+                <span class="indice-txt">
+                  <span class="indice-title">El espejo</span>
+                </span>
+              </a>
+            </li>
+            <li>
+              <a class="indice-link" href="#final">
+                <span class="indice-num" aria-hidden="true">·</span>
+                <span class="indice-txt">
+                  <span class="indice-title">La asesoría 1 a 1</span>
+                  <span class="indice-sub">El siguiente paso</span>
+                </span>
+              </a>
+            </li>
+          </ul>
+        </div>
+
+      </div>
+    </nav>
+  </div>
+</section>
+
+<!-- == 02-fundamentos.html == -->
+<style>
+  /* ============ FUNDAMENTOS — I ============ */
+  #fundamentos-1 .f1-head{display:flex;align-items:flex-end;justify-content:space-between;gap:32px;margin-bottom:clamp(36px,6vh,64px)}
+  #fundamentos-1 .f1-head .display{margin-top:14px}
+  #fundamentos-1 .f1-running{font:600 10px/1.8 "Montserrat",sans-serif;letter-spacing:.22em;text-transform:uppercase;color:var(--brown);text-align:right;opacity:.75;flex:none}
+  @media (max-width:900px){#fundamentos-1 .f1-running{display:none}}
+  #fundamentos-1 .f1-cols{position:relative}
+  @media (min-width:1000px){
+    #fundamentos-1 .f1-cols::before{content:"";position:absolute;left:50%;top:8px;bottom:8px;width:1px;background:var(--line)}
+  }
+  #fundamentos-1 .prose p + p{margin-top:1.15em}
+  #fundamentos-1 .prose strong{font-weight:600;color:var(--ink)}
+  #fundamentos-1 .prose em{font-family:"Fraunces",serif;font-style:italic;font-size:1.04em}
+  #fundamentos-1 .pagenum{display:block;text-align:right;margin-top:clamp(32px,6vh,56px)}
+
+  /* ============ FUNDAMENTOS — II ============ */
+  #fundamentos-2 .f2-head{margin-bottom:clamp(32px,5vh,56px)}
+  #fundamentos-2 .f2-head .display{margin-top:14px}
+  #fundamentos-2 .f2-body{display:grid;grid-template-columns:1.05fr .95fr;gap:clamp(32px,5vw,72px);align-items:start}
+  @media (max-width:860px){#fundamentos-2 .f2-body{grid-template-columns:1fr;gap:36px}}
+  #fundamentos-2 .f2-lede{color:var(--brown);max-width:26ch}
+  #fundamentos-2 .f2-text{margin-top:28px}
+  #fundamentos-2 .f2-lines{display:grid;gap:36px;margin:12px 0 44px}
+  #fundamentos-2 .f2-lines span{display:block;height:1px;background:var(--line)}
+  @media (max-width:860px){#fundamentos-2 .f2-lines{display:none}}
+  #fundamentos-2 .f2-rule-text{font-family:"Fraunces",serif;font-style:italic;font-size:1.06rem;line-height:1.7;color:var(--ink);margin-top:10px}
+  #fundamentos-2 .f2-rule-text strong{font-weight:600}
+  #fundamentos-2 .pagenum{display:block;text-align:right;margin-top:clamp(32px,6vh,56px)}
+
+  /* ============ TRES PREGUNTAS ============ */
+  #tres-preguntas .tp-head{text-align:center;margin-bottom:clamp(40px,7vh,72px)}
+  #tres-preguntas .tp-title{font-family:"Gloock",serif;font-weight:400;font-size:clamp(2rem,4.4vw,3.2rem);line-height:1.1;letter-spacing:.08em;text-transform:uppercase;color:var(--paper-dark)}
+  #tres-preguntas .tp-sub{font-family:"Fraunces",serif;font-style:italic;font-size:clamp(1rem,1.8vw,1.2rem);color:var(--gold-soft);margin-top:14px}
+  #tres-preguntas .tp-list{list-style:none;margin:0 auto;padding:0;max-width:820px}
+  #tres-preguntas .tp-list li{display:grid;grid-template-columns:88px 1fr;gap:clamp(18px,3vw,36px);align-items:start;padding:clamp(26px,4.5vh,42px) 0;border-top:1px solid var(--line-dark)}
+  #tres-preguntas .tp-list li:last-child{border-bottom:1px solid var(--line-dark)}
+  #tres-preguntas .tp-num{font-family:"Fraunces",serif;font-style:italic;font-weight:300;font-size:clamp(1.9rem,3.6vw,2.8rem);line-height:1;color:var(--gold-soft);padding-top:5px}
+  #tres-preguntas .tp-q{font-family:"Gloock",serif;font-weight:400;font-size:clamp(1.35rem,2.8vw,2rem);line-height:1.22;color:var(--paper-dark);margin:0}
+  #tres-preguntas .tp-a{margin-top:12px;font:400 15px/1.75 "Montserrat",sans-serif;color:rgba(237,230,218,.78);max-width:52ch}
+  #tres-preguntas .tp-tag{font:600 11px/1 "Montserrat",sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-soft);margin-right:10px;white-space:nowrap}
+  @media (max-width:640px){
+    #tres-preguntas .tp-list li{grid-template-columns:1fr;gap:10px}
+    #tres-preguntas .tp-num{font-size:1.6rem;padding-top:0}
+  }
+  #tres-preguntas .star-sep{margin:clamp(48px,8vh,80px) auto clamp(36px,6vh,56px)}
+
+  /* --- Widget: La Brújula --- */
+  #tres-preguntas .tp-widget{max-width:820px;margin:0 auto;background:var(--dark-2);border:1px solid var(--line-dark);padding:clamp(28px,4.5vw,48px)}
+  #tres-preguntas .tp-widget-title{font-family:"Gloock",serif;font-weight:400;font-size:clamp(1.5rem,3vw,2.1rem);line-height:1.15;color:var(--paper-dark);margin-top:12px}
+  #tres-preguntas .tp-widget-intro{margin-top:12px;font:400 14.5px/1.7 "Montserrat",sans-serif;color:rgba(237,230,218,.72);max-width:48ch}
+  #tres-preguntas .tp-goals{display:flex;flex-wrap:wrap;gap:10px;margin-top:26px}
+  #tres-preguntas .tp-goal{appearance:none;display:inline-flex;align-items:center;gap:9px;background:transparent;border:1px solid var(--line-dark);border-radius:999px;padding:14px 18px;min-height:44px;color:rgba(237,230,218,.85);font:600 11.5px/1 "Montserrat",sans-serif;letter-spacing:.16em;text-transform:uppercase;cursor:pointer;transition:border-color .25s ease,color .25s ease,background-color .25s ease}
+  #tres-preguntas .tp-goal:hover{border-color:var(--gold-soft);color:var(--paper-dark)}
+  #tres-preguntas .tp-goal:focus-visible{outline:2px solid var(--gold-soft);outline-offset:3px}
+  #tres-preguntas .tp-goal[aria-pressed="true"]{border-color:var(--gold);background:rgba(184,134,47,.12);color:var(--gold-soft)}
+  #tres-preguntas .tp-dot{width:10px;height:10px;border-radius:50%;background:var(--dot,var(--paper-dark));box-shadow:0 0 0 1px rgba(237,230,218,.28);flex:none}
+  #tres-preguntas .tp-result{display:grid;grid-template-columns:112px 1fr;gap:clamp(20px,3.5vw,36px);margin-top:30px;padding:clamp(20px,3vw,32px);border:1px solid var(--line-dark);transition:opacity .25s ease,transform .25s ease}
+  #tres-preguntas .tp-result.is-swap{opacity:0;transform:translateY(10px)}
+  #tres-preguntas .tp-swatch{border-radius:2px;min-height:180px;background:linear-gradient(180deg,var(--c-negro) 0%,#0B0705 140%)}
+  #tres-preguntas .tp-choice{font-family:"Fraunces",serif;font-style:italic;font-size:1.4rem;color:var(--gold-soft);margin:0 0 14px}
+  #tres-preguntas .tp-dl{margin:0}
+  #tres-preguntas .tp-dl > div{display:grid;grid-template-columns:100px 1fr;gap:14px;align-items:baseline;padding:12px 0;border-top:1px solid var(--line-dark)}
+  #tres-preguntas .tp-dl dt{font:600 10.5px/1.6 "Montserrat",sans-serif;letter-spacing:.2em;text-transform:uppercase;color:var(--gold-soft)}
+  #tres-preguntas .tp-dl dd{margin:0;font:400 15px/1.65 "Montserrat",sans-serif;color:var(--paper-dark)}
+  @media (max-width:620px){
+    #tres-preguntas .tp-result{grid-template-columns:1fr}
+    #tres-preguntas .tp-swatch{min-height:56px}
+    #tres-preguntas .tp-dl > div{grid-template-columns:1fr;gap:4px;padding:10px 0}
+  }
+  #tres-preguntas .tp-widget-close{margin-top:26px;font-family:"Fraunces",serif;font-style:italic;font-size:1.02rem;color:rgba(237,230,218,.7);text-align:center}
+  #tres-preguntas .pagenum{display:block;text-align:right;margin-top:clamp(32px,6vh,56px);color:var(--gold-soft);opacity:.55}
+  @media (prefers-reduced-motion:reduce){
+    #tres-preguntas .tp-goal,
+    #tres-preguntas .tp-result{transition:none}
+  }
+</style>
+
+<!-- ============ FUNDAMENTOS — I · Vestirnos nos anuncia (PDF pág 4) ============ -->
+<section class="chapter" id="fundamentos-1">
+  <div class="wrap">
+    <header class="f1-head" data-reveal>
+      <div>
+        <p class="kicker">Fundamentos — I</p>
+        <h2 class="display">Vestirnos nos anuncia</h2>
+      </div>
+      <p class="f1-running" aria-hidden="true">Capital de Esencia Visual<br>Somos Esencia · TC.</p>
+    </header>
+
+    <div class="grid-2 f1-cols">
+      <div class="prose" data-reveal data-reveal-delay="1">
+        <p>La primera impresión se forma en siete segundos y recién puede modificarse después de veinte encuentros; pero hay futuros clientes que vemos una sola vez —o dos, con suerte. Casi toda ocurre por vía <strong>óptica</strong>: antes de tu voz, tu currículum o tu apretón de manos, ya comunicaste con tu imagen. <strong>Vestirse es, entonces, el primer acto de comunicación del día.</strong></p>
+        <p>La mayoría lo hace en automático. Este manual propone lo contrario: vestir con <strong>estrategia</strong>. No para seguir tendencias, sino para que lo que llevás puesto <strong>comunique</strong> —exactamente— lo que vos querés decir.</p>
+      </div>
+      <div class="prose" data-reveal data-reveal-delay="2">
+        <p>Vas a aprender un vocabulario de cuatro palabras: <strong>color, estampa, prenda y accesorio</strong>. Cada una carga un significado. Combinadas con intención, se vuelven una frase; combinadas al azar, ruido.</p>
+        <p>Al terminar, vas a poder abrir tu placard y leerlo como un idioma: elegir el mensaje antes de elegir la prenda. Esa es la diferencia entre <em>estar vestida</em> y <em>estar comunicando</em>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FUNDAMENTOS — II · La esencia primero (PDF pág 5) ============ -->
+<section class="chapter" id="fundamentos-2">
+  <div class="wrap">
+    <header class="f2-head" data-reveal>
+      <p class="kicker">Fundamentos — II</p>
+      <h2 class="display">La esencia primero</h2>
+    </header>
+
+    <div class="f2-body">
+      <div data-reveal data-reveal-delay="1">
+        <p class="lede f2-lede">La técnica sin esencia es disfraz. Cuando la ropa y la persona dicen lo mismo, empieza la conexión.</p>
+        <p class="prose f2-text">Ningún color ni ninguna prenda funciona si no parte de vos. Antes de mirar el espejo, respondé tres preguntas. Son la brújula de todo lo que sigue.</p>
+      </div>
+
+      <div data-reveal data-reveal-delay="2">
+        <div class="f2-lines" aria-hidden="true"><span></span><span></span><span></span></div>
+        <aside class="rule-card">
+          <p class="kicker">La regla de oro</p>
+          <p class="f2-rule-text">No alcanza con ponerte la prenda: tenés que <strong>habitarla</strong>. Sentirte parte, cómoda. Una prenda que no te representa se nota —te usa ella a vos.</p>
+        </aside>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ TRES PREGUNTAS + LA BRÚJULA (PDF pág 6) ============ -->
+<section class="chapter chapter--dark" id="tres-preguntas">
+  <div class="wrap">
+    <header class="tp-head" data-reveal>
+      <h2 class="tp-title">Tres preguntas</h2>
+      <p class="tp-sub">El qué, el dónde y el cómo del vestir</p>
+    </header>
+
+    <ol class="tp-list">
+      <li data-reveal data-reveal-delay="1">
+        <span class="tp-num" aria-hidden="true">01</span>
+        <div>
+          <h3 class="tp-q">¿Qué quiero comunicar hoy?</h3>
+          <p class="tp-a"><span class="tp-tag">El objetivo.</span> Poder, cercanía, confianza, creatividad, calma.</p>
+        </div>
+      </li>
+      <li data-reveal data-reveal-delay="2">
+        <span class="tp-num" aria-hidden="true">02</span>
+        <div>
+          <h3 class="tp-q">¿A dónde voy y con quién?</h3>
+          <p class="tp-a"><span class="tp-tag">El contexto.</span> La misma esencia se traduce distinto en cada escenario.</p>
+        </div>
+      </li>
+      <li data-reveal data-reveal-delay="3">
+        <span class="tp-num" aria-hidden="true">03</span>
+        <div>
+          <h3 class="tp-q">¿Cómo quiero que me recuerden?</h3>
+          <p class="tp-a"><span class="tp-tag">La huella.</span> La imagen que queda cuando ya no estás en la sala.</p>
+        </div>
+      </li>
+    </ol>
+
+    <div class="star-sep" aria-hidden="true" data-reveal>✦</div>
+
+    <div class="tp-widget" data-reveal>
+      <header>
+        <p class="kicker">La brújula</p>
+        <h3 class="tp-widget-title">Elegí tu objetivo de hoy</h3>
+        <p class="tp-widget-intro">Un adelanto del método: tocá un objetivo y mirá cómo se arma la frase completa.</p>
+      </header>
+
+      <div class="tp-goals" role="group" aria-label="¿Qué querés comunicar hoy?">
+        <button type="button" class="tp-goal" data-goal="poder" aria-pressed="true"><span class="tp-dot" style="--dot:var(--c-negro)" aria-hidden="true"></span>Poder</button>
+        <button type="button" class="tp-goal" data-goal="cercania" aria-pressed="false"><span class="tp-dot" style="--dot:var(--c-rosa)" aria-hidden="true"></span>Cercanía</button>
+        <button type="button" class="tp-goal" data-goal="confianza" aria-pressed="false"><span class="tp-dot" style="--dot:var(--c-azul)" aria-hidden="true"></span>Confianza</button>
+        <button type="button" class="tp-goal" data-goal="creatividad" aria-pressed="false"><span class="tp-dot" style="--dot:var(--c-mostaza)" aria-hidden="true"></span>Creatividad</button>
+        <button type="button" class="tp-goal" data-goal="calma" aria-pressed="false"><span class="tp-dot" style="--dot:var(--c-verde)" aria-hidden="true"></span>Calma</button>
+      </div>
+
+      <div class="tp-result" aria-live="polite">
+        <div class="tp-swatch" aria-hidden="true"></div>
+        <div>
+          <p class="tp-choice">Poder</p>
+          <dl class="tp-dl">
+            <div><dt>Color</dt><dd data-line="color">Negro o navy</dd></div>
+            <div><dt>Prenda</dt><dd data-line="prenda">Blazer estructurado + pantalón sastre</dd></div>
+            <div><dt>Estampa</dt><dd data-line="estampa">Lisa, o raya fina vertical</dd></div>
+            <div><dt>Accesorio</dt><dd data-line="accesorio">Metal geométrico; muñeca con presencia</dd></div>
+          </dl>
+        </div>
+      </div>
+
+      <p class="tp-widget-close">La fórmula completa vive en las próximas cuatro partes.</p>
+    </div>
+  </div>
+</section>
+
+<script>
+(function(){
+  var section = document.getElementById('tres-preguntas');
+  if(!section) return;
+  var buttons = section.querySelectorAll('.tp-goal');
+  var card = section.querySelector('.tp-result');
+  if(!buttons.length || !card) return;
+
+  var swatch = card.querySelector('.tp-swatch');
+  var choice = card.querySelector('.tp-choice');
+  var lines = {
+    color: card.querySelector('[data-line="color"]'),
+    prenda: card.querySelector('[data-line="prenda"]'),
+    estampa: card.querySelector('[data-line="estampa"]'),
+    accesorio: card.querySelector('[data-line="accesorio"]')
+  };
+
+  var DATA = {
+    poder: {
+      nombre: 'Poder', token: '--c-negro',
+      color: 'Negro o navy',
+      prenda: 'Blazer estructurado + pantalón sastre',
+      estampa: 'Lisa, o raya fina vertical',
+      accesorio: 'Metal geométrico; muñeca con presencia'
+    },
+    cercania: {
+      nombre: 'Cercanía', token: '--c-rosa',
+      color: 'Rosas & nudes, tierra',
+      prenda: 'Punto suave, silueta fluida',
+      estampa: 'Floral de escala chica',
+      accesorio: 'Argolla clásica, texturas orgánicas'
+    },
+    confianza: {
+      nombre: 'Confianza', token: '--c-azul',
+      color: 'Azul navy + blanco o camel',
+      prenda: 'Camisa impecable o columna monocromática',
+      estampa: 'Cuadro fino, discreto',
+      accesorio: 'Reloj + pulsera fina'
+    },
+    creatividad: {
+      nombre: 'Creatividad', token: '--c-mostaza',
+      color: 'Mostaza, verde o un acento rojo',
+      prenda: 'Mezcla con riesgo medido',
+      estampa: 'Geométricos · rombos',
+      accesorio: 'Lente maximalista o aro statement'
+    },
+    calma: {
+      nombre: 'Calma', token: '--c-verde',
+      color: 'Verde, beige y crema',
+      prenda: 'Línea A, caída limpia',
+      estampa: 'Botánicos suaves',
+      accesorio: 'Perla o gota'
+    }
+  };
+
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var current = 'poder';
+  var timer = null;
+
+  function paint(key){
+    var d = DATA[key];
+    if(!d) return;
+    if(swatch) swatch.style.background = 'linear-gradient(180deg, var(' + d.token + ') 0%, #0B0705 140%)';
+    if(choice) choice.textContent = d.nombre;
+    for(var k in lines){
+      if(lines[k] && d[k]) lines[k].textContent = d[k];
+    }
+  }
+
+  Array.prototype.forEach.call(buttons, function(btn){
+    btn.addEventListener('click', function(){
+      var key = btn.getAttribute('data-goal');
+      if(!DATA[key]) return;
+      Array.prototype.forEach.call(buttons, function(b){
+        b.setAttribute('aria-pressed', b === btn ? 'true' : 'false');
+      });
+      if(key === current) return;
+      current = key;
+      if(reduce){
+        paint(key);
+        return;
+      }
+      card.classList.add('is-swap');
+      if(timer) clearTimeout(timer);
+      timer = setTimeout(function(){
+        paint(key);
+        card.classList.remove('is-swap');
+      }, 230);
+    });
+  });
+})();
+</script>
+
+<!-- == 03-colores.html == -->
+<style>
+  /* ============ PARTE I — portadilla ============ */
+  #parte-1 .wrap{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+    min-height:min(78vh, 680px);
+  }
+  #parte-1 .p1-rule{
+    width:76px;
+    height:1px;
+    background:var(--gold-soft);
+    opacity:.75;
+    margin:30px 0 26px;
+  }
+  #parte-1 .lede{
+    max-width:34em;
+  }
+  #parte-1 .p1-ticks{
+    display:flex;
+    gap:10px;
+    margin-top:44px;
+  }
+  #parte-1 .p1-ticks span{
+    width:13px;
+    height:13px;
+    background:var(--t);
+    border:1px solid rgba(237,230,218,.28);
+  }
+  #parte-1 .kicker{ margin:0 0 10px; }
+  #parte-1 .display{ margin:0; }
+
+  /* ============ COLORES — intro ============ */
+  #colores .wrap > .kicker{ margin:0 0 10px; }
+  #colores .wrap > .display{ margin:0; }
+  #colores .psy-grid{
+    display:grid;
+    grid-template-columns:1fr 1fr;
+    gap:clamp(28px, 4vw, 56px);
+    margin-top:clamp(28px, 4vh, 44px);
+  }
+  #colores .psy-grid .prose{ max-width:56ch; }
+  #colores .psy-grid > .prose > p{ margin:0 0 1.2em; }
+  #colores .psy-grid > .prose > p:last-child{ margin-bottom:0; }
+  #colores .psy-pull{
+    display:block;
+    margin-top:.65em;
+    font-family:"Fraunces", Georgia, serif;
+    font-style:italic;
+    font-weight:400;
+    font-size:1.18em;
+    line-height:1.4;
+    color:var(--brown);
+  }
+
+  /* card regla 60·30·10 */
+  #colores .rule6030{
+    background:var(--cream-2);
+    border:1px solid var(--line);
+    border-left:3px solid var(--gold);
+    padding:clamp(24px, 3vw, 34px);
+    margin-top:26px;
+  }
+  #colores .rule6030 .kicker{ margin:0 0 10px; }
+  #colores .rule6030-title{
+    font-family:"Fraunces", Georgia, serif;
+    font-style:italic;
+    font-weight:500;
+    font-size:clamp(1.35rem, 2vw, 1.6rem);
+    line-height:1.2;
+    color:var(--ink);
+    margin:0 0 12px;
+  }
+  #colores .rule6030-text{
+    font-size:.95rem;
+    line-height:1.7;
+    color:var(--ink-soft);
+    margin:0 0 22px;
+  }
+  #colores .rule6030-bar{
+    display:grid;
+    grid-template-columns:60fr 30fr 10fr;
+    height:46px;
+  }
+  #colores .rule6030-bar span{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    font-family:"Montserrat", system-ui, sans-serif;
+    font-weight:600;
+    font-size:.72rem;
+    letter-spacing:.14em;
+  }
+  #colores .seg-60{ background:var(--c-camel);  color:#FBF6EC; }
+  #colores .seg-30{ background:var(--c-negro);  color:var(--paper-dark); }
+  #colores .seg-10{ background:var(--gold);     color:#1A1206; }
+  #colores .rule6030-legend{
+    display:flex;
+    flex-wrap:wrap;
+    gap:10px 22px;
+    margin:14px 0 0;
+    padding:0;
+  }
+  #colores .rule6030-legend li{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    list-style:none;
+    font-family:"Montserrat", system-ui, sans-serif;
+    font-weight:600;
+    font-size:.64rem;
+    letter-spacing:.18em;
+    text-transform:uppercase;
+    color:var(--ink-soft);
+  }
+  #colores .rule6030-legend i{
+    width:10px; height:10px; flex:none;
+    background:var(--dot);
+    border:1px solid var(--line);
+  }
+  #colores .intro-sep{ margin-top:clamp(36px, 6vh, 56px); }
+
+  /* ============ COLORES — spreads ============ */
+  #colores .spread{
+    display:grid;
+    grid-template-columns:minmax(0, 1.25fr) minmax(300px, .9fr);
+    border-top:1px solid var(--line);
+    min-height:580px;
+  }
+  #colores .spread--flip{
+    grid-template-columns:minmax(300px, .9fr) minmax(0, 1.25fr);
+  }
+  #colores .spread--flip .spread-swatch{ order:-1; }
+  #colores .spread:last-of-type{ border-bottom:1px solid var(--line); }
+
+  #colores .spread-text{
+    align-self:center;
+    max-width:640px;
+    margin-inline:auto;
+    padding:clamp(48px, 7vh, 84px) clamp(24px, 5vw, 72px);
+  }
+  #colores .spread-head .kicker{ margin:0 0 10px; }
+  #colores .spread-head .display{
+    font-size:clamp(2.3rem, 4.2vw, 3.4rem);
+    margin:0;
+  }
+  #colores .spread-head .tag-row{ margin:14px 0 0; }
+  #colores .spread-lede{
+    font-family:"Fraunces", Georgia, serif;
+    font-style:italic;
+    font-weight:400;
+    font-size:1.08rem;
+    line-height:1.5;
+    color:var(--brown);
+    margin:22px 0 0;
+    max-width:38em;
+  }
+  #colores .spread-block{ margin-top:26px; }
+  #colores .spread-block h4.kicker{
+    font-size:.68rem;
+    margin:0 0 8px;
+  }
+  #colores .spread-block p{
+    font-size:.95rem;
+    line-height:1.75;
+    color:var(--ink);
+    margin:0;
+    max-width:58ch;
+  }
+  #colores .spread-block strong{ font-weight:600; }
+
+  /* columna swatch */
+  #colores .spread-swatch{
+    display:flex;
+    flex-direction:column;
+    justify-content:space-between;
+    background:var(--panel);
+    color:var(--panel-ink);
+    padding:clamp(24px, 3vw, 40px);
+  }
+  #colores .spread-num{
+    align-self:flex-start;
+    font-family:"Fraunces", Georgia, serif;
+    font-style:italic;
+    font-weight:400;
+    font-size:clamp(1.3rem, 2vw, 1.6rem);
+    line-height:1;
+  }
+  #colores .spread--blanco .spread-swatch{ border-inline:1px solid var(--line); }
+  #colores .spread .hex-chip{
+    align-self:flex-start;
+    color:var(--panel-ink);
+    border-color:currentColor;
+    border-color:color-mix(in srgb, currentColor 45%, transparent);
+  }
+  #colores .spread .hex-chip:hover{
+    color:var(--panel-hover, var(--panel-ink));
+    border-color:currentColor;
+  }
+  #colores .hex-chip:focus-visible{
+    outline:2px solid var(--gold);
+    outline-offset:3px;
+  }
+
+  /* paletas por spread */
+  #colores .spread--negro { --panel:#1A1714; --panel-ink:#EDE6DA; --panel-hover:#C9A15C; }
+  #colores .spread--negro .spread-num{ color:var(--gold-soft); }
+  #colores .spread--blanco{ --panel:#F6F2EB; --panel-ink:#4A4139; --panel-hover:#7A5A44;
+                            --sw-top:#FFFFFF; --sw-mid:#A99F8E; }
+  #colores .spread--camel { --panel:#A9805A; --panel-ink:#2A1B0C;
+                            --sw-top:#C89A5F; --sw-mid:#6E4526; }
+  #colores .spread--rojo  { --panel:#8E2C2C; --panel-ink:#F6EAE1;
+                            --sw-top:#C93A2C; --sw-mid:#6E1D1B; }
+  #colores .spread--azul  { --panel:#2E4257; --panel-ink:#E9EDF2;
+                            --sw-top:#3D66CE; --sw-mid:#1C3157; }
+  #colores .spread--verde { --panel:#3F5347; --panel-ink:#E9EFE7;
+                            --sw-top:#A6CC96; --sw-mid:#40593F; }
+  #colores .spread--rosa  { --panel:#DBB1AA; --panel-ink:#33191B;
+                            --sw-top:#F4E3E4; --sw-mid:#C0529C; }
+  #colores .spread--dorado{ --panel:#B8862F; --panel-ink:#241A05;
+                            --sw-top:#E8C97E; --sw-mid:#8A6420; }
+
+  /* ============ responsive ============ */
+  @media (max-width: 980px){
+    #colores .spread,
+    #colores .spread--flip{
+      grid-template-columns:1fr;
+      min-height:0;
+    }
+    #colores .spread-swatch{
+      order:-1;
+      flex-direction:row;
+      align-items:center;
+      min-height:120px;
+      padding:clamp(18px, 4vw, 28px) clamp(20px, 5vw, 40px);
+    }
+    #colores .spread-num{ align-self:center; }
+    #colores .spread .hex-chip{ align-self:center; }
+    #colores .spread--blanco .spread-swatch{
+      border-inline:0;
+      border-bottom:1px solid var(--line);
+    }
+    #colores .spread--negro .spread-swatch{ min-height:120px; }
+    #colores .spread-text{
+      padding:clamp(36px, 6vh, 56px) clamp(20px, 5vw, 40px);
+    }
+  }
+  @media (max-width: 760px){
+    #colores .psy-grid{ grid-template-columns:1fr; }
+  }
+
+</style>
+
+<!-- ==================== PARTE I · portadilla ==================== -->
+<section class="chapter chapter--dark" id="parte-1">
+  <div class="wrap">
+    <p class="kicker" data-reveal>Parte I</p>
+    <h2 class="display" data-reveal data-reveal-delay="1">El lenguaje<br>de los colores</h2>
+    <div class="p1-rule" aria-hidden="true"></div>
+    <p class="lede" data-reveal data-reveal-delay="2">El color comunica antes que la forma, y mucho antes que la palabra. Es lo primero que ve el ojo y lo primero que siente quien te mira.</p>
+    <div class="p1-ticks" aria-hidden="true" data-reveal data-reveal-delay="3">
+      <span style="--t:#1A1714"></span><span style="--t:#F4F0E8"></span><span style="--t:#A9805A"></span><span style="--t:#8E2C2C"></span><span style="--t:#2E4257"></span><span style="--t:#3F5347"></span><span style="--t:#DBB1AA"></span><span style="--t:#B8862F"></span>
+    </div>
+  </div>
+</section>
+
+<!-- ==================== COLORES · psicología + 8 spreads ==================== -->
+<section class="chapter" id="colores">
+  <div class="wrap">
+    <p class="kicker" data-reveal>Parte I — El color</p>
+    <h2 class="display" data-reveal data-reveal-delay="1">La psicología del color</h2>
+
+    <div class="psy-grid">
+      <div class="prose" data-reveal data-reveal-delay="1">
+        <p>El color se percibe a distancia, antes que el corte o la tela, y provoca una reacción emocional inmediata e involuntaria. <em class="psy-pull">Por eso es la herramienta más poderosa de tu imagen.</em></p>
+        <p>Actúa en dos capas. Una <strong>universal y biológica</strong>: el rojo acelera, el azul calma, el negro concentra. Otra <strong>simbólica y cultural</strong>: cada tono acumuló siglos de significado —luto, realeza, pureza, poder.</p>
+      </div>
+      <div class="prose" data-reveal data-reveal-delay="2">
+        <p><strong>Dominar el color es dominar la primera impresión.</strong> No se trata de tener muchos, sino de usar el correcto para cada objetivo.</p>
+        <aside class="rule6030" data-reveal data-reveal-delay="3">
+          <p class="kicker">Una guía de composición</p>
+          <p class="rule6030-title">La regla 60·30·10</p>
+          <p class="rule6030-text">Un color base ocupa el 60% del look, uno secundario el 30% y un acento el 10%. El acento es el que grita; los demás sostienen.</p>
+          <div class="rule6030-bar" role="img" aria-label="Proporciones de un look: 60 por ciento el color base, 30 por ciento el secundario, 10 por ciento el acento">
+            <span class="seg-60">60</span><span class="seg-30">30</span><span class="seg-10">10</span>
+          </div>
+          <ul class="rule6030-legend" aria-hidden="true">
+            <li><i style="--dot:#A9805A"></i>Base</li>
+            <li><i style="--dot:#1A1714"></i>Secundario</li>
+            <li><i style="--dot:#B8862F"></i>Acento</li>
+          </ul>
+        </aside>
+      </div>
+    </div>
+
+    <div class="star-sep intro-sep" aria-hidden="true">✦</div>
+  </div>
+
+  <!-- 01 · NEGRO — swatch derecha, panel negro pleno -->
+  <article class="spread spread--negro">
+    <div class="spread-text">
+      <header class="spread-head" data-reveal>
+        <p class="kicker">Color — Autoridad</p>
+        <h3 class="display">Negro</h3>
+        <p class="tag-row">Poder · sofisticación · misterio · límite</p>
+      </header>
+      <div class="spread-block" data-reveal data-reveal-delay="1">
+        <h4 class="kicker">Comunica</h4>
+        <p>Es el color del control. Reduce el ruido visual, concentra la atención en tu rostro y en tus palabras, ordena y marca jerarquía. Marca una distancia.</p>
+      </div>
+      <div class="spread-block" data-reveal data-reveal-delay="2">
+        <h4 class="kicker">Usalo cuando</h4>
+        <p>Quieras imponer respeto, cerrar un acuerdo o marcar autoridad —acompañalo de azul marino, verde inglés, marrón o gris—, o cuando necesites desaparecer para que hable tu mensaje: el negro te mantiene neutral y te hace pasar desapercibida en un grupo grande, porque todos van vestidos de negro.</p>
+      </div>
+      <div class="spread-block" data-reveal data-reveal-delay="3">
+        <h4 class="kicker">Cuidá que</h4>
+        <p>En exceso puede leerse frío o inaccesible. Rompelo con una textura, una piel a la vista o un metal cálido.</p>
+      </div>
+    </div>
+    <div class="spread-swatch" data-reveal>
+      <span class="spread-num" aria-hidden="true">01</span>
+      <button type="button" class="hex-chip" data-copy="#1A1714" aria-label="Copiar #1A1714">#1A1714</button>
+    </div>
+  </article>
+
+  <!-- 02 · BLANCO — swatch izquierda -->
+  <article class="spread spread--flip spread--blanco">
+    <div class="spread-text">
+      <header class="spread-head" data-reveal>
+        <p class="kicker">Color — Claridad</p>
+        <h3 class="display">Blanco</h3>
+        <p class="tag-row">Pulcritud · orden · honestidad · frescura</p>
+      </header>
+      <div class="spread-block" data-reveal data-reveal-delay="1">
+        <h4 class="kicker">Comunica</h4>
+        <p>Dice “no tengo nada que esconder”. Proyecta claridad y templanza.</p>
+      </div>
+      <div class="spread-block" data-reveal data-reveal-delay="2">
+        <h4 class="kicker">Usalo cuando</h4>
+        <p>Busques honestidad, verte tranquila, relajada y limpia; un nuevo comienzo, frescura, o el <em>quiet luxury</em> de lo impecable y sin logo.</p>
+      </div>
+      <div class="spread-block" data-reveal data-reveal-delay="3">
+        <h4 class="kicker">Cuidá que</h4>
+        <p>El blanco marfil puede verse frío y calculador; el crudo y los blancos que tiran a beige transmiten más calidez y cercanía. Si buscás autoridad y calidez a la vez, combinalo con marrón, camel y verde pistacho. Si buscás posicionarte con elegancia, combinalo con gris, azul navy o verde inglés.</p>
+      </div>
+    </div>
+    <div class="spread-swatch" data-reveal>
+      <span class="spread-num" aria-hidden="true">02</span>
+      <button type="button" class="hex-chip" data-copy="#F4F0E8" aria-label="Copiar #F4F0E8">#F4F0E8</button>
+    </div>
+  </article>
+
+  <!-- 03 · TIERRA & CAMEL — swatch derecha -->
+  <article class="spread spread--camel">
+    <div class="spread-text">
+      <header class="spread-head" data-reveal>
+        <p class="kicker">Color — Cercanía sólida</p>
+        <h3 class="display">Tierra &amp; camel</h3>
+        <p class="tag-row">Calma · naturalidad · solidez · calidez · “old money”</p>
+      </header>
+      <p class="spread-lede" data-reveal data-reveal-delay="1">Los tonos tierra son la confianza serena: no gritan, permanecen.</p>
+      <div class="spread-block" data-reveal data-reveal-delay="1">
+        <h4 class="kicker">Comunica</h4>
+        <p>Remiten a lo orgánico y a lo hecho para durar. Transmiten dinero sin esfuerzo y accesibilidad a la vez.</p>
+      </div>
+      <div class="spread-block" data-reveal data-reveal-delay="2">
+        <h4 class="kicker">Usalo cuando</h4>
+        <p>Quieras generar confianza, verte sofisticada pero aproximable, o construir un fondo de armario atemporal.</p>
+      </div>
+      <div class="spread-block" data-reveal data-reveal-delay="3">
+        <h4 class="kicker">Va con</h4>
+        <p>Crema, chocolate, crudo y navy. La paleta del lujo discreto.</p>
+      </div>
+    </div>
+    <div class="spread-swatch" data-reveal>
+      <span class="spread-num" aria-hidden="true">03</span>
+      <button type="button" class="hex-chip" data-copy="#A9805A" aria-label="Copiar #A9805A">#A9805A</button>
+    </div>
+  </article>
+
+  <!-- 04 · ROJO — swatch izquierda -->
+  <article class="spread spread--flip spread--rojo">
+    <div class="spread-text">
+      <header class="spread-head" data-reveal>
+        <p class="kicker">Color — Presencia</p>
+        <h3 class="display">Rojo</h3>
+        <p class="tag-row">Deseo · coraje · energía · urgencia</p>
+      </header>
+      <div class="spread-block" data-reveal data-reveal-delay="1">
+        <h4 class="kicker">Comunica</h4>
+        <p>El rojo no pide permiso. Acelera el pulso de quien lo mira, atrae la mirada y marca territorio. Es pasión y poder en el mismo tono.</p>
+      </div>
+      <div class="spread-block" data-reveal data-reveal-delay="2">
+        <h4 class="kicker">Usalo cuando</h4>
+        <p>Quieras ser vista y recordada, liderar una sala o transmitir seguridad total. Un solo punto rojo —un zapato— cambia todo el look. Usalo estratégicamente en una cita: el rojo remite a la pasión y al encuentro carnal; ubicado en lugares estratégicos, se vuelve seductor.</p>
+      </div>
+      <div class="spread-block" data-reveal data-reveal-delay="3">
+        <h4 class="kicker">Cuidá que</h4>
+        <p>Dosificalo. En exceso puede leerse agresivo; como acento es magnetismo puro: captura la atención.</p>
+      </div>
+    </div>
+    <div class="spread-swatch" data-reveal>
+      <span class="spread-num" aria-hidden="true">04</span>
+      <button type="button" class="hex-chip" data-copy="#8E2C2C" aria-label="Copiar #8E2C2C">#8E2C2C</button>
+    </div>
+  </article>
+
+  <!-- 05 · AZUL — swatch derecha -->
+  <article class="spread spread--azul">
+    <div class="spread-text">
+      <header class="spread-head" data-reveal>
+        <p class="kicker">Color — Confianza</p>
+        <h3 class="display">Azul</h3>
+        <p class="tag-row">Serenidad · profesionalismo · lealtad · inteligencia</p>
+      </header>
+      <div class="spread-block" data-reveal data-reveal-delay="1">
+        <h4 class="kicker">Comunica</h4>
+        <p>Es el color de la palabra creíble. Baja las pulsaciones, ordena e inspira acuerdo. El navy da autoridad sin la dureza del negro: lidera, no manda. Es el color de la escucha y la comprensión.</p>
+      </div>
+      <div class="spread-block" data-reveal data-reveal-delay="2">
+        <h4 class="kicker">Usalo cuando</h4>
+        <p>Quieras que te crean, negociar, transmitir estabilidad o ejercer una autoridad amable.</p>
+      </div>
+      <div class="spread-block" data-reveal data-reveal-delay="3">
+        <h4 class="kicker">Va con</h4>
+        <p>Blanco, camel y gris. La fórmula de la seriedad confiable.</p>
+      </div>
+    </div>
+    <div class="spread-swatch" data-reveal>
+      <span class="spread-num" aria-hidden="true">05</span>
+      <button type="button" class="hex-chip" data-copy="#2E4257" aria-label="Copiar #2E4257">#2E4257</button>
+    </div>
+  </article>
+
+  <!-- 06 · VERDE — swatch izquierda -->
+  <article class="spread spread--flip spread--verde">
+    <div class="spread-text">
+      <header class="spread-head" data-reveal>
+        <p class="kicker">Color — Equilibrio</p>
+        <h3 class="display">Verde</h3>
+        <p class="tag-row">Renovación · frescura · prosperidad · raíz</p>
+      </header>
+      <div class="spread-block" data-reveal data-reveal-delay="1">
+        <h4 class="kicker">Comunica</h4>
+        <p>Descansa la vista y el ánimo. Habla de crecimiento, salud y bienestar. El <strong>oliva y el sage</strong> suman una sofisticación natural que rara vez falla.</p>
+      </div>
+      <div class="spread-block" data-reveal data-reveal-delay="2">
+        <h4 class="kicker">Usalo cuando</h4>
+        <p>Quieras verte equilibrada, cercana a lo natural, o proyectar abundancia tranquila —sin ostentación. Es un gran aliado en encuentros sociales: si buscás verte cercana y conectar con el otro, o fidelizar en el trabajo y verte genuina y amigable. El verde inglés te hace ver inteligente, capaz y conocedora —transmite sabiduría y confianza—; los verdes claros te hacen ver más próxima, amigable y equilibrada.</p>
+      </div>
+      <div class="spread-block" data-reveal data-reveal-delay="3">
+        <h4 class="kicker">Va con</h4>
+        <p>Beige, marrón, crema y dorado. Una paleta que respira campo y calma.</p>
+      </div>
+    </div>
+    <div class="spread-swatch" data-reveal>
+      <span class="spread-num" aria-hidden="true">06</span>
+      <button type="button" class="hex-chip" data-copy="#3F5347" aria-label="Copiar #3F5347">#3F5347</button>
+    </div>
+  </article>
+
+  <!-- 07 · ROSAS & NUDES — swatch derecha -->
+  <article class="spread spread--rosa">
+    <div class="spread-text">
+      <header class="spread-head" data-reveal>
+        <p class="kicker">El color del tacto</p>
+        <h3 class="display">Rosas &amp; nudes</h3>
+        <p class="tag-row">Gentileza · romance · ternura · apertura</p>
+      </header>
+      <div class="spread-block" data-reveal data-reveal-delay="1">
+        <h4 class="kicker">Comunica</h4>
+        <p>Los rosados suaves bajan las defensas del otro. Transmiten calidez, empatía y disposición al vínculo. Humanizan cualquier look serio.</p>
+      </div>
+      <div class="spread-block" data-reveal data-reveal-delay="2">
+        <h4 class="kicker">Usalo cuando</h4>
+        <p>Quieras conectar, verte accesible y amable, suavizar un contexto duro o mostrar tu lado sensible. El rosa remite a la piel, a lo táctil: en encuentros o citas es un aliado para verte más próxima al otro. Los rosados fuertes, magentas y fucsias transmiten poder y energía: una conexión eléctrica.</p>
+      </div>
+      <div class="spread-block" data-reveal data-reveal-delay="3">
+        <h4 class="kicker">Cuidá que</h4>
+        <p>Si además buscás autoridad, apoyalo en una base neutra fuerte (negro, gris, navy) para que no se lea ingenuo.</p>
+      </div>
+    </div>
+    <div class="spread-swatch" data-reveal>
+      <span class="spread-num" aria-hidden="true">07</span>
+      <button type="button" class="hex-chip" data-copy="#DBB1AA" aria-label="Copiar #DBB1AA">#DBB1AA</button>
+    </div>
+  </article>
+
+  <!-- 08 · DORADO — swatch izquierda -->
+  <article class="spread spread--flip spread--dorado">
+    <div class="spread-text">
+      <header class="spread-head" data-reveal>
+        <p class="kicker">Color — Calidez</p>
+        <h3 class="display">Dorado</h3>
+        <p class="tag-row">Abundancia · luz · lujo cálido · poder</p>
+      </header>
+      <div class="spread-block" data-reveal data-reveal-delay="1">
+        <h4 class="kicker">Comunica</h4>
+        <p>El dorado y sus derivados irradian energía y estatus sin la frialdad del plateado. Iluminan la piel y elevan cualquier neutro a algo memorable.</p>
+      </div>
+      <div class="spread-block" data-reveal data-reveal-delay="2">
+        <h4 class="kicker">Usalo cuando</h4>
+        <p>Quieras destacar con calidez o transmitir sabiduría: remite a los ancestros —la cultura maya, el legado egipcio— y a los símbolos de estatus ganados por trabajo y estrategia.</p>
+      </div>
+      <div class="spread-block" data-reveal data-reveal-delay="3">
+        <h4 class="kicker">Además</h4>
+        <p>En accesorios asertivos te hace ver lujosa y poseedora. Como color pleno, la mostaza transmite seguridad: remite a las semillas, a lo orgánico, a lo estable. Como metal, el oro es el acento más noble y universal.</p>
+      </div>
+    </div>
+    <div class="spread-swatch" data-reveal>
+      <span class="spread-num" aria-hidden="true">08</span>
+      <button type="button" class="hex-chip" data-copy="#B8862F" aria-label="Copiar #B8862F">#B8862F</button>
+    </div>
+  </article>
+</section>
+
+<!-- == 04-paletas.html == -->
+<style>
+  /* ============ #paletas · Paletas que funcionan + Armador 60·30·10 ============ */
+  #paletas .pc-head{margin-bottom:clamp(30px,4.5vw,48px)}
+  #paletas .pc-head .display{margin:12px 0 0}
+
+  #paletas .pc-layout{
+    display:grid;
+    grid-template-columns:minmax(0,1fr) minmax(300px,344px);
+    gap:clamp(28px,4vw,52px);
+    align-items:start;
+  }
+
+  /* -------- grid de paletas -------- */
+  #paletas .pc-grid{
+    list-style:none;margin:0;padding:0;
+    display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px;
+  }
+  #paletas .pc-grid > li{min-width:0;display:flex}
+
+  #paletas .palette-card{
+    appearance:none;-webkit-appearance:none;
+    position:relative;display:block;width:100%;
+    font:inherit;text-align:left;color:inherit;cursor:pointer;
+    background:var(--cream-2);
+    border:1px solid var(--line);border-radius:2px;
+    padding:16px 16px 18px;
+    transition:border-color .25s ease,transform .25s ease,box-shadow .25s ease;
+  }
+  #paletas .palette-card:hover{
+    border-color:var(--gold);
+    transform:translateY(-2px);
+    box-shadow:0 14px 30px rgba(26,23,20,.08);
+  }
+  #paletas .palette-card:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+  #paletas .palette-card[aria-pressed="true"]{border-color:var(--gold)}
+  #paletas .palette-card::after{
+    content:"✦";position:absolute;top:12px;right:13px;
+    font-size:12px;line-height:1;color:var(--gold);
+    opacity:0;transform:scale(.6);
+    transition:opacity .25s ease,transform .25s ease;
+  }
+  #paletas .palette-card[aria-pressed="true"]::after{opacity:1;transform:scale(1)}
+
+  #paletas .pc-chips{
+    display:flex;height:56px;
+    border:1px solid var(--line);
+    background:var(--cream-2);
+  }
+  #paletas .pc-chip{
+    flex:1;min-width:0;
+    display:flex;align-items:center;justify-content:center;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;
+  }
+  #paletas .pc-chip i{
+    font-style:normal;
+    font-family:"Montserrat",sans-serif;font-weight:600;font-size:9px;
+    letter-spacing:.08em;color:rgba(244,240,232,.9);
+    opacity:0;transition:opacity .3s ease;
+    white-space:nowrap;overflow:hidden;
+  }
+  #paletas .pc-chip--ink i{color:rgba(26,23,20,.72)}
+  #paletas .palette-card:hover .pc-chip i,
+  #paletas .palette-card:focus-visible .pc-chip i{opacity:1}
+
+  #paletas .pc-namerow{display:flex;align-items:baseline;gap:9px;margin-top:14px}
+  #paletas .pc-idx{
+    font-family:"Fraunces",serif;font-style:italic;font-weight:400;
+    font-size:12px;color:var(--brown);flex:none;
+  }
+  #paletas .pc-name{
+    font-family:"Montserrat",sans-serif;font-weight:600;font-size:12px;line-height:1.45;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--ink);
+  }
+  #paletas .pc-cap{
+    display:block;margin-top:7px;
+    font-size:13px;line-height:1.65;color:var(--ink-soft);
+  }
+
+  /* -------- el armador 60·30·10 -------- */
+  #paletas .pc-armador{
+    --p-base:#1A1714;--p-sec:#F4F0E8;--p-acc:#8C8C8C;
+    position:sticky;top:44px;
+    background:var(--cream-2);
+    border:1px solid var(--line);border-radius:2px;
+    padding:22px 22px 24px;
+  }
+  #paletas .pc-arm-in{display:flex;flex-direction:column}
+  #paletas .pc-arm-title{
+    margin:0;
+    font-family:"Montserrat",sans-serif;font-weight:600;font-size:11px;line-height:1.4;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--brown);
+  }
+  #paletas .pc-arm-hint{
+    margin:9px 0 0;
+    font-size:12.5px;line-height:1.6;color:var(--ink-soft);
+  }
+
+  #paletas .pc-stagewrap{margin-top:18px}
+  #paletas .pc-stage{
+    height:272px;
+    background:var(--cream);
+    border:1px solid var(--line);
+    padding:16px 16px 0;
+  }
+  #paletas .pc-bands{display:flex;align-items:flex-end;gap:10px;height:100%}
+  #paletas .pc-band{
+    min-width:0;
+    border-radius:999px 999px 0 0;
+    box-shadow:inset 0 0 0 1px rgba(26,23,20,.10);
+    transition:background-color .5s ease;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;
+  }
+  #paletas .pc-band--60{flex:60;height:92%;background:var(--p-base)}
+  #paletas .pc-band--30{flex:30;height:71%;background:var(--p-sec)}
+  #paletas .pc-band--10{flex:10;height:47%;background:var(--p-acc)}
+
+  #paletas .pc-scale{
+    display:flex;gap:10px;padding:8px 16px 0;
+    font-family:"Fraunces",serif;font-style:italic;font-size:13px;line-height:1;
+    color:var(--brown);
+  }
+  #paletas .pc-scale span{text-align:center;min-width:0}
+  #paletas .pc-scale span:nth-child(1){flex:60}
+  #paletas .pc-scale span:nth-child(2){flex:30}
+  #paletas .pc-scale span:nth-child(3){flex:10}
+
+  #paletas .pc-active{margin-top:20px}
+  #paletas .pc-active-kicker{
+    margin:0;
+    font-family:"Montserrat",sans-serif;font-weight:600;font-size:10px;line-height:1;
+    letter-spacing:.22em;text-transform:uppercase;color:var(--brown);
+  }
+  #paletas .pc-active-name{
+    margin:7px 0 0;
+    font-family:"Gloock",serif;font-weight:400;
+    font-size:clamp(1.35rem,2vw,1.6rem);line-height:1.12;color:var(--ink);
+  }
+  #paletas .pc-active-cap{
+    margin:7px 0 0;
+    font-size:13px;line-height:1.65;color:var(--ink-soft);
+  }
+
+  #paletas .pc-legend{
+    list-style:none;
+    margin:18px 0 0;padding:15px 0 0;
+    border-top:1px solid var(--line);
+    display:grid;gap:10px;
+  }
+  #paletas .pc-legend li{display:flex;align-items:center;gap:10px;min-width:0}
+  #paletas .pc-dot{
+    flex:none;width:13px;height:13px;border-radius:50%;
+    box-shadow:inset 0 0 0 1px rgba(26,23,20,.14);
+    transition:background-color .5s ease;
+    -webkit-print-color-adjust:exact;print-color-adjust:exact;
+  }
+  #paletas .pc-dot--60{background:var(--p-base)}
+  #paletas .pc-dot--30{background:var(--p-sec)}
+  #paletas .pc-dot--10{background:var(--p-acc)}
+  #paletas .pc-leg-label{
+    font-family:"Montserrat",sans-serif;font-weight:600;font-size:10px;line-height:1.4;
+    letter-spacing:.16em;text-transform:uppercase;color:var(--ink-soft);
+  }
+  #paletas .pc-hex{
+    appearance:none;-webkit-appearance:none;
+    margin-left:auto;cursor:pointer;
+    font-family:ui-monospace,"SF Mono",SFMono-Regular,Menlo,Consolas,monospace;
+    font-size:11px;letter-spacing:.03em;
+    color:var(--ink-soft);background:transparent;
+    border:1px solid var(--line);border-radius:999px;
+    padding:9px 12px;
+    transition:color .2s ease,border-color .2s ease;
+  }
+  #paletas .pc-hex:hover,
+  #paletas .pc-hex:focus-visible{color:var(--brown);border-color:var(--gold);outline:none}
+  #paletas .pc-hex:focus-visible{outline:2px solid var(--gold);outline-offset:2px}
+
+  /* -------- cierre -------- */
+  #paletas .pc-outro{margin-top:clamp(48px,7vw,76px);text-align:center}
+  #paletas .pc-cierre{
+    margin:22px auto 0;max-width:44ch;
+    font-family:"Fraunces",serif;font-style:italic;font-weight:400;
+    font-size:clamp(1.15rem,2.2vw,1.45rem);line-height:1.5;
+    color:var(--brown);
+    text-wrap:balance;
+  }
+
+  #paletas .pc-sr-only{
+    position:absolute;width:1px;height:1px;
+    padding:0;margin:-1px;overflow:hidden;
+    clip:rect(0 0 0 0);white-space:nowrap;border:0;
+  }
+
+  /* -------- responsive -------- */
+  @media (max-width:960px){
+    #paletas .pc-layout{grid-template-columns:1fr;gap:26px}
+    #paletas .pc-armador{
+      order:-1;top:72px;z-index:4;
+      padding:14px 16px 16px;
+      box-shadow:0 14px 30px rgba(26,23,20,.12);
+    }
+    #paletas .pc-arm-in{flex-direction:row;flex-wrap:wrap;align-items:center;column-gap:18px}
+    #paletas .pc-armhead{flex:1 1 100%}
+    #paletas .pc-arm-hint{display:none}
+    #paletas .pc-stagewrap{flex:1 1 50%;min-width:150px;max-width:300px;margin-top:12px}
+    #paletas .pc-stage{height:112px;padding:10px 10px 0}
+    #paletas .pc-bands{gap:6px}
+    #paletas .pc-scale{padding:6px 10px 0;font-size:11.5px;gap:6px}
+    #paletas .pc-meta{flex:1 1 38%;min-width:130px;margin-top:12px}
+    #paletas .pc-active{margin-top:0}
+    #paletas .pc-active-name{font-size:1.15rem}
+    #paletas .pc-active-cap{display:none}
+    #paletas .pc-legend{display:flex;flex-wrap:wrap;flex:1 1 100%;gap:8px;border-top:0;padding-top:8px;margin-top:4px}
+    #paletas .pc-leg-label{display:none}
+  }
+  @media (max-width:640px){
+    #paletas .pc-grid{grid-template-columns:1fr;gap:12px}
+    #paletas .palette-card{
+      display:grid;grid-template-columns:104px minmax(0,1fr);
+      column-gap:16px;row-gap:3px;align-items:center;
+      padding:14px 16px;
+    }
+    #paletas .pc-chips{grid-row:1 / 3;height:50px}
+    #paletas .pc-namerow{margin-top:0}
+    #paletas .pc-cap{margin-top:0}
+    #paletas .palette-card::after{top:10px;right:11px}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    #paletas .palette-card,
+    #paletas .palette-card::after,
+    #paletas .pc-chip i,
+    #paletas .pc-band,
+    #paletas .pc-dot,
+    #paletas .pc-hex{transition:none}
+    #paletas .palette-card:hover{transform:none}
+  }
+
+  @media print{
+    #paletas .pc-armador{position:static;box-shadow:none}
+  }
+</style>
+
+<section class="chapter" id="paletas">
+  <div class="wrap">
+
+    <header class="pc-head" data-reveal>
+      <p class="kicker">Parte I — El color</p>
+      <h2 class="display">Paletas que funcionan</h2>
+    </header>
+
+    <div class="pc-layout">
+
+      <ul class="pc-grid" aria-label="Doce paletas que funcionan">
+
+        <li data-reveal>
+          <button type="button" class="palette-card" aria-pressed="true"
+                  data-c1="#1A1714" data-c2="#F4F0E8" data-c3="#8C8C8C">
+            <span class="pc-chips" aria-hidden="true">
+              <span class="pc-chip" style="background:#1A1714"><i>#1A1714</i></span>
+              <span class="pc-chip pc-chip--ink" style="background:#F4F0E8"><i>#F4F0E8</i></span>
+              <span class="pc-chip pc-chip--ink" style="background:#8C8C8C"><i>#8C8C8C</i></span>
+            </span>
+            <span class="pc-namerow"><span class="pc-idx" aria-hidden="true">01</span><span class="pc-name">Autoridad</span></span>
+            <span class="pc-cap">Negro + blanco + un metal frío. Poder limpio, sin distracciones.</span>
+          </button>
+        </li>
+
+        <li data-reveal data-reveal-delay="1">
+          <button type="button" class="palette-card" aria-pressed="false"
+                  data-c1="#E3C7C1" data-c2="#F4F0E8" data-c3="#C9A15C">
+            <span class="pc-chips" aria-hidden="true">
+              <span class="pc-chip pc-chip--ink" style="background:#E3C7C1"><i>#E3C7C1</i></span>
+              <span class="pc-chip pc-chip--ink" style="background:#F4F0E8"><i>#F4F0E8</i></span>
+              <span class="pc-chip pc-chip--ink" style="background:#C9A15C"><i>#C9A15C</i></span>
+            </span>
+            <span class="pc-namerow"><span class="pc-idx" aria-hidden="true">02</span><span class="pc-name">Romántica</span></span>
+            <span class="pc-cap">Rosa empolvado + marfil + dorado. Delicadeza y luz.</span>
+          </button>
+        </li>
+
+        <li data-reveal data-reveal-delay="2">
+          <button type="button" class="palette-card" aria-pressed="false"
+                  data-c1="#1A1714" data-c2="#5C2438" data-c3="#5A5555">
+            <span class="pc-chips" aria-hidden="true">
+              <span class="pc-chip" style="background:#1A1714"><i>#1A1714</i></span>
+              <span class="pc-chip" style="background:#5C2438"><i>#5C2438</i></span>
+              <span class="pc-chip" style="background:#5A5555"><i>#5A5555</i></span>
+            </span>
+            <span class="pc-namerow"><span class="pc-idx" aria-hidden="true">03</span><span class="pc-name">Misterio</span></span>
+            <span class="pc-cap">Negro + borravino + gris humo. Profundidad y magnetismo.</span>
+          </button>
+        </li>
+
+        <li data-reveal>
+          <button type="button" class="palette-card" aria-pressed="false"
+                  data-c1="#DBB1AA" data-c2="#F4F0E8" data-c3="#B45E38">
+            <span class="pc-chips" aria-hidden="true">
+              <span class="pc-chip pc-chip--ink" style="background:#DBB1AA"><i>#DBB1AA</i></span>
+              <span class="pc-chip pc-chip--ink" style="background:#F4F0E8"><i>#F4F0E8</i></span>
+              <span class="pc-chip" style="background:#B45E38"><i>#B45E38</i></span>
+            </span>
+            <span class="pc-namerow"><span class="pc-idx" aria-hidden="true">04</span><span class="pc-name">Conexión</span></span>
+            <span class="pc-cap">Nudes + crema + terracota suave. Cercanía y calidez humana.</span>
+          </button>
+        </li>
+
+        <li data-reveal data-reveal-delay="1">
+          <button type="button" class="palette-card" aria-pressed="false"
+                  data-c1="#A99F8A" data-c2="#5A6B4D" data-c3="#6E4B33">
+            <span class="pc-chips" aria-hidden="true">
+              <span class="pc-chip pc-chip--ink" style="background:#A99F8A"><i>#A99F8A</i></span>
+              <span class="pc-chip" style="background:#5A6B4D"><i>#5A6B4D</i></span>
+              <span class="pc-chip" style="background:#6E4B33"><i>#6E4B33</i></span>
+            </span>
+            <span class="pc-namerow"><span class="pc-idx" aria-hidden="true">05</span><span class="pc-name">Natural / Orgánica</span></span>
+            <span class="pc-cap">Beige + oliva + tierra. Raíz, calma, sostenibilidad.</span>
+          </button>
+        </li>
+
+        <li data-reveal data-reveal-delay="2">
+          <button type="button" class="palette-card" aria-pressed="false"
+                  data-c1="#F1E9D8" data-c2="#C9902E" data-c3="#B45E38">
+            <span class="pc-chips" aria-hidden="true">
+              <span class="pc-chip pc-chip--ink" style="background:#F1E9D8"><i>#F1E9D8</i></span>
+              <span class="pc-chip pc-chip--ink" style="background:#C9902E"><i>#C9902E</i></span>
+              <span class="pc-chip" style="background:#B45E38"><i>#B45E38</i></span>
+            </span>
+            <span class="pc-namerow"><span class="pc-idx" aria-hidden="true">06</span><span class="pc-name">Alegría</span></span>
+            <span class="pc-cap">Crema + mostaza + un acento tostado. Optimismo con clase.</span>
+          </button>
+        </li>
+
+        <li data-reveal>
+          <button type="button" class="palette-card" aria-pressed="false"
+                  data-c1="#2E4257" data-c2="#F4F0E8" data-c3="#3F5347">
+            <span class="pc-chips" aria-hidden="true">
+              <span class="pc-chip" style="background:#2E4257"><i>#2E4257</i></span>
+              <span class="pc-chip pc-chip--ink" style="background:#F4F0E8"><i>#F4F0E8</i></span>
+              <span class="pc-chip" style="background:#3F5347"><i>#3F5347</i></span>
+            </span>
+            <span class="pc-namerow"><span class="pc-idx" aria-hidden="true">07</span><span class="pc-name">Conocimiento</span></span>
+            <span class="pc-cap">Azul + blanco + verde inglés. Poder limpio, sin distracciones: cierra un contrato.</span>
+          </button>
+        </li>
+
+        <li data-reveal data-reveal-delay="1">
+          <button type="button" class="palette-card" aria-pressed="false"
+                  data-c1="#1A1714" data-c2="#C9902E" data-c3="#8E2C2C">
+            <span class="pc-chips" aria-hidden="true">
+              <span class="pc-chip" style="background:#1A1714"><i>#1A1714</i></span>
+              <span class="pc-chip pc-chip--ink" style="background:#C9902E"><i>#C9902E</i></span>
+              <span class="pc-chip" style="background:#8E2C2C"><i>#8E2C2C</i></span>
+            </span>
+            <span class="pc-namerow"><span class="pc-idx" aria-hidden="true">08</span><span class="pc-name">Atracción</span></span>
+            <span class="pc-cap">Negro para sofisticación + dorado en accesorios + rojo carmín que atrapa.</span>
+          </button>
+        </li>
+
+        <li data-reveal data-reveal-delay="2">
+          <button type="button" class="palette-card" aria-pressed="false"
+                  data-c1="#EFEAE0" data-c2="#5B3A86" data-c3="#BFA98C">
+            <span class="pc-chips" aria-hidden="true">
+              <span class="pc-chip pc-chip--ink" style="background:#EFEAE0"><i>#EFEAE0</i></span>
+              <span class="pc-chip" style="background:#5B3A86"><i>#5B3A86</i></span>
+              <span class="pc-chip pc-chip--ink" style="background:#BFA98C"><i>#BFA98C</i></span>
+            </span>
+            <span class="pc-namerow"><span class="pc-idx" aria-hidden="true">09</span><span class="pc-name">Sabiduría</span></span>
+            <span class="pc-cap">Claros para el equilibrio + violeta para el misterio + dorado o beige para la posición.</span>
+          </button>
+        </li>
+
+        <li data-reveal>
+          <button type="button" class="palette-card" aria-pressed="false"
+                  data-c1="#A96C9C" data-c2="#F4F0E8" data-c3="#B39C82">
+            <span class="pc-chips" aria-hidden="true">
+              <span class="pc-chip pc-chip--ink" style="background:#A96C9C"><i>#A96C9C</i></span>
+              <span class="pc-chip pc-chip--ink" style="background:#F4F0E8"><i>#F4F0E8</i></span>
+              <span class="pc-chip pc-chip--ink" style="background:#B39C82"><i>#B39C82</i></span>
+            </span>
+            <span class="pc-namerow"><span class="pc-idx" aria-hidden="true">10</span><span class="pc-name">Conexión eléctrica</span></span>
+            <span class="pc-cap">Malva + crema + taupe. Cercanía con energía.</span>
+          </button>
+        </li>
+
+        <li data-reveal data-reveal-delay="1">
+          <button type="button" class="palette-card" aria-pressed="false"
+                  data-c1="#FBFAF7" data-c2="#3F5347" data-c3="#4E342A">
+            <span class="pc-chips" aria-hidden="true">
+              <span class="pc-chip pc-chip--ink" style="background:#FBFAF7"><i>#FBFAF7</i></span>
+              <span class="pc-chip" style="background:#3F5347"><i>#3F5347</i></span>
+              <span class="pc-chip" style="background:#4E342A"><i>#4E342A</i></span>
+            </span>
+            <span class="pc-namerow"><span class="pc-idx" aria-hidden="true">11</span><span class="pc-name">Natural profunda</span></span>
+            <span class="pc-cap">Blanco + verde inglés + chocolate. Naturaleza con peso.</span>
+          </button>
+        </li>
+
+        <li data-reveal data-reveal-delay="2">
+          <button type="button" class="palette-card" aria-pressed="false"
+                  data-c1="#C9902E" data-c2="#6E523C" data-c3="#B45E38">
+            <span class="pc-chips" aria-hidden="true">
+              <span class="pc-chip pc-chip--ink" style="background:#C9902E"><i>#C9902E</i></span>
+              <span class="pc-chip" style="background:#6E523C"><i>#6E523C</i></span>
+              <span class="pc-chip" style="background:#B45E38"><i>#B45E38</i></span>
+            </span>
+            <span class="pc-namerow"><span class="pc-idx" aria-hidden="true">12</span><span class="pc-name">Terrenal sofisticado</span></span>
+            <span class="pc-cap">Mostaza + marrón + terracota. Optimismo con clase, versión tierra.</span>
+          </button>
+        </li>
+
+      </ul>
+
+      <aside class="pc-armador" aria-label="El armador 60·30·10" data-reveal data-reveal-delay="2">
+        <div class="pc-arm-in">
+
+          <div class="pc-armhead">
+            <h3 class="pc-arm-title">El armador · 60·30·10</h3>
+            <p class="pc-arm-hint">Tocá una paleta y mirá el reparto del look: 60 de base, 30 de secundario, 10 de acento.</p>
+          </div>
+
+          <div class="pc-stagewrap">
+            <div class="pc-stage" role="img" aria-label="Look 60·30·10 con la paleta Autoridad">
+              <div class="pc-bands">
+                <span class="pc-band pc-band--60"></span>
+                <span class="pc-band pc-band--30"></span>
+                <span class="pc-band pc-band--10"></span>
+              </div>
+            </div>
+            <div class="pc-scale" aria-hidden="true">
+              <span>60</span><span>30</span><span>10</span>
+            </div>
+          </div>
+
+          <div class="pc-meta">
+            <div class="pc-active">
+              <p class="pc-active-kicker">Paleta activa</p>
+              <p class="pc-active-name">Autoridad</p>
+              <p class="pc-active-cap">Negro + blanco + un metal frío. Poder limpio, sin distracciones.</p>
+            </div>
+
+            <ul class="pc-legend">
+              <li>
+                <span class="pc-dot pc-dot--60" aria-hidden="true"></span>
+                <span class="pc-leg-label">60 · Base</span>
+                <button type="button" class="hex-chip pc-hex" data-copy="#1A1714">#1A1714</button>
+              </li>
+              <li>
+                <span class="pc-dot pc-dot--30" aria-hidden="true"></span>
+                <span class="pc-leg-label">30 · Secundario</span>
+                <button type="button" class="hex-chip pc-hex" data-copy="#F4F0E8">#F4F0E8</button>
+              </li>
+              <li>
+                <span class="pc-dot pc-dot--10" aria-hidden="true"></span>
+                <span class="pc-leg-label">10 · Acento</span>
+                <button type="button" class="hex-chip pc-hex" data-copy="#8C8C8C">#8C8C8C</button>
+              </li>
+            </ul>
+          </div>
+
+        </div>
+        <p class="pc-sr-only" role="status"></p>
+      </aside>
+
+    </div>
+
+    <div class="pc-outro" data-reveal>
+      <div class="star-sep" aria-hidden="true">✦</div>
+      <p class="pc-cierre">Recordá el 60·30·10: una base, un secundario, un solo acento que hable.</p>
+    </div>
+
+  </div>
+</section>
+
+<script>
+(function () {
+  'use strict';
+  var root = document.getElementById('paletas');
+  if (!root) return;
+
+  var cards = Array.prototype.slice.call(root.querySelectorAll('.palette-card'));
+  var armador = root.querySelector('.pc-armador');
+  if (!cards.length || !armador) return;
+
+  var stage   = armador.querySelector('.pc-stage');
+  var nameEl  = armador.querySelector('.pc-active-name');
+  var capEl   = armador.querySelector('.pc-active-cap');
+  var status  = armador.querySelector('[role="status"]');
+  var hexes   = armador.querySelectorAll('.pc-hex');
+
+  var selected = null;
+
+  function paletteOf(card) {
+    var nameNode = card.querySelector('.pc-name');
+    var capNode  = card.querySelector('.pc-cap');
+    return {
+      name: nameNode ? nameNode.textContent.trim() : '',
+      cap:  capNode ? capNode.textContent.trim() : '',
+      c: [
+        card.getAttribute('data-c1') || '',
+        card.getAttribute('data-c2') || '',
+        card.getAttribute('data-c3') || ''
+      ]
+    };
+  }
+
+  function apply(card) {
+    var p = paletteOf(card);
+    armador.style.setProperty('--p-base', p.c[0]);
+    armador.style.setProperty('--p-sec',  p.c[1]);
+    armador.style.setProperty('--p-acc',  p.c[2]);
+    if (nameEl) nameEl.textContent = p.name;
+    if (capEl)  capEl.textContent  = p.cap;
+    if (stage)  stage.setAttribute('aria-label', 'Look 60·30·10 con la paleta ' + p.name);
+    for (var i = 0; i < hexes.length; i++) {
+      if (p.c[i]) {
+        hexes[i].textContent = p.c[i];
+        hexes[i].setAttribute('data-copy', p.c[i]);
+      }
+    }
+  }
+
+  function select(card, silent) {
+    selected = card;
+    for (var i = 0; i < cards.length; i++) {
+      var on = cards[i] === card;
+      cards[i].setAttribute('aria-pressed', on ? 'true' : 'false');
+    }
+    apply(card);
+    if (!silent && status) {
+      var p = paletteOf(card);
+      status.textContent = 'Paleta activa: ' + p.name + '. Base ' + p.c[0] +
+        ', secundario ' + p.c[1] + ', acento ' + p.c[2] + '.';
+    }
+  }
+
+  function restore() {
+    if (selected) apply(selected);
+  }
+
+  cards.forEach(function (card) {
+    card.addEventListener('click', function () { select(card, false); });
+    card.addEventListener('mouseenter', function () { apply(card); });
+    card.addEventListener('mouseleave', restore);
+    card.addEventListener('focus', function () { apply(card); });
+    card.addEventListener('blur', restore);
+  });
+
+  /* estado inicial: AUTORIDAD activa, sin anunciar en el lector de pantalla */
+  select(cards[0], true);
+})();
+</script>
+
+<!-- == 05-estampas.html == -->
+<!-- ══════════════════ 05 · PARTE II — LAS ESTAMPAS ══════════════════ -->
+<section class="chapter chapter--dark" id="parte-2" aria-labelledby="parte-2-title">
+  <style>
+    /* ── PARTE-2 · portadilla oscura ─────────────────────────────── */
+    #parte-2{position:relative;overflow:hidden}
+    #parte-2 .wrap{position:relative;z-index:1;min-height:min(62vh,560px);
+      display:flex;flex-direction:column;justify-content:center}
+    #parte-2 .p2-kicker{margin:0 0 18px}
+    #parte-2 .p2-title{margin:0;max-width:12ch}
+    #parte-2 .p2-title .hl{border-bottom:1px solid var(--gold);padding-bottom:.06em}
+    #parte-2 .p2-lede{margin:26px 0 0;max-width:46ch}
+    #parte-2 .p2-ghost{position:absolute;z-index:0;right:-.06em;top:50%;
+      transform:translateY(-50%);font-family:'Gloock',serif;line-height:1;
+      font-size:clamp(12rem,26vw,21rem);color:transparent;
+      -webkit-text-stroke:1px rgba(201,161,92,.20);
+      user-select:none;pointer-events:none}
+    @media (max-width:719px){#parte-2 .p2-ghost{display:none}}
+
+    /* ── ESTAMPAS-CODIGO · 6 cards con foto ──────────────────────── */
+    #estampas-codigo .sec-head{margin-bottom:clamp(36px,5vw,56px)}
+    #estampas-codigo .sec-head .kicker{margin:0 0 14px}
+    #estampas-codigo .sec-head .display{margin:0}
+    #estampas-codigo .code-card{margin:0}
+    #estampas-codigo .ph{overflow:hidden;border:1px solid var(--line);
+      aspect-ratio:16/10;background:var(--cream-2)}
+    #estampas-codigo .ph img{display:block;width:100%;height:100%;
+      object-fit:cover;transition:transform .8s cubic-bezier(.2,.6,.2,1)}
+    #estampas-codigo .code-card:hover .ph img{transform:scale(1.045)}
+    #estampas-codigo .code-name{margin:16px 0 8px;font-family:'Montserrat',sans-serif;
+      font-size:.76rem;font-weight:600;letter-spacing:.2em;text-transform:uppercase;
+      color:var(--ink)}
+    #estampas-codigo .code-cap{margin:0;font-size:.855rem;line-height:1.65;
+      color:var(--ink-soft)}
+    #estampas-codigo .scale-rule{margin:clamp(52px,8vw,84px) auto 0;max-width:56ch;
+      text-align:center;font-family:'Fraunces',serif;font-style:italic;font-weight:450;
+      font-size:clamp(1.08rem,2vw,1.38rem);line-height:1.6;color:var(--brown)}
+    #estampas-codigo .scale-rule .star{color:var(--gold);font-style:normal;
+      display:block;margin-bottom:14px;font-size:.9em;letter-spacing:0}
+
+    /* ── ESTAMPAS-LENGUAJE · 4 tríos verticales ──────────────────── */
+    #estampas-lenguaje .sr-only{position:absolute;width:1px;height:1px;padding:0;
+      margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0}
+    #estampas-lenguaje .trio{margin:0}
+    #estampas-lenguaje .trio + .trio{margin-top:clamp(72px,10vw,116px);
+      padding-top:clamp(44px,6vw,60px);border-top:1px solid var(--line)}
+    #estampas-lenguaje .trio-head{display:flex;align-items:baseline;
+      justify-content:space-between;gap:16px;margin-bottom:clamp(20px,3vw,30px)}
+    #estampas-lenguaje .trio-head .kicker{margin:0}
+    #estampas-lenguaje .trio-num{font-family:'Fraunces',serif;font-style:italic;
+      font-size:.95rem;color:var(--brown);white-space:nowrap}
+    #estampas-lenguaje .trio-grid{display:grid;
+      grid-template-columns:repeat(3,1fr);gap:clamp(10px,2.4vw,28px)}
+    #estampas-lenguaje .ph{overflow:hidden;border:1px solid var(--line);
+      aspect-ratio:3/4.4;background:var(--cream-2)}
+    #estampas-lenguaje .ph img{display:block;width:100%;height:100%;
+      object-fit:cover;transition:transform .8s cubic-bezier(.2,.6,.2,1)}
+    #estampas-lenguaje .ph:hover img{transform:scale(1.05)}
+    #estampas-lenguaje .trio-cap{margin:clamp(18px,3vw,26px) 0 0;
+      font-family:'Montserrat',sans-serif;font-weight:600;font-size:.82rem;
+      letter-spacing:.18em;text-transform:uppercase;line-height:1.9;
+      color:var(--brown)}
+    #estampas-lenguaje .trio-cap .star{color:var(--gold);margin-right:.55em}
+
+    @media (prefers-reduced-motion: reduce){
+      #estampas-codigo .ph img,
+      #estampas-lenguaje .ph img{transition:none}
+      #estampas-codigo .code-card:hover .ph img,
+      #estampas-lenguaje .ph:hover img{transform:none}
+    }
+  </style>
+
+  <span class="p2-ghost" aria-hidden="true">II</span>
+  <div class="wrap">
+    <p class="kicker p2-kicker" data-reveal>Parte II</p>
+    <h2 class="display p2-title" id="parte-2-title" data-reveal data-reveal-delay="1">Las estampas <span class="hl">hablan</span></h2>
+    <p class="lede p2-lede" data-reveal data-reveal-delay="2">Un liso te viste; una estampa te describe. El patrón es el matiz de tu carácter, la parte del mensaje que no dice el color.</p>
+  </div>
+</section>
+
+<section class="chapter" id="estampas-codigo" aria-labelledby="estampas-codigo-title">
+  <div class="wrap">
+    <header class="sec-head">
+      <p class="kicker" data-reveal>Parte II — Las estampas</p>
+      <h2 class="display" id="estampas-codigo-title" data-reveal data-reveal-delay="1">El código de las estampas</h2>
+    </header>
+
+    <div class="grid-3">
+      <article class="code-card" data-reveal>
+        <div class="ph">
+          <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/pelaje-leopardo.webp" alt="Textura de pelaje de leopardo en tonos dorados y negro" width="800" height="500" loading="lazy">
+        </div>
+        <h3 class="code-name">Animal print</h3>
+        <p class="code-cap">Audacia, sensualidad, magnetismo. Un neutro con actitud: protagonista, resto sobrio.</p>
+      </article>
+
+      <article class="code-card" data-reveal data-reveal-delay="1">
+        <div class="ph">
+          <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/codigo-rayas.webp" alt="Tejido de rayas verticales azul grisáceo sobre fondo crudo" width="800" height="500" loading="lazy">
+        </div>
+        <h3 class="code-name">Rayas</h3>
+        <p class="code-cap">Orden, rigor, dirección. Las verticales estilizan y dan autoridad; las finas, pulcritud.</p>
+      </article>
+
+      <article class="code-card" data-reveal data-reveal-delay="2">
+        <div class="ph">
+          <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/codigo-lunares.webp" alt="Patrón de lunares negros sobre fondo crudo" width="800" height="500" loading="lazy">
+        </div>
+        <h3 class="code-name">Lunares</h3>
+        <p class="code-cap">Juego, feminidad retro, optimismo amable. Creatividad que no intimida.</p>
+      </article>
+
+      <article class="code-card" data-reveal>
+        <div class="ph">
+          <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/cuadros-tartan-verde.webp" alt="Tartán escocés en verdes profundos con líneas rojas y amarillas" width="800" height="500" loading="lazy">
+        </div>
+        <h3 class="code-name">Cuadro escocés</h3>
+        <p class="code-cap">Autoridad heredada, tradición, seriedad intelectual. El código del poder clásico.</p>
+      </article>
+
+      <article class="code-card" data-reveal data-reveal-delay="1">
+        <div class="ph">
+          <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/codigo-rombos.webp" alt="Patrón arlequín de rombos negros y crema" width="800" height="500" loading="lazy">
+        </div>
+        <h3 class="code-name">Geométrico · Rombos</h3>
+        <p class="code-cap">Vanguardia, mente moderna, seguridad estética. Riesgo que se lee como criterio.</p>
+      </article>
+
+      <article class="code-card" data-reveal data-reveal-delay="2">
+        <div class="ph">
+          <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/floral-tapiz.webp" alt="Tapiz floral de rosas en tonos terracota, ocre y marrón" width="800" height="500" loading="lazy">
+        </div>
+        <h3 class="code-name">Silvestre · Floral</h3>
+        <p class="code-cap">Romance, frescura, apertura. Escala chica = delicadeza; grande = dramatismo.</p>
+      </article>
+    </div>
+
+    <p class="scale-rule" data-reveal><span class="star" aria-hidden="true">✦</span>Regla de escala: estampa grande, más presencia y creatividad; estampa chica, más discreción y formalidad. Hay estampas combinables entre sí cuando la paleta de colores sigue una coherencia.</p>
+  </div>
+</section>
+
+<section class="chapter" id="estampas-lenguaje" aria-labelledby="estampas-lenguaje-title">
+  <div class="wrap">
+    <h2 class="sr-only" id="estampas-lenguaje-title">El lenguaje de las estampas</h2>
+
+    <figure class="trio">
+      <div class="trio-head">
+        <p class="kicker" data-reveal>Lenguaje estampas</p>
+        <span class="trio-num" aria-hidden="true">01 / 04</span>
+      </div>
+      <div class="grid-3 trio-grid">
+        <div class="ph" data-reveal>
+          <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/pelaje-tigre.webp" alt="Pelaje de tigre con rayas negras sobre fondo anaranjado y blanco" width="600" height="880" loading="lazy">
+        </div>
+        <div class="ph" data-reveal data-reveal-delay="1">
+          <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/pelaje-cebra.webp" alt="Pelaje de cebra con rayas onduladas blancas y negras" width="600" height="880" loading="lazy">
+        </div>
+        <div class="ph" data-reveal data-reveal-delay="2">
+          <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/pelaje-leopardo.webp" alt="Pelaje de leopardo con rosetas negras sobre dorado" width="600" height="880" loading="lazy">
+        </div>
+      </div>
+      <figcaption class="trio-cap" data-reveal data-reveal-delay="1"><span class="star" aria-hidden="true">✦</span>Print o pelaje: instinto / poder / fuerza / sensualidad</figcaption>
+    </figure>
+
+    <figure class="trio">
+      <div class="trio-head">
+        <p class="kicker" data-reveal>Lenguaje estampas</p>
+        <span class="trio-num" aria-hidden="true">02 / 04</span>
+      </div>
+      <div class="grid-3 trio-grid">
+        <div class="ph" data-reveal>
+          <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/cuadros-tartan-camel.webp" alt="Tartán clásico camel con cuadros negros y blancos estilo Burberry" width="600" height="880" loading="lazy">
+        </div>
+        <div class="ph" data-reveal data-reveal-delay="1">
+          <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/cuadros-damero.webp" alt="Damero tejido en dos tonos de marrón" width="600" height="880" loading="lazy">
+        </div>
+        <div class="ph" data-reveal data-reveal-delay="2">
+          <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/cuadros-tartan-verde.webp" alt="Tartán escocés verde con acentos rojos y amarillos" width="600" height="880" loading="lazy">
+        </div>
+      </div>
+      <figcaption class="trio-cap" data-reveal data-reveal-delay="1"><span class="star" aria-hidden="true">✦</span>Cuadros: institucionalización, sofisticación, orden</figcaption>
+    </figure>
+
+    <figure class="trio">
+      <div class="trio-head">
+        <p class="kicker" data-reveal>Lenguaje estampas</p>
+        <span class="trio-num" aria-hidden="true">03 / 04</span>
+      </div>
+      <div class="grid-3 trio-grid">
+        <div class="ph" data-reveal>
+          <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/floral-botanico.webp" alt="Bordado botánico de hojas en grises, verdes y tierras suaves" width="600" height="880" loading="lazy">
+        </div>
+        <div class="ph" data-reveal data-reveal-delay="1">
+          <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/floral-tropical.webp" alt="Estampado tropical colorido con palmeras, flores y ananás" width="600" height="880" loading="lazy">
+        </div>
+        <div class="ph" data-reveal data-reveal-delay="2">
+          <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/floral-tapiz.webp" alt="Tapiz de rosas antiguas en terracota, ocre y verde oliva" width="600" height="880" loading="lazy">
+        </div>
+      </div>
+      <figcaption class="trio-cap" data-reveal data-reveal-delay="1"><span class="star" aria-hidden="true">✦</span>Florales &amp; botánicos: alegría, confianza y conocimiento</figcaption>
+    </figure>
+
+    <figure class="trio">
+      <div class="trio-head">
+        <p class="kicker" data-reveal>Lenguaje estampas</p>
+        <span class="trio-num" aria-hidden="true">04 / 04</span>
+      </div>
+      <div class="grid-3 trio-grid">
+        <div class="ph" data-reveal>
+          <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/geo-ondas.webp" alt="Patrón geométrico de ondas en negro, crema y terracota" width="600" height="880" loading="lazy">
+        </div>
+        <div class="ph" data-reveal data-reveal-delay="1">
+          <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/geo-circulos.webp" alt="Círculos retro en borravino y crema" width="600" height="880" loading="lazy">
+        </div>
+        <div class="ph" data-reveal data-reveal-delay="2">
+          <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/geo-arlequin.webp" alt="Rombos y triángulos arlequín en oliva, negro, marrón y crema" width="600" height="880" loading="lazy">
+        </div>
+      </div>
+      <figcaption class="trio-cap" data-reveal data-reveal-delay="1"><span class="star" aria-hidden="true">✦</span>Geométricos: innovación, creatividad, futurismo</figcaption>
+    </figure>
+  </div>
+</section>
+
+<!-- == 06-prendas.html == -->
+<style>
+  /* ============ PARTE III — portadilla ============ */
+  #parte-3{position:relative;overflow:hidden}
+  #parte-3 .wrap{position:relative;min-height:min(62vh,560px);display:flex;flex-direction:column;justify-content:center}
+  #parte-3 .display{max-width:13ch}
+  #parte-3 .p3-rule{width:78px;height:1px;background:var(--gold);border:0;margin:clamp(24px,4vw,34px) 0 clamp(26px,4vw,36px)}
+  #parte-3 .lede{max-width:36em;color:var(--gold-soft)}
+  #parte-3 .p3-num{position:absolute;right:-.04em;bottom:-.16em;font-family:'Fraunces',serif;font-style:italic;font-weight:300;font-size:clamp(9rem,24vw,17rem);line-height:1;color:var(--paper-dark);opacity:.055;pointer-events:none;user-select:none}
+
+  /* ============ Prendas (autoridad + conexión) ============ */
+  #prendas-conexion,#arquetipos{border-top:1px solid var(--line)}
+  #prendas-autoridad .pi-head,#prendas-conexion .pi-head,#arquetipos .pi-head{margin-bottom:clamp(44px,6vw,64px)}
+  #prendas-autoridad .pi-head .display,#prendas-conexion .pi-head .display,#arquetipos .pi-head .display{margin:14px 0 18px}
+  #prendas-autoridad .pi-head .prose,#prendas-conexion .pi-head .prose{margin:0}
+  #prendas-autoridad .grid-4,#prendas-conexion .grid-4{margin-bottom:clamp(44px,6vw,60px)}
+
+  #prendas-autoridad .icon-card,#prendas-conexion .icon-card{display:flex;flex-direction:column;align-items:center;text-align:center}
+  #prendas-autoridad .icon-card svg,#prendas-conexion .icon-card svg{width:64px;height:64px;color:var(--ink);transition:color .3s ease,transform .3s ease}
+  #prendas-autoridad .icon-card:hover svg,#prendas-conexion .icon-card:hover svg{color:var(--gold);transform:translateY(-3px)}
+  #prendas-autoridad .icon-card h3,#prendas-conexion .icon-card h3{margin:18px 0 8px;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase}
+  #prendas-autoridad .icon-card p,#prendas-conexion .icon-card p{font-size:13px;line-height:1.6;color:var(--ink-soft);max-width:24ch;margin:0 auto}
+
+  #prendas-autoridad .fb-frase,#prendas-conexion .fb-frase{font-family:'Fraunces',serif;font-style:italic;font-weight:500;font-size:clamp(1.05rem,1.8vw,1.28rem);line-height:1.45;color:var(--ink);margin:10px 0 10px}
+  #prendas-autoridad .fb-datos,#prendas-conexion .fb-datos{font-size:13.5px;line-height:1.7;color:var(--ink-soft);margin:0}
+  #prendas-autoridad .fb-label,#prendas-conexion .fb-label{font-weight:600;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:var(--brown)}
+  #prendas-autoridad .fb-sep,#prendas-conexion .fb-sep{color:var(--gold);margin:0 8px}
+
+  /* ============ Arquetipos ============ */
+  #arquetipos .arq-card{transition:transform .35s cubic-bezier(.22,.61,.36,1)}
+  #arquetipos .arq-card:hover{transform:translateY(-5px)}
+  #arquetipos .arq-swatch{display:flex;align-items:flex-end;aspect-ratio:8/3;padding:16px 18px;transition:box-shadow .35s ease}
+  #arquetipos .arq-card:hover .arq-swatch{box-shadow:0 20px 34px -18px rgba(26,23,20,.38)}
+  #arquetipos .arq-tag{font-family:'Fraunces',serif;font-style:italic;font-weight:400;font-size:1.08rem;letter-spacing:.02em}
+  #arquetipos .arq-swatch--clasico{background:#B39A76;color:#241D15}
+  #arquetipos .arq-swatch--creative{background:#A4402F;color:var(--c-blanco)}
+  #arquetipos .arq-swatch--sporty{background:#33475A;color:var(--c-blanco)}
+  #arquetipos .arq-swatch--romantico{background:#D9A9A4;color:#3A2620}
+  #arquetipos .arq-swatch--dramatico{background:#201A16;color:var(--gold-soft)}
+  #arquetipos .arq-swatch--sensual{background:#5C2438;color:var(--c-blanco)}
+  #arquetipos .arq-card h3{margin:16px 0 6px;font-size:11.5px;letter-spacing:.18em;text-transform:uppercase}
+  #arquetipos .arq-card p{font-size:13.5px;line-height:1.65;color:var(--ink-soft);margin:0}
+  #arquetipos .arq-cierre{margin:clamp(44px,6vw,60px) auto 0;max-width:44em;text-align:center;font-family:'Fraunces',serif;font-style:italic;font-size:clamp(1.05rem,2vw,1.25rem);line-height:1.5;color:var(--brown)}
+
+  @media (prefers-reduced-motion: reduce){
+    #prendas-autoridad .icon-card svg,#prendas-conexion .icon-card svg,
+    #arquetipos .arq-card,#arquetipos .arq-swatch{transition:none}
+    #arquetipos .arq-card:hover{transform:none}
+    #prendas-autoridad .icon-card:hover svg,#prendas-conexion .icon-card:hover svg{transform:none}
+  }
+</style>
+
+<!-- ══════════ PARTE III · Portadilla ══════════ -->
+<section class="chapter chapter--dark" id="parte-3">
+  <div class="wrap">
+    <span class="p3-num" aria-hidden="true">III</span>
+    <div data-reveal>
+      <p class="kicker">Parte III</p>
+      <h2 class="display">La prenda como mensaje</h2>
+      <hr class="p3-rule" aria-hidden="true">
+    </div>
+    <p class="lede" data-reveal data-reveal-delay="1">La silueta habla antes que el detalle. La forma de tu ropa decide si el mundo te lee como cercana o como intocable, mucho antes de que se acerque.</p>
+  </div>
+</section>
+
+<!-- ══════════ Prendas de autoridad ══════════ -->
+<section class="chapter" id="prendas-autoridad">
+  <div class="wrap">
+    <header class="pi-head" data-reveal>
+      <p class="kicker">Parte III — Las prendas</p>
+      <h2 class="display">Prendas de autoridad</h2>
+      <p class="prose">El poder se construye con <strong>línea recta y verticalidad</strong>: todo lo que estira y estructura suma estatus. Menos piel a la vista; jugá con escotes geométricos.</p>
+    </header>
+
+    <div class="grid-4">
+      <div class="icon-card" data-reveal>
+        <svg viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M25 9 L15 13 L19 53 H45 L49 13 L39 9"/>
+          <path d="M25 9 L32 27 L39 9"/>
+          <path d="M32 27 V53"/>
+          <path d="M15 13 L11 24 L15.5 26 M49 13 L53 24 L48.5 26"/>
+          <path d="M22.5 44 H28.5 M35.5 44 H41.5"/>
+          <circle cx="28.5" cy="32" r="1.4" fill="currentColor" stroke="none"/>
+          <circle cx="28.5" cy="38" r="1.4" fill="currentColor" stroke="none"/>
+        </svg>
+        <h3 class="kicker">Blazer estructurado</h3>
+        <p>Hombro definido: el gesto de mando por excelencia.</p>
+      </div>
+
+      <div class="icon-card" data-reveal data-reveal-delay="1">
+        <svg viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M22 9 h20 v5 h-20 z"/>
+          <path d="M22 14 L19 55 H28 L32 27 L36 55 H45 L42 14"/>
+          <path d="M32 14 V26"/>
+          <path d="M25.7 22 L23.7 50 M38.3 22 L40.3 50"/>
+          <circle cx="32" cy="11.5" r="1.2" fill="currentColor" stroke="none"/>
+        </svg>
+        <h3 class="kicker">Pantalón sastre</h3>
+        <p>Tiro alto, tela firme, caída limpia y vertical.</p>
+      </div>
+
+      <div class="icon-card" data-reveal data-reveal-delay="2">
+        <svg viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M25 8 L18 12 L16 56 H48 L46 12 L39 8"/>
+          <path d="M25 8 L32 30 L39 8"/>
+          <path d="M32 30 V56"/>
+          <path d="M17 36 H47"/>
+          <path d="M18 12 L12 31 L16.5 33 M46 12 L52 31 L47.5 33"/>
+        </svg>
+        <h3 class="kicker">Tapado largo</h3>
+        <p>Columna monocromática: un solo tono de arriba a abajo.</p>
+      </div>
+
+      <div class="icon-card" data-reveal data-reveal-delay="3">
+        <svg viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M9 45 C10 39 14 35 20 33 C26 36 34 32 39 26 C41 30 43 35 44 40"/>
+          <path d="M9 45 C18 46 30 44 38 41 L44 40"/>
+          <path d="M41 41 L44 56 H46.5 L44 40"/>
+        </svg>
+        <h3 class="kicker">Calzado cerrado</h3>
+        <p>Stiletto o mocasín: el pie &ldquo;termina&rdquo; la línea.</p>
+      </div>
+    </div>
+
+    <aside class="formula-band" data-reveal>
+      <p class="kicker">La fórmula · Autoridad</p>
+      <p class="fb-frase">Blazer al cuerpo + pantalón recto al tono + zapato cerrado + un accesorio de metal.</p>
+      <p class="fb-datos"><span class="fb-label">Colores:</span> negro, navy, gris, camel<span class="fb-sep" aria-hidden="true">·</span><span class="fb-label">Telas:</span> paño, lana fría, gabardina.</p>
+    </aside>
+  </div>
+</section>
+
+<!-- ══════════ Prendas de conexión ══════════ -->
+<section class="chapter" id="prendas-conexion">
+  <div class="wrap">
+    <header class="pi-head" data-reveal>
+      <p class="kicker">Parte III — Las prendas</p>
+      <h2 class="display">Prendas de conexión</h2>
+      <p class="prose">Para acercar, el cuerpo se ve <strong>accesible, no blindado</strong>: invita a tocar. La silueta se afloja y el gesto se abre. Mandan la curva, la suavidad y la textura.</p>
+    </header>
+
+    <div class="grid-4">
+      <div class="icon-card" data-reveal>
+        <svg viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M25 10 C28 14 36 14 39 10"/>
+          <path d="M25 10 L17 14 L17 46 M39 10 L47 14 L47 46"/>
+          <path d="M17 14 L11 25 L17 28 M47 14 L53 25 L47 28"/>
+          <path d="M17 46 q3 5 6 0 q3 5 6 0 q3 5 6 0 q3 5 6 0 q3 5 6 0"/>
+          <path d="M32 17 q4 4 0 8 q-4 4 0 8 q4 4 0 8"/>
+        </svg>
+        <h3 class="kicker">Blusa con volados</h3>
+        <p>El movimiento y la curva humanizan; el volado suaviza.</p>
+      </div>
+
+      <div class="icon-card" data-reveal data-reveal-delay="1">
+        <svg viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M26 8 V14 M38 8 V14"/>
+          <path d="M26 14 C29 16.5 35 16.5 38 14"/>
+          <path d="M26 14 C24 28 21 42 16 54 M38 14 C40 28 43 42 48 54"/>
+          <path d="M16 54 q4 4 8 0 q4 4 8 0 q4 4 8 0 q4 4 8 0"/>
+          <path d="M29 24 C28 34 27 44 26 51 M35 24 C36 34 37 44 38 51"/>
+        </svg>
+        <h3 class="kicker">Silueta fluida</h3>
+        <p>Telas que caen: seda, modal, gasa. Sin corazas.</p>
+      </div>
+
+      <div class="icon-card" data-reveal data-reveal-delay="2">
+        <svg viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M25 10 C28 14 36 14 39 10"/>
+          <path d="M25 10 L17 14 L17 48 M39 10 L47 14 L47 48"/>
+          <path d="M17 14 L11 26 L17 29 M47 14 L53 26 L47 29"/>
+          <path d="M17 48 H47 M17 43 H47"/>
+          <path d="M21 43 V48 M25 43 V48 M29 43 V48 M33 43 V48 M37 43 V48 M41 43 V48 M45 43 V48" stroke-width="1.2"/>
+          <path d="M24 22 l3 3 l3 -3 M34 22 l3 3 l3 -3 M29 30 l3 3 l3 -3"/>
+        </svg>
+        <h3 class="kicker">Punto suave</h3>
+        <p>Todo lo que abriga a la vista: cercanía inmediata.</p>
+      </div>
+
+      <div class="icon-card" data-reveal data-reveal-delay="3">
+        <svg viewBox="0 0 64 64" width="64" height="64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+          <path d="M24 10 h16 v4 h-16 z"/>
+          <path d="M24 14 L15 52 M40 14 L49 52"/>
+          <path d="M15 52 Q32 58 49 52"/>
+          <path d="M29 18 L26 49 M35 18 L38 49"/>
+        </svg>
+        <h3 class="kicker">Falda con caída</h3>
+        <p>Escote despejado y línea A: apertura y calidez.</p>
+      </div>
+    </div>
+
+    <aside class="formula-band" data-reveal>
+      <p class="kicker">La fórmula · Conexión</p>
+      <p class="fb-frase">Punto crema + prenda fluida + accesorio orgánico (nada filoso) + calzado cómodo y elegante.</p>
+      <p class="fb-datos"><span class="fb-label">Tonos cálidos:</span> crema, tierra, rosa empolvado, nudes.</p>
+    </aside>
+  </div>
+</section>
+
+<!-- ══════════ Tus arquetipos de estilo ══════════ -->
+<section class="chapter" id="arquetipos">
+  <div class="wrap">
+    <header class="pi-head" data-reveal>
+      <p class="kicker">Parte III — Las prendas</p>
+      <h2 class="display">Tus arquetipos de estilo</h2>
+    </header>
+
+    <div class="grid-3">
+      <article class="arq-card" data-reveal>
+        <div class="arq-swatch arq-swatch--clasico"><span class="arq-tag">clásico</span></div>
+        <h3 class="kicker">Old Money</h3>
+        <p>Atemporal, neutros, calidad sobre logo. Dice: solidez, discreción, confianza.</p>
+      </article>
+
+      <article class="arq-card" data-reveal data-reveal-delay="1">
+        <div class="arq-swatch arq-swatch--creative"><span class="arq-tag">creative</span></div>
+        <h3 class="kicker">Chic &amp; Fun</h3>
+        <p>Mezcla, color y estampa con riesgo medido. Dice: apertura, originalidad, criterio.</p>
+      </article>
+
+      <article class="arq-card" data-reveal data-reveal-delay="2">
+        <div class="arq-swatch arq-swatch--sporty"><span class="arq-tag">sporty</span></div>
+        <h3 class="kicker">Deportivo elegante</h3>
+        <p>Comodidad con estructura, líneas limpias. Dice: modernidad, energía, naturalidad.</p>
+      </article>
+
+      <article class="arq-card" data-reveal>
+        <div class="arq-swatch arq-swatch--romantico"><span class="arq-tag">romántico</span></div>
+        <h3 class="kicker">Romántico</h3>
+        <p>Curvas, telas suaves, delicadeza. Dice: sensibilidad, ternura, cercanía.</p>
+      </article>
+
+      <article class="arq-card" data-reveal data-reveal-delay="1">
+        <div class="arq-swatch arq-swatch--dramatico"><span class="arq-tag">dramático</span></div>
+        <h3 class="kicker">Dramático</h3>
+        <p>Volumen, contraste, statement. Dice: presencia, carácter, autoridad estética.</p>
+      </article>
+
+      <article class="arq-card" data-reveal data-reveal-delay="2">
+        <div class="arq-swatch arq-swatch--sensual"><span class="arq-tag">sensual</span></div>
+        <h3 class="kicker">Sensual</h3>
+        <p>Siluetas que insinúan, piel medida. Dice: seguridad, magnetismo, dominio.</p>
+      </article>
+    </div>
+
+    <p class="arq-cierre" data-reveal>No sos un solo arquetipo: son idiomas que activás según lo que querés decir ese día.</p>
+  </div>
+</section>
+
+<!-- == 07-accesorios.html == -->
+<style>
+  /* ===== PARTE IV · portadilla ===== */
+  #parte-4 .wrap{
+    min-height:min(78vh,680px);
+    display:flex;flex-direction:column;justify-content:center;
+  }
+  #parte-4 .pt4-rule{
+    width:96px;height:1px;background:var(--line-dark);
+    margin:clamp(26px,4vh,38px) 0;
+  }
+  #parte-4 .lede{max-width:46ch}
+  #parte-4 .pt4-icons{
+    display:flex;align-items:center;gap:clamp(22px,4vw,42px);
+    margin-top:clamp(44px,8vh,76px);
+    color:var(--gold-soft);opacity:.5;
+  }
+  #parte-4 .pt4-icons svg{width:36px;height:36px;display:block}
+
+  /* ===== ACCESORIOS ===== */
+  #accesorios .acc-meta{
+    display:flex;align-items:baseline;justify-content:space-between;
+    gap:16px;margin-bottom:14px;
+  }
+  #accesorios .acc-num{
+    font-family:"Fraunces",Georgia,serif;font-style:italic;font-weight:300;
+    font-size:clamp(1.4rem,2.4vw,1.9rem);line-height:1;color:var(--brown);
+  }
+  #accesorios .acc-title{
+    font-size:clamp(1.85rem,3.4vw,2.75rem);
+    margin:0 0 20px;
+  }
+  #accesorios .acc-intro{max-width:58ch}
+  #accesorios .acc-grid{margin-top:clamp(30px,5vh,48px)}
+  #accesorios .icon-card svg{color:var(--ink);transition:color .4s ease,transform .4s ease}
+  @media (prefers-reduced-motion:no-preference){
+    #accesorios .icon-card:hover svg{color:var(--gold);transform:translateY(-3px)}
+  }
+  #accesorios .star-sep{margin:clamp(52px,9vh,88px) auto}
+  #accesorios .acc-tip-card{margin-top:clamp(28px,5vh,46px)}
+  #accesorios .acc-tip{
+    font-family:"Fraunces",Georgia,serif;font-style:italic;
+    font-size:1.08rem;line-height:1.65;color:var(--ink);margin:10px 0 0;
+  }
+  #accesorios .lens-frame{
+    border:1px solid var(--line);background:var(--cream-2);
+    display:grid;place-items:center;aspect-ratio:16/10;padding:8px;
+    margin-bottom:6px;
+  }
+  #accesorios .acc-close{
+    font-family:"Fraunces",Georgia,serif;font-style:italic;text-align:center;
+    color:var(--brown);font-size:clamp(1.05rem,2vw,1.25rem);line-height:1.6;
+    margin:clamp(36px,6vh,56px) auto 0;max-width:44ch;
+  }
+</style>
+
+<!-- ===================== PARTE IV — portadilla oscura ===================== -->
+<section class="chapter chapter--dark" id="parte-4">
+  <div class="wrap">
+    <p class="kicker" data-reveal>Parte IV</p>
+    <h2 class="display" data-reveal data-reveal-delay="1">El poder de<br>los accesorios</h2>
+    <div class="pt4-rule" aria-hidden="true" data-reveal data-reveal-delay="2"></div>
+    <p class="lede" data-reveal data-reveal-delay="2">El accesorio es la firma: cierra la frase que empezó la ropa. Son los ganchos de conexión que dirigen la mirada exactamente a donde vos querés.</p>
+    <div class="pt4-icons" aria-hidden="true" data-reveal data-reveal-delay="3">
+      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <circle cx="32" cy="13" r="1.6" fill="currentColor" stroke="none"/>
+        <circle cx="32" cy="36" r="15"/>
+      </svg>
+      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <path d="M9 20 C20 44 44 44 55 20"/>
+        <circle cx="32" cy="40.5" r="3"/>
+      </svg>
+      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <ellipse cx="32" cy="27" rx="18" ry="6.5"/>
+        <ellipse cx="32" cy="38" rx="18" ry="6.5"/>
+      </svg>
+      <svg viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+        <ellipse cx="18.5" cy="32" rx="10" ry="7.5"/>
+        <ellipse cx="45.5" cy="32" rx="10" ry="7.5"/>
+        <path d="M28.5 30 C30.5 28.5 33.5 28.5 35.5 30"/>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- ===================== LOS ACCESORIOS — 4 sub-bloques ===================== -->
+<section class="chapter" id="accesorios">
+  <div class="wrap">
+
+    <!-- 01 · EL ARO -->
+    <article class="acc-block" aria-labelledby="acc-aro-t">
+      <div class="acc-meta" data-reveal>
+        <p class="kicker">Parte IV — Los accesorios</p>
+        <span class="acc-num" aria-hidden="true">01</span>
+      </div>
+      <h2 class="display acc-title" id="acc-aro-t" data-reveal data-reveal-delay="1">El poder del aro</h2>
+      <p class="prose acc-intro" data-reveal data-reveal-delay="2">El aro enmarca el rostro y dirige la mirada hacia tus ojos y tu palabra. Es el accesorio que más cerca está de tu cara: elegí el mensaje con cuidado. Si el aro es protagonista, dejá el cuello limpio.</p>
+
+      <div class="grid-4 acc-grid">
+        <div class="icon-card" data-reveal>
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <circle cx="32" cy="13" r="1.3" fill="currentColor" stroke="none"/>
+            <line x1="32" y1="16" x2="32" y2="26"/>
+            <rect x="25" y="26" width="14" height="24" rx="1.5"/>
+          </svg>
+          <h3 class="kicker">Geométrico</h3>
+          <p>Estructura, decisión, mente clara. Autoridad moderna.</p>
+        </div>
+        <div class="icon-card" data-reveal data-reveal-delay="1">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <circle cx="32" cy="11" r="1.3" fill="currentColor" stroke="none"/>
+            <line x1="32" y1="14" x2="32" y2="18"/>
+            <path d="M32 18 C25 26 25 38 32 46 C39 38 39 26 32 18 Z"/>
+            <line x1="29" y1="49" x2="29" y2="54"/>
+            <line x1="35" y1="49" x2="35" y2="54"/>
+          </svg>
+          <h3 class="kicker">Statement</h3>
+          <p>Presencia pura. Dice &ldquo;estoy acá&rdquo; sin decir nada.</p>
+        </div>
+        <div class="icon-card" data-reveal data-reveal-delay="2">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <circle cx="32" cy="13" r="1.3" fill="currentColor" stroke="none"/>
+            <circle cx="32" cy="35" r="15"/>
+          </svg>
+          <h3 class="kicker">Argolla</h3>
+          <p>Clásico atemporal, energía, versatilidad diaria.</p>
+        </div>
+        <div class="icon-card" data-reveal data-reveal-delay="3">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <circle cx="32" cy="12" r="1.3" fill="currentColor" stroke="none"/>
+            <line x1="32" y1="15" x2="32" y2="32"/>
+            <circle cx="32" cy="41" r="8.5"/>
+          </svg>
+          <h3 class="kicker">Perla o gota</h3>
+          <p>Elegancia, romanticismo, suavidad al gesto.</p>
+        </div>
+      </div>
+    </article>
+
+    <div class="star-sep" aria-hidden="true">✦</div>
+
+    <!-- 02 · EL COLLAR -->
+    <article class="acc-block" aria-labelledby="acc-collar-t">
+      <div class="acc-meta" data-reveal>
+        <p class="kicker">Parte IV — Los accesorios</p>
+        <span class="acc-num" aria-hidden="true">02</span>
+      </div>
+      <h2 class="display acc-title" id="acc-collar-t" data-reveal data-reveal-delay="1">El poder del collar</h2>
+      <p class="prose acc-intro" data-reveal data-reveal-delay="2">El collar define el escote y crea el punto focal del torso. Escote y collar enmarcan tu rostro como un cuadro: un cuello largo pide piezas cortas; un escote abierto sostiene una pieza con caída.</p>
+
+      <div class="grid-4 acc-grid">
+        <div class="icon-card" data-reveal>
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M9 20 C17 32 47 32 55 20"/>
+            <path d="M11 23 C19 40 45 40 53 23"/>
+            <path d="M13 26 C21 48 43 48 51 26"/>
+          </svg>
+          <h3 class="kicker">Layering</h3>
+          <p>Capas superpuestas: presencia, creatividad, abundancia.</p>
+        </div>
+        <div class="icon-card" data-reveal data-reveal-delay="1">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <path d="M10 20 C20 42 44 42 54 20"/>
+            <circle cx="32" cy="39.8" r="3.2"/>
+          </svg>
+          <h3 class="kicker">Pieza fina</h3>
+          <p>Foco, elegancia, <em>quiet luxury</em>. Un solo punto.</p>
+        </div>
+        <div class="icon-card" data-reveal data-reveal-delay="2">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <circle cx="9" cy="21" r="2.6"/>
+            <circle cx="14" cy="27" r="2.6"/>
+            <circle cx="19.5" cy="33" r="2.6"/>
+            <circle cx="25.6" cy="36.6" r="2.6"/>
+            <circle cx="32" cy="38" r="2.6"/>
+            <circle cx="38.4" cy="36.6" r="2.6"/>
+            <circle cx="44.5" cy="33" r="2.6"/>
+            <circle cx="50" cy="27" r="2.6"/>
+            <circle cx="55" cy="21" r="2.6"/>
+          </svg>
+          <h3 class="kicker">Perlas</h3>
+          <p>Sofisticación clásica, herencia, ceremonia.</p>
+        </div>
+        <div class="icon-card" data-reveal data-reveal-delay="3">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <ellipse cx="11.1" cy="23.6" rx="3.2" ry="2.1" transform="rotate(54 11.1 23.6)"/>
+            <ellipse cx="17.4" cy="30.9" rx="3.2" ry="2.1" transform="rotate(44 17.4 30.9)"/>
+            <ellipse cx="24.5" cy="36.1" rx="3.2" ry="2.1" transform="rotate(26 24.5 36.1)"/>
+            <ellipse cx="32" cy="38" rx="3.2" ry="2.1"/>
+            <ellipse cx="39.5" cy="36.1" rx="3.2" ry="2.1" transform="rotate(-26 39.5 36.1)"/>
+            <ellipse cx="46.6" cy="30.9" rx="3.2" ry="2.1" transform="rotate(-44 46.6 30.9)"/>
+            <ellipse cx="52.9" cy="23.6" rx="3.2" ry="2.1" transform="rotate(-54 52.9 23.6)"/>
+          </svg>
+          <h3 class="kicker">Eslabón</h3>
+          <p>Fuerza, modernidad, actitud. Cadena con carácter.</p>
+        </div>
+      </div>
+    </article>
+
+    <div class="star-sep" aria-hidden="true">✦</div>
+
+    <!-- 03 · EL BRAZALETE -->
+    <article class="acc-block" aria-labelledby="acc-brazalete-t">
+      <div class="acc-meta" data-reveal>
+        <p class="kicker">Parte IV — Los accesorios</p>
+        <span class="acc-num" aria-hidden="true">03</span>
+      </div>
+      <h2 class="display acc-title" id="acc-brazalete-t" data-reveal data-reveal-delay="1">El poder del brazalete</h2>
+      <p class="prose acc-intro" data-reveal data-reveal-delay="2">Hablás con las manos, y el brazalete lo sabe. Atrae la atención hacia tus gestos: ideal cuando exponés, presentás o das un discurso. Cada movimiento de la muñeca subraya tu palabra.</p>
+
+      <div class="grid-4 acc-grid">
+        <div class="icon-card" data-reveal>
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <ellipse cx="32" cy="26" rx="20" ry="7"/>
+            <line x1="12" y1="26" x2="12" y2="37"/>
+            <line x1="52" y1="26" x2="52" y2="37"/>
+            <path d="M12 37 A20 7 0 0 0 52 37"/>
+          </svg>
+          <h3 class="kicker">Ancho / Cuff</h3>
+          <p>Poder, presencia, modernidad rotunda.</p>
+        </div>
+        <div class="icon-card" data-reveal data-reveal-delay="1">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <ellipse cx="32" cy="21" rx="19" ry="6.5"/>
+            <ellipse cx="32" cy="32" rx="19" ry="6.5"/>
+            <ellipse cx="32" cy="43" rx="19" ry="6.5"/>
+          </svg>
+          <h3 class="kicker">Apilado</h3>
+          <p>Energía, abundancia, carácter en movimiento.</p>
+        </div>
+        <div class="icon-card" data-reveal data-reveal-delay="2">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <ellipse cx="32" cy="23" rx="18" ry="5.5" transform="rotate(-4 32 23)"/>
+            <ellipse cx="32" cy="29.5" rx="18" ry="5.5" transform="rotate(3 32 29.5)"/>
+            <ellipse cx="32" cy="36" rx="18" ry="5.5" transform="rotate(-2 32 36)"/>
+            <ellipse cx="32" cy="42.5" rx="18" ry="5.5" transform="rotate(4 32 42.5)"/>
+          </svg>
+          <h3 class="kicker">Fino múltiple</h3>
+          <p>Delicadeza y movimiento sutil en la muñeca.</p>
+        </div>
+        <div class="icon-card" data-reveal data-reveal-delay="3">
+          <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+            <ellipse cx="32" cy="32" rx="20" ry="9.5"/>
+            <circle cx="32" cy="32" r="7"/>
+            <line x1="32" y1="32" x2="32" y2="27.7"/>
+            <line x1="32" y1="32" x2="35.2" y2="33.8"/>
+          </svg>
+          <h3 class="kicker">Reloj + pulsera</h3>
+          <p>Autoridad serena; la puntualidad como valor.</p>
+        </div>
+      </div>
+
+      <aside class="rule-card acc-tip-card" data-reveal>
+        <p class="kicker">Tip de oratoria</p>
+        <p class="acc-tip">Un metal en la muñeca convierte cada gesto en énfasis. Si vas a hablar en público, llevá algo en las manos.</p>
+      </aside>
+    </article>
+
+    <div class="star-sep" aria-hidden="true">✦</div>
+
+    <!-- 04 · EL LENTE -->
+    <article class="acc-block" aria-labelledby="acc-lente-t">
+      <div class="acc-meta" data-reveal>
+        <p class="kicker">Parte IV — Los accesorios</p>
+        <span class="acc-num" aria-hidden="true">04</span>
+      </div>
+      <h2 class="display acc-title" id="acc-lente-t" data-reveal data-reveal-delay="1">El significado del lente</h2>
+      <p class="prose acc-intro" data-reveal data-reveal-delay="2">El anteojo cubre los ojos —misterio, distancia— y, a la vez, define el carácter de todo el rostro. Elegí la forma que contraste con tus rasgos: los ángulos suavizan las curvas y las curvas dulcifican los ángulos.</p>
+
+      <div class="grid-4 acc-grid">
+        <div class="icon-card" data-reveal>
+          <div class="lens-frame">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M6 26.5 C6 25 7 24 8.5 24 H26 C27.5 24 28.5 25 28.5 26.5 V31 C28.5 36.5 25.5 39 20 39 H13.5 C8.5 39 6 35.5 6 31 Z"/>
+              <path d="M58 26.5 C58 25 57 24 55.5 24 H38 C36.5 24 35.5 25 35.5 26.5 V31 C35.5 36.5 38.5 39 44 39 H50.5 C55.5 39 58 35.5 58 31 Z"/>
+              <path d="M28.5 26.5 C30 25.2 34 25.2 35.5 26.5"/>
+              <path d="M6 26 L3 27.5"/>
+              <path d="M58 26 L61 27.5"/>
+            </svg>
+          </div>
+          <h3 class="kicker">The Classic</h3>
+          <p>Wayfarer. Atemporal, confiable, cool sin esfuerzo.</p>
+        </div>
+        <div class="icon-card" data-reveal data-reveal-delay="1">
+          <div class="lens-frame">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.25" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <ellipse cx="18.5" cy="32" rx="10.5" ry="8"/>
+              <ellipse cx="45.5" cy="32" rx="10.5" ry="8"/>
+              <path d="M29 30.5 C30.5 29 33.5 29 35 30.5"/>
+              <path d="M8 30.5 L4 29"/>
+              <path d="M56 30.5 L60 29"/>
+            </svg>
+          </div>
+          <h3 class="kicker">Quiet Luxury</h3>
+          <p>Metal fino, óvalo. Sofisticación silenciosa y control.</p>
+        </div>
+        <div class="icon-card" data-reveal data-reveal-delay="2">
+          <div class="lens-frame">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <rect x="5" y="22" width="24" height="20.5" rx="7"/>
+              <rect x="35" y="22" width="24" height="20.5" rx="7"/>
+              <path d="M29 26.5 C30.5 25 33.5 25 35 26.5" stroke-width="1.6"/>
+            </svg>
+          </div>
+          <h3 class="kicker">Maximalista</h3>
+          <p>Oversized, lente de color. Creatividad y vintage.</p>
+        </div>
+        <div class="icon-card" data-reveal data-reveal-delay="3">
+          <div class="lens-frame">
+            <svg width="64" height="64" viewBox="0 0 64 64" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">
+              <path d="M5 28 C15 23.5 49 23.5 59 28 C55 36.5 44.5 40 32 40 C19.5 40 9 36.5 5 28 Z"/>
+              <line x1="32" y1="24.9" x2="32" y2="40"/>
+            </svg>
+          </div>
+          <h3 class="kicker">Futurista</h3>
+          <p>Envolvente. Audacia, modernidad, pura actitud.</p>
+        </div>
+      </div>
+
+      <p class="acc-close" data-reveal>Detrás de un buen lente, siempre hay una decisión —no un descuido.</p>
+    </article>
+
+  </div>
+</section>
+
+<!-- == 08-cierre.html == -->
+<!-- ═══════════════════════════════════════════════════════════════
+     08 · CIERRE — construir tu capital · el espejo · final
+     Secciones: #cierre-construir (crema + banda oscura) ·
+                #espejo (crema, widget checklist) · #final (oscura + footer)
+     ═══════════════════════════════════════════════════════════════ -->
+<style>
+  /* ── CIERRE-CONSTRUIR ─────────────────────────────────────────── */
+  #cierre-construir .cc-intro{
+    margin-top:20px;max-width:52ch;color:var(--ink-soft);
+    font-size:15.5px;line-height:1.75;
+  }
+  #cierre-construir .cc-steps{
+    list-style:none;padding:0;
+    margin:clamp(36px,6vh,64px) 0 0;
+    column-gap:clamp(28px,5vw,72px);row-gap:0;
+  }
+  #cierre-construir .cc-step{
+    display:flex;gap:clamp(16px,3vw,28px);align-items:baseline;
+    padding:clamp(24px,3.6vh,34px) 0;
+    border-bottom:1px solid var(--line);
+  }
+  #cierre-construir .cc-num{
+    font-family:"Fraunces",serif;font-style:italic;font-weight:350;
+    font-size:clamp(2.1rem,3.4vw,2.8rem);line-height:1;
+    color:var(--brown);flex:none;min-width:1.3ch;
+  }
+  #cierre-construir .cc-label{
+    font-family:"Montserrat",sans-serif;font-weight:600;font-size:12px;
+    letter-spacing:.24em;text-transform:uppercase;color:var(--ink);margin:0;
+  }
+  #cierre-construir .cc-desc{
+    margin:9px 0 0;font-size:14.5px;line-height:1.7;color:var(--ink-soft);
+  }
+  /* banda oscura · paso 7 */
+  #cierre-construir .cc-band{
+    background:var(--dark);color:var(--paper-dark);
+  }
+  #cierre-construir .cc-band-inner{
+    max-width:1060px;margin:0 auto;
+    padding:clamp(44px,7vh,76px) clamp(20px,5vw,56px);
+    display:flex;gap:clamp(22px,4vw,44px);align-items:baseline;
+  }
+  #cierre-construir .cc-band .cc-num{
+    color:var(--gold);font-size:clamp(2.8rem,5vw,3.8rem);min-width:auto;
+  }
+  #cierre-construir .cc-band-label{
+    font-family:"Montserrat",sans-serif;font-weight:600;font-size:12px;
+    letter-spacing:.24em;text-transform:uppercase;color:var(--gold-soft);margin:0;
+  }
+  #cierre-construir .cc-band-text{
+    margin:16px 0 0;max-width:36em;
+    font-family:"Fraunces",serif;font-style:italic;font-weight:340;
+    font-size:clamp(1.15rem,2.1vw,1.5rem);line-height:1.55;
+  }
+  #cierre-construir .cc-band-text strong{
+    color:var(--gold);font-weight:520;
+  }
+  @media (max-width:560px){
+    #cierre-construir .cc-band-inner{flex-direction:column;gap:14px}
+  }
+
+  /* ── ESPEJO · checklist ───────────────────────────────────────── */
+  #espejo .esp-intro{
+    margin-top:20px;max-width:52ch;color:var(--ink-soft);
+    font-size:15.5px;line-height:1.75;
+  }
+  #espejo .esp-panel{
+    margin-top:clamp(36px,6vh,56px);
+    background:var(--cream-2);
+    padding:clamp(26px,4.5vw,48px);
+  }
+  #espejo .esp-head{
+    display:flex;justify-content:space-between;align-items:center;
+    gap:20px;flex-wrap:wrap;
+    padding-bottom:clamp(18px,3vh,26px);
+    border-bottom:1px solid var(--line);
+  }
+  #espejo .esp-meter{position:relative;width:64px;height:64px;flex:none}
+  #espejo .esp-meter svg{display:block;width:64px;height:64px;transform:rotate(-90deg)}
+  #espejo .esp-ring-track{fill:none;stroke:var(--line);stroke-width:2.5}
+  #espejo .esp-ring-bar{
+    fill:none;stroke:var(--gold);stroke-width:2.5;stroke-linecap:round;
+    transition:stroke-dashoffset .5s cubic-bezier(.22,.61,.36,1);
+  }
+  #espejo .esp-count{
+    position:absolute;inset:0;display:grid;place-items:center;
+    font-family:"Fraunces",serif;font-style:italic;font-weight:400;
+    font-size:15px;color:var(--ink);
+  }
+  #espejo .esp-reset{
+    appearance:none;background:transparent;cursor:pointer;
+    border:1px solid var(--line);padding:11px 20px;
+    font-family:"Montserrat",sans-serif;font-weight:600;font-size:11px;
+    letter-spacing:.2em;text-transform:uppercase;color:var(--ink-soft);
+    transition:border-color .25s,color .25s;
+  }
+  #espejo .esp-reset:hover{border-color:var(--gold);color:var(--ink)}
+  #espejo .esp-reset:focus-visible{outline:2px solid var(--gold);outline-offset:3px}
+  #espejo .esp-list{
+    list-style:none;margin:0;padding:0;
+    display:grid;grid-template-columns:1fr 1fr;
+    column-gap:clamp(26px,4vw,52px);row-gap:0;
+  }
+  #espejo .esp-item{margin:0}
+  #espejo .esp-item label{
+    display:flex;gap:15px;align-items:flex-start;cursor:pointer;
+    padding:clamp(15px,2.4vh,20px) 0;
+    border-bottom:1px solid var(--line);
+  }
+  #espejo .esp-item input{
+    position:absolute;width:1px;height:1px;margin:-1px;padding:0;
+    overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;
+  }
+  #espejo .esp-box{
+    flex:none;width:21px;height:21px;margin-top:2px;
+    border:1px solid var(--ink);background:transparent;
+    display:grid;place-items:center;
+    transition:border-color .25s;
+  }
+  #espejo .esp-box svg{
+    width:13px;height:13px;fill:none;stroke:var(--gold);stroke-width:2.4;
+    stroke-linecap:round;stroke-linejoin:round;
+    stroke-dasharray:20;stroke-dashoffset:20;
+    transition:stroke-dashoffset .35s ease .05s;
+  }
+  #espejo .esp-item input:checked + .esp-box{border-color:var(--gold)}
+  #espejo .esp-item input:checked + .esp-box svg{stroke-dashoffset:0}
+  #espejo .esp-item input:focus-visible + .esp-box{outline:2px solid var(--gold);outline-offset:3px}
+  #espejo .esp-text{
+    font-size:15px;line-height:1.6;color:var(--ink);transition:color .3s;
+  }
+  #espejo .esp-item input:checked ~ .esp-text{color:var(--ink-soft)}
+  #espejo .esp-foot{
+    margin-top:clamp(20px,3.4vh,28px);min-height:28px;
+    display:flex;justify-content:center;text-align:center;
+  }
+  #espejo .esp-msg{
+    margin:0;font-family:"Fraunces",serif;font-style:italic;font-weight:400;
+    font-size:clamp(1.1rem,1.8vw,1.3rem);color:var(--ink);
+  }
+  #espejo .esp-msg .esp-star{color:var(--gold);font-style:normal}
+  #espejo .esp-cta{display:inline-block;margin-top:10px;color:var(--brown);font:500 .82rem/1.5 Montserrat,sans-serif;letter-spacing:.04em;text-decoration:underline;text-underline-offset:5px;text-decoration-color:var(--gold)}
+  #espejo .esp-cta:hover{color:var(--ink)}
+  @media (max-width:760px){
+    #espejo .esp-list{grid-template-columns:1fr}
+  }
+  @media (prefers-reduced-motion:reduce){
+    #espejo .esp-ring-bar,#espejo .esp-box svg,#espejo .esp-text{transition:none}
+  }
+
+  /* ── FINAL · cita + CTA + footer ──────────────────────────────── */
+  #final .final-hero{text-align:center}
+  #final .final-quote{
+    margin:clamp(30px,5vh,48px) auto 0;max-width:24ch;
+    font-family:"Fraunces",serif;font-style:italic;font-weight:320;
+    font-size:clamp(1.9rem,4.4vw,3.1rem);line-height:1.3;
+    color:var(--paper-dark);
+  }
+  #final .final-quote p{margin:0}
+  #final .final-quote em{font-style:inherit;color:var(--gold-soft)}
+  #final .final-author{margin-top:clamp(24px,4vh,36px)}
+  #final .final-name{
+    margin:0;font-family:"Montserrat",sans-serif;font-weight:600;
+    font-size:13px;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--gold-soft);
+  }
+  #final .final-role{
+    margin:12px auto 0;max-width:36ch;
+    font-family:"Montserrat",sans-serif;font-weight:600;font-size:11px;
+    letter-spacing:.18em;text-transform:uppercase;line-height:1.9;
+    color:var(--paper-dark);
+  }
+  #final .final-cta{
+    max-width:640px;margin:clamp(52px,8vh,84px) auto 0;
+    padding:clamp(30px,5vw,44px);text-align:center;
+  }
+  #final .final-cta-text{
+    margin:0 auto;max-width:34ch;
+    font-family:"Fraunces",serif;font-style:italic;font-weight:340;
+    font-size:clamp(1.1rem,2vw,1.3rem);line-height:1.6;
+    color:var(--paper-dark);
+  }
+  #final .final-actions{
+    margin-top:28px;display:flex;justify-content:center;align-items:center;
+    gap:clamp(16px,3vw,26px);flex-wrap:wrap;
+  }
+  #final .btn-wa{
+    display:inline-block;background:var(--gold);color:var(--ink);
+    padding:16px 30px;text-decoration:none;
+    font-family:"Montserrat",sans-serif;font-weight:600;font-size:12px;
+    letter-spacing:.16em;text-transform:uppercase;
+    transition:background .25s;
+  }
+  #final .btn-wa:hover{background:var(--gold-soft)}
+  #final .btn-wa:focus-visible{outline:2px solid var(--gold-soft);outline-offset:3px}
+  #final .link-ig{
+    font-family:"Montserrat",sans-serif;font-weight:500;font-size:13.5px;
+    letter-spacing:.06em;color:var(--gold-soft);
+    text-decoration:underline;text-underline-offset:5px;
+    text-decoration-color:rgba(201,161,92,.45);
+    transition:color .25s;
+  }
+  #final .link-ig:hover{color:var(--paper-dark)}
+  #final .link-ig:focus-visible{outline:2px solid var(--gold-soft);outline-offset:3px}
+  #final .final-footer{
+    margin-top:clamp(64px,10vh,110px);
+    border-top:1px solid var(--line-dark);
+    padding-top:clamp(36px,6vh,56px);
+    display:flex;flex-direction:column;align-items:center;gap:18px;
+    text-align:center;
+  }
+  #final .final-footer img{height:36px;width:auto;opacity:.94}
+  #final .footer-legend{
+    margin:0;font-family:"Montserrat",sans-serif;font-weight:600;
+    font-size:11px;letter-spacing:.32em;text-transform:uppercase;
+    color:var(--gold-soft);
+  }
+  #final .footer-meta{
+    margin:0;font-family:"Montserrat",sans-serif;font-weight:400;
+    font-size:12.5px;letter-spacing:.04em;line-height:2;
+    color:rgba(237,230,218,.72);
+  }
+  #final .footer-meta a{
+    color:rgba(237,230,218,.88);text-decoration:underline;
+    text-underline-offset:4px;text-decoration-color:rgba(237,230,218,.35);
+    transition:color .25s;
+  }
+  #final .footer-meta a:hover{color:var(--gold-soft)}
+  #final .footer-meta a:focus-visible{outline:2px solid var(--gold-soft);outline-offset:3px}
+  #final .footer-sep{margin:0 8px;color:rgba(237,230,218,.4)}
+</style>
+
+<!-- ── CIERRE · Construir tu capital ─────────────────────────────── -->
+<section class="chapter" id="cierre-construir">
+  <div class="wrap">
+    <header data-reveal>
+      <p class="kicker">Cierre — Capital de Esencia Visual</p>
+      <h2 class="display">Construir tu capital de esencia visual</h2>
+      <p class="cc-intro">Una secuencia para no volver a vestirte en automático. De adentro hacia afuera, siempre en este orden:</p>
+    </header>
+
+    <ol class="grid-2 cc-steps">
+      <li class="cc-step" data-reveal data-reveal-delay="1">
+        <span class="cc-num" aria-hidden="true">1</span>
+        <div>
+          <h3 class="cc-label">Esencia</h3>
+          <p class="cc-desc">Quién sos. Tu verdad, no la moda del momento.</p>
+        </div>
+      </li>
+      <li class="cc-step" data-reveal data-reveal-delay="2">
+        <span class="cc-num" aria-hidden="true">2</span>
+        <div>
+          <h3 class="cc-label">Objetivo</h3>
+          <p class="cc-desc">Qué querés comunicar hoy, en este escenario.</p>
+        </div>
+      </li>
+      <li class="cc-step" data-reveal data-reveal-delay="1">
+        <span class="cc-num" aria-hidden="true">3</span>
+        <div>
+          <h3 class="cc-label">Color</h3>
+          <p class="cc-desc">El tono que traduce ese objetivo en emoción.</p>
+        </div>
+      </li>
+      <li class="cc-step" data-reveal data-reveal-delay="2">
+        <span class="cc-num" aria-hidden="true">4</span>
+        <div>
+          <h3 class="cc-label">Prenda</h3>
+          <p class="cc-desc">La silueta que sostiene el mensaje.</p>
+        </div>
+      </li>
+      <li class="cc-step" data-reveal data-reveal-delay="1">
+        <span class="cc-num" aria-hidden="true">5</span>
+        <div>
+          <h3 class="cc-label">Estampa</h3>
+          <p class="cc-desc">El matiz de tu carácter —o su ausencia deliberada.</p>
+        </div>
+      </li>
+      <li class="cc-step" data-reveal data-reveal-delay="2">
+        <span class="cc-num" aria-hidden="true">6</span>
+        <div>
+          <h3 class="cc-label">Accesorio</h3>
+          <p class="cc-desc">La firma que cierra la frase y dirige la mirada.</p>
+        </div>
+      </li>
+    </ol>
+  </div>
+
+  <div class="cc-band" data-reveal>
+    <div class="cc-band-inner">
+      <span class="cc-num" aria-hidden="true">7</span>
+      <div>
+        <h3 class="cc-band-label">Habitar</h3>
+        <p class="cc-band-text">El gesto, la postura, la seguridad. Sin esto, nada de lo anterior funciona. La imagen no es superficie: es <strong>estrategia con alma</strong>.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── CIERRE · El espejo (widget checklist) ─────────────────────── -->
+<section class="chapter" id="espejo">
+  <div class="wrap">
+    <header data-reveal>
+      <p class="kicker">Cierre</p>
+      <h2 class="display">El espejo</h2>
+      <p class="esp-intro">Antes de salir, pasá tu look por estas preguntas. Si dudás en alguna, ajustá.</p>
+    </header>
+
+    <div class="esp-panel frame" data-reveal data-reveal-delay="1">
+      <div class="esp-head">
+        <div class="esp-meter">
+          <svg viewBox="0 0 72 72" aria-hidden="true" focusable="false">
+            <circle class="esp-ring-track" cx="36" cy="36" r="32"></circle>
+            <circle class="esp-ring-bar" data-ring cx="36" cy="36" r="32"
+                    stroke-dasharray="201.062" stroke-dashoffset="201.062"></circle>
+          </svg>
+          <span class="esp-count"><span data-count role="status">0/6</span></span>
+        </div>
+        <button type="button" class="esp-reset" data-reset>Reiniciar</button>
+      </div>
+
+      <ul class="esp-list" aria-label="Checklist de El espejo">
+        <li class="esp-item">
+          <label>
+            <input type="checkbox" data-q="1">
+            <span class="esp-box" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4"/></svg></span>
+            <span class="esp-text">¿Qué quiero comunicar hoy? ¿Está claro el objetivo?</span>
+          </label>
+        </li>
+        <li class="esp-item">
+          <label>
+            <input type="checkbox" data-q="2">
+            <span class="esp-box" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4"/></svg></span>
+            <span class="esp-text">¿Los colores dicen lo mismo que ese objetivo?</span>
+          </label>
+        </li>
+        <li class="esp-item">
+          <label>
+            <input type="checkbox" data-q="3">
+            <span class="esp-box" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4"/></svg></span>
+            <span class="esp-text">¿La silueta sostiene el mensaje o lo contradice?</span>
+          </label>
+        </li>
+        <li class="esp-item">
+          <label>
+            <input type="checkbox" data-q="4">
+            <span class="esp-box" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4"/></svg></span>
+            <span class="esp-text">¿Hay un punto focal —color o accesorio— que guíe la mirada?</span>
+          </label>
+        </li>
+        <li class="esp-item">
+          <label>
+            <input type="checkbox" data-q="5">
+            <span class="esp-box" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4"/></svg></span>
+            <span class="esp-text">¿Me representa, o me estoy disfrazando de otro?</span>
+          </label>
+        </li>
+        <li class="esp-item">
+          <label>
+            <input type="checkbox" data-q="6">
+            <span class="esp-box" aria-hidden="true"><svg viewBox="0 0 16 16"><path d="M3 8.5 6.5 12 13 4"/></svg></span>
+            <span class="esp-text">¿Puedo habitar esto con seguridad durante todo el día?</span>
+          </label>
+        </li>
+      </ul>
+
+      <div class="esp-foot" aria-live="polite">
+        <p class="esp-msg" data-msg hidden>Lista. Salí a que te lean. <span class="esp-star" aria-hidden="true">✦</span><br><a class="esp-cta" href="#final">¿Querés afinarlo con Tarsila? Conocé la asesoría 1 a 1 →</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ── FINAL · cita, CTA y footer ────────────────────────────────── -->
+<section class="chapter chapter--dark" id="final">
+  <div class="wrap">
+    <div class="final-hero">
+      <div data-reveal>
+        <h2 class="kicker">Capital de Esencia Visual</h2>
+        <blockquote class="final-quote">
+          <p>No te vistas para que te miren.<br>Vestite para que te <em>lean</em>.</p>
+        </blockquote>
+      </div>
+
+      <div data-reveal data-reveal-delay="1">
+        <div class="star-sep" aria-hidden="true">✦</div>
+        <div class="final-author">
+          <p class="final-name">Tarsila Cicconetti</p>
+          <p class="final-role">Asesora de imagen con propósito<br>&amp; descodificadora visual</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="card final-cta" data-reveal data-reveal-delay="2">
+      <p class="kicker final-cta-kicker">El siguiente paso</p>
+      <p class="final-cta-text">El manual te dio el idioma. En la asesoría personalizada 1 a 1 lo aplicamos a vos: tu paleta, tu placard y tus próximos escenarios.</p>
+      <div class="final-actions">
+        <a class="btn-wa"
+           href="https://wa.me/5493794781862?text=Hola%21%20Le%C3%AD%20el%20manual%20Capital%20de%20Esencia%20Visual%20y%20quiero%20consultar%20por%20la%20asesor%C3%ADa%201%20a%201"
+           target="_blank" rel="noopener">Quiero mi asesoría 1 a 1</a>
+        <a class="link-ig" href="https://instagram.com/tc.managementd" target="_blank" rel="noopener">@tc.managementd</a>
+      </div>
+    </div>
+
+    <footer class="final-footer" data-reveal>
+      <img src="https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev/tc/capital-esencia-visual/img/tc-logo-white.png"
+           alt="TC Management" width="1200" height="143" loading="lazy">
+      <p class="footer-legend">Somos Esencia · Somos TC.</p>
+      <p class="footer-meta">
+        <a href="https://tcmanagement.com.ar" target="_blank" rel="noopener">tcmanagement.com.ar</a>
+        <span class="footer-sep" aria-hidden="true">·</span>
+        <span>© 2026 Tarsila Cicconetti · TC Management</span>
+      </p>
+    </footer>
+  </div>
+</section>
+
+<script>
+(function () {
+  var root = document.getElementById('espejo');
+  if (!root) return;
+
+  var boxes = Array.prototype.slice.call(root.querySelectorAll('.esp-item input[type="checkbox"]'));
+  if (!boxes.length) return;
+
+  var KEY = 'cev-espejo';
+  var countEl = root.querySelector('[data-count]');
+  var ring = root.querySelector('[data-ring]');
+  var msg = root.querySelector('[data-msg]');
+  var reset = root.querySelector('[data-reset]');
+  var circ = ring ? parseFloat(ring.getAttribute('stroke-dasharray')) || 201.062 : 0;
+
+  function load() {
+    try {
+      var raw = localStorage.getItem(KEY);
+      if (!raw) return;
+      var arr = JSON.parse(raw);
+      if (Array.isArray(arr)) {
+        boxes.forEach(function (b, i) { b.checked = !!arr[i]; });
+      }
+    } catch (e) { /* almacenamiento no disponible */ }
+  }
+
+  function save() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(boxes.map(function (b) { return b.checked; })));
+    } catch (e) { /* almacenamiento no disponible */ }
+  }
+
+  function render() {
+    var n = boxes.filter(function (b) { return b.checked; }).length;
+    var total = boxes.length;
+    if (countEl) countEl.textContent = n + '/' + total;
+    if (ring) ring.style.strokeDashoffset = String(circ * (1 - n / total));
+    if (msg) msg.hidden = (n !== total);
+  }
+
+  boxes.forEach(function (b) {
+    b.addEventListener('change', function () { save(); render(); });
+  });
+
+  if (reset) {
+    reset.addEventListener('click', function () {
+      boxes.forEach(function (b) { b.checked = false; });
+      try { localStorage.removeItem(KEY); } catch (e) { /* noop */ }
+      render();
+    });
+  }
+
+  load();
+  render();
+})();
+</script>
+</main>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+(function(){
+  'use strict';
+  var d=document, w=window, root=d.documentElement;
+
+  /* ---------- Barra de progreso ---------- */
+  var bar=d.getElementById('progress-bar');
+  var ticking=false;
+  function paintProgress(){
+    ticking=false;
+    if(!bar) return;
+    var max=root.scrollHeight-w.innerHeight;
+    var p=max>0?(w.scrollY||root.scrollTop||0)/max:0;
+    bar.style.width=(Math.min(1,Math.max(0,p))*100).toFixed(2)+'%';
+  }
+  function onScroll(){
+    if(!ticking){ticking=true;requestAnimationFrame(paintProgress);}
+  }
+  w.addEventListener('scroll',onScroll,{passive:true});
+  w.addEventListener('resize',onScroll);
+  paintProgress();
+
+  /* ---------- Reveal ---------- */
+  var revealEls=[].slice.call(d.querySelectorAll('[data-reveal]'));
+  if(revealEls.length){
+    if('IntersectionObserver' in w){
+      var io=new IntersectionObserver(function(entries){
+        entries.forEach(function(en){
+          if(en.isIntersecting){
+            en.target.classList.add('is-in');
+            io.unobserve(en.target);
+          }
+        });
+      },{rootMargin:'0px 0px -10% 0px',threshold:0});
+      revealEls.forEach(function(el){io.observe(el);});
+    }else{
+      revealEls.forEach(function(el){el.classList.add('is-in');});
+    }
+  }
+
+  /* ---------- Scrollspy ---------- */
+  var chapters=[].slice.call(d.querySelectorAll('section.chapter[id]'));
+  var linkMap={};
+  [].slice.call(d.querySelectorAll('.toc a[href^="#"]')).forEach(function(a){
+    var id=a.getAttribute('href').slice(1);
+    (linkMap[id]=linkMap[id]||[]).push(a);
+  });
+  var preContent={portada:1,intro:1,indice:1};
+  function setActive(id){
+    Object.keys(linkMap).forEach(function(k){
+      linkMap[k].forEach(function(a){
+        var on=(k===id);
+        a.classList.toggle('is-active',on);
+        if(on){a.setAttribute('aria-current','true');}
+        else{a.removeAttribute('aria-current');}
+      });
+    });
+  }
+  if('IntersectionObserver' in w && chapters.length){
+    var spy=new IntersectionObserver(function(entries){
+      entries.forEach(function(en){
+        if(!en.isIntersecting) return;
+        var id=en.target.id;
+        if(linkMap[id]){setActive(id);}
+        else if(preContent[id]){setActive(null);}
+        /* portadillas intermedias: se mantiene el último ítem activo */
+      });
+    },{rootMargin:'-42% 0px -52% 0px',threshold:0});
+    chapters.forEach(function(s){spy.observe(s);});
+  }
+
+  /* ---------- Copiar al portapapeles + toast ---------- */
+  var toast=d.getElementById('toast'), toastTimer=null;
+  function showToast(){
+    if(!toast) return;
+    toast.textContent='';
+    requestAnimationFrame(function(){
+      toast.innerHTML='Copiado <span class="toast__star" aria-hidden="true">✦</span>';
+      toast.classList.add('is-show');
+    });
+    clearTimeout(toastTimer);
+    toastTimer=setTimeout(function(){toast.classList.remove('is-show');},1700);
+  }
+  function copyFallback(val){
+    var ta=d.createElement('textarea');
+    ta.value=val;
+    ta.setAttribute('readonly','');
+    ta.style.position='fixed';
+    ta.style.opacity='0';
+    d.body.appendChild(ta);
+    ta.select();
+    try{d.execCommand('copy');showToast();}catch(err){}
+    d.body.removeChild(ta);
+  }
+  d.addEventListener('click',function(e){
+    var t=e.target&&e.target.closest?e.target.closest('[data-copy]'):null;
+    if(!t) return;
+    var val=t.getAttribute('data-copy');
+    if(!val) return;
+    if(navigator.clipboard&&navigator.clipboard.writeText){
+      navigator.clipboard.writeText(val).then(showToast,function(){copyFallback(val);});
+    }else{
+      copyFallback(val);
+    }
+  });
+
+  /* ---------- Drawer mobile ---------- */
+  var btn=d.getElementById('menu-btn'),
+      drawer=d.getElementById('drawer'),
+      scrim=d.getElementById('scrim'),
+      closeBtn=d.getElementById('drawer-close');
+  var isOpen=false, lastFocus=null;
+
+  function setDrawer(next){
+    if(!drawer||isOpen===next) return;
+    isOpen=next;
+    drawer.classList.toggle('is-open',isOpen);
+    drawer.setAttribute('aria-hidden',isOpen?'false':'true');
+    if(scrim) scrim.classList.toggle('is-show',isOpen);
+    if(btn) btn.setAttribute('aria-expanded',isOpen?'true':'false');
+    root.classList.toggle('drawer-open',isOpen);
+    var main=d.getElementById('cev');
+    if(main&&('inert' in main)) main.inert=isOpen;
+    if(isOpen){
+      lastFocus=d.activeElement;
+      var first=drawer.querySelector('a,button');
+      if(first) first.focus();
+    }else if(lastFocus&&lastFocus.focus){
+      lastFocus.focus();
+      lastFocus=null;
+    }
+  }
+  if(btn) btn.addEventListener('click',function(){setDrawer(!isOpen);});
+  if(closeBtn) closeBtn.addEventListener('click',function(){setDrawer(false);});
+  if(scrim) scrim.addEventListener('click',function(){setDrawer(false);});
+  d.addEventListener('keydown',function(e){
+    if(e.key==='Escape'&&isOpen) setDrawer(false);
+  });
+
+  /* ---------- Scroll suave + cierre del drawer en anchors ---------- */
+  d.addEventListener('click',function(e){
+    var a=e.target&&e.target.closest?e.target.closest('a[href^="#"]'):null;
+    if(!a) return;
+    var id=a.getAttribute('href').slice(1);
+    if(!id) return;
+    var target=d.getElementById(id);
+    if(!target) return;
+    /* cerrar el drawer antes de scrollear (libera el overflow del body) */
+    if(isOpen) setDrawer(false);
+  });
+})();
+</script>
+<script>
+/* índice desplegable (desktop) */
+(function(){
+  var root=document.documentElement;
+  var fold=document.getElementById('nav-fold');
+  var unfold=document.getElementById('nav-unfold');
+  if(!fold||!unfold) return;
+  function set(f,moveFocus){
+    root.classList.toggle('nav-folded',f);
+    fold.setAttribute('aria-expanded',f?'false':'true');
+    try{localStorage.setItem('cev-nav',f?'folded':'open')}catch(e){}
+    if(moveFocus){(f?unfold:fold).focus()}
+  }
+  fold.addEventListener('click',function(){set(true,true)});
+  unfold.addEventListener('click',function(){set(false,true)});
+  if(root.classList.contains('nav-folded')) fold.setAttribute('aria-expanded','false');
+})();
+</script>
+</body>
+</html>
