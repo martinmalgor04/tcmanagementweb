@@ -41,10 +41,27 @@ export function sessionSecret(): string {
   return required("CAPITAL_SESSION_SECRET")
 }
 
+export const PRODUCTION_SITE_URL = "https://tcmanagement.com.ar"
+
+function isLocalhost(url: string): boolean {
+  return /^https?:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])(:\d+)?$/i.test(url)
+}
+
+/**
+ * Base para los links que viajan por mail. Corriendo en Vercel se ignora
+ * cualquier valor que apunte a localhost: el síntoma de ese error es un mail
+ * que sólo abre en la máquina de quien lo mandó, y la compradora se queda sin
+ * poder entrar.
+ */
 export function siteUrl(): string {
-  const explicit = process.env.CAPITAL_SITE_URL || process.env.NEXT_PUBLIC_SITE_URL
-  if (explicit) return explicit.replace(/\/+$/, "")
-  if (process.env.VERCEL_ENV === "production") return "https://tcmanagement.com.ar"
+  const explicit = (process.env.CAPITAL_SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || "").replace(/\/+$/, "")
+
+  if (explicit) {
+    if (!process.env.VERCEL || !isLocalhost(explicit)) return explicit
+    console.warn(`[capital] CAPITAL_SITE_URL=${explicit} es inválida en Vercel, se ignora`)
+  }
+
+  if (process.env.VERCEL_ENV === "production") return PRODUCTION_SITE_URL
   if (process.env.VERCEL_URL) return `https://${process.env.VERCEL_URL}`
   return "http://localhost:3000"
 }
