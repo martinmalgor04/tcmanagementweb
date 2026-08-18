@@ -9,6 +9,8 @@ import {
   type ReactNode,
 } from "react"
 
+import { track } from "@/lib/capital/track-client"
+
 /* ============================================================
    DATOS DEL PRODUCTO — editá acá y se actualiza toda la página
    ============================================================ */
@@ -229,6 +231,9 @@ function CtaButton({
     <a
       href={href}
       rel="noopener noreferrer"
+      onClick={() => {
+        if (href === CHECKOUT_URL) track("checkout_click")
+      }}
       className={`cev-cta cev-shine relative inline-flex items-center justify-center gap-3 rounded-full bg-[#f5f4f2] px-10 py-4 text-sm font-bold uppercase tracking-[0.22em] text-[#070707] sm:px-12 sm:py-5 sm:text-base ${className}`}
     >
       {pulse && <span className="cev-pulse-ring" aria-hidden />}
@@ -322,10 +327,14 @@ export default function CapitalLanding() {
   const showSticky = useStickyCta()
   const [openFaq, setOpenFaq] = useState<number | null>(0)
 
+  useEffect(() => {
+    track("landing_view")
+  }, [])
+
   const faqs = [
     {
       q: "¿Cómo y cuándo lo recibo?",
-      a: "Apenas se acredita el pago te llega el link de descarga. Es un PDF: lo leés en el celu, la tablet o la compu, y queda tuyo para siempre.",
+      a: "Apenas se acredita el pago te llega un mail con tu link de acceso. Lo abrís y entrás al manual completo desde el celu, la tablet o la compu, sin descargar nada. El acceso es tuyo y queda siempre disponible.",
     },
     {
       q: "¿Necesito saber de moda o de imagen?",
@@ -333,7 +342,7 @@ export default function CapitalLanding() {
     },
     {
       q: "¿Qué formato tiene?",
-      a: "Manual digital, visual y directo al punto: 8 colores con su mensaje, paletas que funcionan, código de estampas, fórmulas de prendas, guía de accesorios, la secuencia de 7 pasos y el checklist del espejo. Lo leés en una tarde y lo usás toda la vida.",
+      a: "Es un manual digital interactivo que se lee online, visual y directo al punto: 8 colores con su mensaje, paletas que funcionan, código de estampas, fórmulas de prendas, guía de accesorios, la secuencia de 7 pasos y el checklist del espejo. Lo leés en una tarde y lo usás toda la vida.",
     },
     {
       q: "¿Los medios de pago?",

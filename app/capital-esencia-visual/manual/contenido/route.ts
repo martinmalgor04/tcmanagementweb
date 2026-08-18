@@ -1,7 +1,7 @@
 import { readFile } from "node:fs/promises"
 import path from "node:path"
 
-import { hasManualAccess } from "@/lib/capital/guard"
+import { getManualSession } from "@/lib/capital/guard"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -32,7 +32,7 @@ export async function GET() {
     headers: { "x-robots-tag": "noindex, nofollow" },
   })
 
-  if (!(await hasManualAccess())) return notFound
+  if (!(await getManualSession())) return notFound
 
   let html: string
   try {

@@ -24,8 +24,22 @@ Los archivos de `migrations/` están pensados para correrse en orden. Tres camin
 | `entitlements` | Quién puede ver el HTML. Única fuente de verdad del gating. |
 | `access_tokens` | Magic links. Sólo se guarda el sha256 del token. |
 | `email_events` | Un registro por envío, con su estado en el proveedor. |
+| `page_events` | Eventos del embudo para el panel. Sin PII. |
 
 `price_cents` y `amount_cents` están en centavos: $19.999 ARS son `1999900`.
+
+### Métricas
+
+`page_events` guarda cuatro tipos de evento: `landing_view` y `checkout_click` los manda el
+navegador contra `/api/capital/track`; `access_redeemed` y `manual_view` se escriben en el
+server, donde no se pueden falsear. El endpoint público sólo acepta los dos primeros.
+
+Es la única tabla con volumen, así que la clave es `bigint identity` y no `uuid`. El
+`visitor` es un random propio en una cookie httpOnly, sirve para separar visitas de personas
+y no identifica a nadie.
+
+Las agregaciones viven en dos funciones, `capital_dashboard()` y `capital_customers(limit)`,
+para no traerse las filas y contarlas en Node.
 
 ### RLS
 
@@ -60,7 +74,16 @@ correr desde cero. Las keys locales salen de `supabase status -o env`.
 
 | `MP_ACCESS_TOKEN` | no | Verifica el pago contra la API de Mercado Pago. |
 | `MP_WEBHOOK_SECRET` | no | Valida la firma del webhook. |
-| `CAPITAL_ADMIN_TOKEN` | no | Habilita el endpoint de soporte para generar links. |
+| `CAPITAL_ADMIN_TOKEN` | no | Contraseña del panel y del endpoint de soporte. Sin esto el panel queda deshabilitado. |
+
+## Panel
+
+`/capital-esencia-visual/admin`, con el `CAPITAL_ADMIN_TOKEN` como contraseña. El token se
+cambia por una cookie firmada de 7 días, así no viaja en cada request. Muestra el embudo
+(visitas, clics, compras, accesos al manual), avisa de los pagos sin verificar y los mails
+fallidos, y lista las compradoras con un botón para reenviarles el acceso.
+
+La página lleva `noindex` y no está enlazada desde ningún lado.
 
 ## Mails
 

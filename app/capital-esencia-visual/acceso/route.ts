@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 
 import { redeemAccessLink } from "@/lib/capital/access"
 import { ACCESS_COOKIE_NAME, ACCESS_INVALID_PATH, ACCESS_PATH } from "@/lib/capital/config"
+import { recordEvent } from "@/lib/capital/events"
 import { createSessionCookie } from "@/lib/capital/session"
 
 export const runtime = "nodejs"
@@ -29,6 +30,13 @@ export async function GET(req: Request) {
   }
 
   if (!redeemed) return invalid
+
+  await recordEvent({
+    kind: "access_redeemed",
+    customerId: redeemed.customerId,
+    productId: redeemed.productId,
+    path: url.pathname,
+  })
 
   const { value, maxAge } = createSessionCookie(redeemed.customerId, redeemed.productId)
 
