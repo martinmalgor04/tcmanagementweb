@@ -8,8 +8,16 @@ import {
   type CSSProperties,
   type ReactNode,
 } from "react"
+import { Gloock } from "next/font/google"
 
 import { track } from "@/lib/capital/track-client"
+
+const gloock = Gloock({
+  weight: "400",
+  subsets: ["latin"],
+  variable: "--font-gloock",
+  display: "swap",
+})
 
 /* ============================================================
    DATOS DEL PRODUCTO — editá acá y se actualiza toda la página
@@ -258,7 +266,7 @@ function CtaButton({
 function SectionLabel({ children }: { children: ReactNode }) {
   return (
     <p className="mb-6 flex items-center gap-4 text-[11px] font-medium uppercase tracking-[0.4em] text-neutral-400">
-      <span className="inline-block h-px w-10 bg-neutral-500" aria-hidden />
+      <span className="inline-block h-px w-10 bg-[#c8b48a]" aria-hidden />
       {children}
     </p>
   )
@@ -351,7 +359,7 @@ export default function CapitalLanding() {
   ]
 
   return (
-    <div ref={rootRef} className="capital-landing cev-grain relative min-h-screen font-[inherit]">
+    <div ref={rootRef} className={`capital-landing cev-grain relative min-h-screen font-[inherit] ${gloock.variable}`}>
       <div ref={progressRef} className="cev-progress" aria-hidden />
 
       {/* ============ 1 · HERO ============ */}
@@ -375,13 +383,13 @@ export default function CapitalLanding() {
         <div className="relative z-10 mx-auto grid w-full max-w-6xl flex-1 items-start gap-14 pt-14 md:grid-cols-[1fr_0.95fr] md:gap-16 lg:gap-20">
           <div className="max-w-xl text-center md:justify-self-start md:text-left">
             <p
-              className="cev-fade-blur mb-6 text-[11px] font-medium uppercase tracking-[0.5em] text-neutral-400"
+              className="cev-fade-blur mb-6 text-[11px] font-medium uppercase tracking-[0.5em] text-[#c8b48a]"
               style={{ "--cev-delay": "150ms" } as CSSProperties}
             >
               Manual digital · {PRODUCTO}
             </p>
 
-            <h1 className="text-[clamp(2.4rem,7.5vw,5.2rem)] font-bold uppercase leading-[0.98] tracking-tight">
+            <h1 className="cev-serif text-[clamp(2.4rem,7.5vw,5.2rem)] leading-[1.04]">
               <span className="cev-line-mask">
                 <span className="cev-line-inner" style={{ "--cev-delay": "250ms" } as CSSProperties}>
                   Tu ropa habla
@@ -394,7 +402,7 @@ export default function CapitalLanding() {
               </span>
               <span className="cev-line-mask">
                 <span
-                  className="cev-line-inner text-neutral-500"
+                  className="cev-line-inner italic text-neutral-500"
                   style={{ "--cev-delay": "550ms" } as CSSProperties}
                 >
                   Que diga lo correcto.
@@ -455,7 +463,7 @@ export default function CapitalLanding() {
                 (w) => (
                   <span key={w} className="flex items-center gap-12">
                     {w}
-                    <span className="inline-block h-1.5 w-1.5 rotate-45 bg-neutral-600" aria-hidden />
+                    <span className="inline-block h-1.5 w-1.5 rotate-45 bg-[#c8b48a]" aria-hidden />
                   </span>
                 )
               )}
@@ -470,7 +478,7 @@ export default function CapitalLanding() {
           <SectionLabel>El problema</SectionLabel>
         </Reveal>
         <Reveal delay={80}>
-          <h2 className="text-3xl font-bold uppercase leading-tight tracking-tight sm:text-4xl">
+          <h2 className="cev-serif text-3xl leading-tight sm:text-4xl">
             Te reconocés acá:
           </h2>
         </Reveal>
@@ -481,7 +489,7 @@ export default function CapitalLanding() {
             "Ante una reunión, una entrevista o una cita importante, dudás: no sabés qué ponerte para causar exactamente la impresión que buscás.",
           ].map((t, i) => (
             <Reveal key={i} delay={i * 110}>
-              <li className="flex gap-5 border-l border-white/15 pl-6 text-lg leading-relaxed text-neutral-300">
+              <li className="flex gap-5 border-l border-[#c8b48a]/40 pl-6 text-lg leading-relaxed text-neutral-300">
                 {t}
               </li>
             </Reveal>
@@ -492,14 +500,14 @@ export default function CapitalLanding() {
       {/* ============ 3 · AGITACIÓN ============ */}
       <section className="border-y border-white/10 bg-white/[0.02] px-6 py-20 text-center sm:py-24">
         <Reveal className="mx-auto max-w-3xl">
-          <p className="text-xl leading-relaxed text-neutral-300 sm:text-2xl">
+          <p className="cev-serif text-xl leading-relaxed text-neutral-300 sm:text-2xl">
             La primera impresión se forma en{" "}
-            <span className="font-bold text-[#f5f4f2]">siete segundos</span> y
+            <span className="text-[#c8b48a]">siete segundos</span> y
             necesita veinte encuentros para corregirse. Y hay clientes,
             entrevistas y personas que vas a ver{" "}
-            <span className="font-bold text-[#f5f4f2]">una sola vez</span>. Antes
+            <span className="text-[#c8b48a]">una sola vez</span>. Antes
             de tu voz, tu currículum o tu apretón de manos, ya comunicaste con tu
-            imagen. Esa es la diferencia entre estar vestida y estar comunicando.
+            imagen. <em>Esa es la diferencia entre estar vestida y estar comunicando.</em>
           </p>
         </Reveal>
       </section>
@@ -526,7 +534,7 @@ export default function CapitalLanding() {
               <SectionLabel>Quién está detrás</SectionLabel>
             </Reveal>
             <Reveal delay={80}>
-              <h2 className="text-3xl font-bold uppercase tracking-tight sm:text-4xl">
+              <h2 className="cev-serif text-3xl sm:text-4xl">
                 Tarsila Cicconetti
               </h2>
             </Reveal>
@@ -541,7 +549,7 @@ export default function CapitalLanding() {
                 Tarsila descodifica lo que la vestimenta dice antes que las
                 palabras: colores, estampas, prendas y accesorios como un idioma
                 que cualquiera puede aprender a hablar. Este manual destila ese
-                método para que lo apliques sola, todas las mañanas, frente a tu
+                método para aplicarlo sola, todas las mañanas, frente a tu
                 propio placard.
               </p>
             </Reveal>
@@ -556,7 +564,7 @@ export default function CapitalLanding() {
             <SectionLabel>Qué te llevás</SectionLabel>
           </Reveal>
           <Reveal delay={80}>
-            <h2 className="max-w-2xl text-3xl font-bold uppercase tracking-tight sm:text-4xl">
+            <h2 className="cev-serif max-w-2xl text-3xl sm:text-4xl">
               No es moda. Es intención.
             </h2>
           </Reveal>
@@ -589,10 +597,10 @@ export default function CapitalLanding() {
             ].map((item, i) => (
               <Reveal key={item.t} delay={i * 100} className="bg-[#0a0a0a]">
                 <div className="group h-full p-8 transition-colors duration-500 hover:bg-white/[0.04] sm:p-10">
-                  <span className="text-xs font-bold tracking-[0.3em] text-neutral-600">
+                  <span className="text-xs font-bold tracking-[0.3em] text-[#c8b48a]">
                     {String(i + 1).padStart(2, "0")}
                   </span>
-                  <h3 className="mt-4 text-xl font-bold uppercase tracking-tight">
+                  <h3 className="cev-serif mt-4 text-xl sm:text-2xl">
                     {item.t}
                   </h3>
                   <p className="mt-3 leading-relaxed text-neutral-400">{item.d}</p>
@@ -610,7 +618,7 @@ export default function CapitalLanding() {
         </Reveal>
         <div className="grid gap-6 md:grid-cols-2">
           <Reveal delay={60}>
-            <div className="h-full rounded-sm border border-white/15 p-8 sm:p-10">
+            <div className="h-full rounded-sm border border-[#c8b48a]/35 p-8 sm:p-10">
               <h3 className="text-lg font-bold uppercase tracking-wider">Es para vos si…</h3>
               <ul className="mt-6 space-y-4 text-neutral-300">
                 {[
@@ -619,7 +627,7 @@ export default function CapitalLanding() {
                   "Sentís que tu placard no te representa y querés vestir con intención, no con suerte.",
                 ].map((t) => (
                   <li key={t} className="flex gap-3">
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rotate-45 bg-[#f5f4f2]" aria-hidden />
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rotate-45 bg-[#c8b48a]" aria-hidden />
                     {t}
                   </li>
                 ))}
@@ -653,10 +661,10 @@ export default function CapitalLanding() {
         <div className="cev-orb cev-orb-b left-1/2 top-0 -translate-x-1/2" aria-hidden />
         <div className="relative mx-auto max-w-3xl text-center md:text-left">
           <Reveal>
-            <SectionLabel>La oferta</SectionLabel>
+            <SectionLabel>La oportunidad</SectionLabel>
           </Reveal>
           <Reveal delay={80}>
-            <h2 className="text-3xl font-bold uppercase leading-tight tracking-tight sm:text-5xl">
+            <h2 className="cev-serif text-3xl leading-tight sm:text-5xl">
               Manual {PRODUCTO}
             </h2>
           </Reveal>
@@ -727,15 +735,15 @@ export default function CapitalLanding() {
       {/* ============ 11 · URGENCIA ============ */}
       <section className="border-y border-white/10 bg-white/[0.02] px-6 py-20 text-center sm:py-24">
         <Reveal className="mx-auto max-w-2xl">
-          <p className="text-[11px] font-medium uppercase tracking-[0.45em] text-neutral-500">
+          <p className="text-[11px] font-medium uppercase tracking-[0.45em] text-[#c8b48a]">
             Por tiempo limitado
           </p>
           <p className="mt-4 text-[11px] uppercase tracking-[0.35em] text-neutral-400">
-            El precio de lanzamiento vence el 15 de septiembre
+            El valor de lanzamiento vence el 15 de septiembre
           </p>
           <Countdown />
           <p className="mt-6 text-neutral-400">
-            Cuando termina el lanzamiento, el precio sube y el bono desaparece.
+            Cuando termina el lanzamiento, el valor de oportunidad desaparece.
           </p>
         </Reveal>
       </section>
@@ -748,12 +756,12 @@ export default function CapitalLanding() {
             <img src={LOGO_WORDMARK} alt="TC Management" className="mx-auto h-6 w-auto opacity-80" />
           </Reveal>
           <Reveal delay={100}>
-            <h2 className="mt-8 text-4xl font-bold uppercase leading-[1.05] tracking-tight sm:text-6xl">
+            <h2 className="cev-serif mt-8 text-4xl leading-[1.08] sm:text-6xl">
               No te vistas para
               <br />
               que te miren.
               <br />
-              <span className="text-neutral-500">Vestite para que te lean.</span>
+              <span className="italic text-neutral-500">Vestite para que te lean.</span>
             </h2>
           </Reveal>
           <Reveal delay={200}>

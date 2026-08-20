@@ -5,11 +5,20 @@
 .capital-landing {
   --cev-bg: #070707;
   --cev-ink: #f5f4f2;
+  --cev-gold: #c8b48a;
   --cev-line: rgba(245, 244, 242, 0.12);
   --cev-glow: rgba(245, 244, 242, 0.55);
   background: var(--cev-bg);
   color: var(--cev-ink);
   overflow-x: clip;
+}
+
+/* ---------- serif editorial (Gloock) ---------- */
+.cev-serif {
+  font-family: var(--font-gloock), Georgia, serif;
+  font-weight: 400;
+  text-transform: none;
+  letter-spacing: -0.01em;
 }
 
 /* ---------- grano de película ---------- */
