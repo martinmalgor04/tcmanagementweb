@@ -55,6 +55,23 @@ function isLocalhost(url: string): boolean {
   return /^https?:\/\/(localhost|127\.0\.0\.1|0\.0\.0\.0|\[::1\])(:\d+)?$/i.test(url)
 }
 
+/** Link de pago estático. Sólo se usa si todavía no hay MP_ACCESS_TOKEN. */
+export const MP_FALLBACK_CHECKOUT_URL = "https://mpago.la/2kr9Sh7"
+
+/**
+ * Origen https público, o null. Mercado Pago descarta back_urls/auto_return
+ * en HTTP y no puede pegarle un webhook a localhost.
+ */
+export function publicHttpsOrigin(url: string = siteUrl()): string | null {
+  try {
+    const parsed = new URL(url)
+    if (parsed.protocol !== "https:" || isLocalhost(url)) return null
+    return url.replace(/\/+$/, "")
+  } catch {
+    return null
+  }
+}
+
 /**
  * Base para los links que viajan por mail. Corriendo en Vercel se ignora
  * cualquier valor que apunte a localhost: el síntoma de ese error es un mail
@@ -97,11 +114,16 @@ export function resendConfig() {
   return { apiKey, from: normalizeFrom(process.env.CAPITAL_FROM_EMAIL) }
 }
 
-/** Sin este token no se puede confirmar un pago contra Mercado Pago. */
+/** Crea el checkout y confirma el pago. Sin esto se usa el link estático. */
 export function mercadoPagoToken(): string | null {
   return process.env.MP_ACCESS_TOKEN || null
 }
 
 export function adminToken(): string | null {
   return process.env.CAPITAL_ADMIN_TOKEN || null
+}
+
+/** Mail del dueño del producto. Es el único que el panel deja pasar sin pagar. */
+export function ownerEmail(): string {
+  return process.env.CAPITAL_OWNER_EMAIL || "martinmmalgor@gmail.com"
 }

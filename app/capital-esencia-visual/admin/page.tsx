@@ -123,6 +123,15 @@ export default async function AdminPage({
         </p>
       )}
 
+      <form action="/capital-esencia-visual/admin/acceder" method="post" className="mt-8">
+        <button
+          type="submit"
+          className="whitespace-nowrap rounded-full bg-[#f5f4f2] px-6 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#070707] transition hover:bg-white"
+        >
+          Ver el manual
+        </button>
+      </form>
+
       <section className="mt-10 grid grid-cols-2 gap-3 lg:grid-cols-4">
         <Card label="Visitas a la landing" value={visitas.total} detalle={`${visitas.hoy} hoy · ${visitas.unicos} personas`} />
         <Card label="Clics al checkout" value={clics.total} detalle={`${porcentaje(clics.total, visitas.total)} de las visitas`} />
