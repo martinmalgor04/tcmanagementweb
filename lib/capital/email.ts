@@ -127,66 +127,82 @@ function accessEmailHtml(args: {
     </div>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#070707">
       <tr>
-        <td align="center" style="padding:40px 20px 56px">
-          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px">
+        <td align="center" style="padding:52px 20px 64px">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px">
             <tr>
-              <td align="center" style="padding-bottom:36px">
-                <img src="${EMAIL_LOGO}" alt="TC Management" width="128"
-                     style="display:block;width:128px;height:auto;opacity:0.9" />
+              <td align="center" style="padding-bottom:44px">
+                <img src="${EMAIL_LOGO}" alt="TC Management" width="104"
+                     style="display:block;width:104px;height:auto;opacity:0.85" />
               </td>
             </tr>
             <tr>
-              <td style="border-radius:2px;overflow:hidden;border:1px solid rgba(200,180,138,0.25)">
-                <img src="${EMAIL_PORTADA}" alt="${escapeHtml(args.product.name)}" width="520"
+              <td align="center" style="padding-bottom:44px;font-size:17px;line-height:1.6;font-style:italic;color:#d6d3ce">
+                Tu ejemplar te espera.
+              </td>
+            </tr>
+            <tr>
+              <td style="background:#0d0c0b;border:1px solid rgba(200,180,138,0.28);padding:14px">
+                <img src="${EMAIL_PORTADA}" alt="${escapeHtml(args.product.name)}" width="450"
                      style="display:block;width:100%;height:auto" />
               </td>
             </tr>
             <tr>
-              <td align="center" style="padding-top:36px;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#c8b48a;font-family:Helvetica,Arial,sans-serif">
+              <td align="center" style="padding-top:44px;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:#c8b48a;font-family:Helvetica,Arial,sans-serif">
                 Manual digital
               </td>
             </tr>
             <tr>
-              <td align="center" style="padding-top:14px;font-size:30px;line-height:1.25;color:#f5f4f2">
+              <td align="center" style="padding-top:16px;font-size:32px;line-height:1.3;letter-spacing:0.5px;color:#f5f4f2">
                 ${escapeHtml(args.product.name)}
               </td>
             </tr>
             <tr>
-              <td align="center" style="padding-top:8px;padding-bottom:8px">
-                <span style="display:inline-block;width:40px;height:1px;background:#c8b48a"></span>
+              <td align="center" style="padding-top:22px">
+                <table role="presentation" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="width:36px;border-top:1px solid rgba(200,180,138,0.5)"></td>
+                    <td style="padding:0 12px;font-size:9px;line-height:1;color:#c8b48a">&#9670;</td>
+                    <td style="width:36px;border-top:1px solid rgba(200,180,138,0.5)"></td>
+                  </tr>
+                </table>
               </td>
             </tr>
             <tr>
-              <td align="center" style="padding-top:20px;font-size:15px;line-height:1.75;color:#a3a3a3;font-family:Helvetica,Arial,sans-serif">
-                ${saludo}<br /><br />
-                Tu acceso ya está listo. Entrá desde este botón cuando quieras.
+              <td align="center" style="padding-top:28px;font-size:15px;line-height:1.85;color:#a8a5a0">
+                ${saludo}<br />
+                Tu acceso ya está listo. Entrá cuando quieras &mdash; el manual
+                queda abierto para vos.
               </td>
             </tr>
             <tr>
-              <td align="center" style="padding:32px 0 8px">
+              <td align="center" style="padding:36px 0 4px">
                 <a href="${args.accessUrl}"
-                   style="display:inline-block;background:#c8b48a;color:#070707;padding:16px 36px;font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;text-decoration:none;border-radius:1px;font-family:Helvetica,Arial,sans-serif">
+                   style="display:inline-block;background:#c8b48a;color:#070707;padding:17px 46px;font-size:11px;font-weight:700;letter-spacing:3px;text-transform:uppercase;text-decoration:none;font-family:Helvetica,Arial,sans-serif">
                   Abrir el manual
                 </a>
               </td>
             </tr>
             <tr>
-              <td style="padding-top:40px">
-                <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
-                  <tr><td style="border-top:1px solid rgba(255,255,255,0.08)"></td></tr>
+              <td align="center" style="padding-top:60px">
+                <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
+                  <tr><td style="border-top:1px solid rgba(255,255,255,0.07)"></td></tr>
                 </table>
               </td>
             </tr>
             <tr>
-              <td style="padding-top:24px;font-size:12.5px;line-height:1.8;color:#6b6b6b;font-family:Helvetica,Arial,sans-serif">
-                Guardá este mail: el link es tu llave y es personal, no lo compartas. Cuando lo
-                abrís, ese navegador queda habilitado y podés volver cuando quieras.<br /><br />
-                Si el botón no anda, copiá esta dirección:<br />
-                <span style="color:#8a8a8a;word-break:break-all">${args.accessUrl}</span>
+              <td align="center" style="padding-top:28px;font-size:12px;line-height:1.9;color:#66625d;font-family:Helvetica,Arial,sans-serif">
+                Guardá este mail: el link es tu llave y es personal, no lo compartas.<br />
+                Cuando lo abrís, ese navegador queda habilitado y podés volver cuando quieras.
               </td>
             </tr>
             <tr>
-              <td align="center" style="padding-top:40px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#4a4a4a;font-family:Helvetica,Arial,sans-serif">
+              <td align="center" style="padding-top:18px;font-size:11px;line-height:1.8;color:#4e4a45;font-family:Helvetica,Arial,sans-serif">
+                Si el botón no anda, copiá esta dirección:<br />
+                <span style="color:#7a766f;word-break:break-all">${args.accessUrl}</span>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding-top:48px;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:#45423e;font-family:Helvetica,Arial,sans-serif">
                 TC Management
               </td>
             </tr>
