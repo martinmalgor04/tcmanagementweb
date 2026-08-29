@@ -80,6 +80,7 @@ export async function fulfillPurchase(input: FulfillInput): Promise<FulfillResul
     customer,
     product,
     orderId: order.id,
+    amountCents: order.amount_cents,
   })
 
   return {

@@ -9,12 +9,13 @@
  */
 
 import { type Customer, type Product, issueAccessLink, revokePreviousAccessTokens } from "./access"
-import { type EmailStatus, sendAccessEmail } from "./email"
+import { type EmailStatus, notifySale, sendAccessEmail } from "./email"
 
 export type DeliverAccessInput = {
   customer: Customer
   product: Product
   orderId: string | null
+  amountCents?: number
 }
 
 export async function deliverAccess(
@@ -28,6 +29,14 @@ export async function deliverAccess(
   if (emailStatus === "sent") {
     await revokePreviousAccessTokens(customer.id, product.id, tokenId)
   }
+
+  // Best-effort: un aviso que falla no debe tocar el acceso de la compradora.
+  void notifySale({
+    customer,
+    product,
+    orderId,
+    amountCents: input.amountCents ?? product.price_cents,
+  })
 
   return { accessUrl: url, emailStatus }
 }

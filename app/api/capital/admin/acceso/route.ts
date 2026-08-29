@@ -63,7 +63,9 @@ export async function POST(req: Request) {
       product,
       status: "paid",
       paymentVerified: true,
-      provider: "manual",
+      provider: "cortesia",
+      // $0: una cortesía no es una venta y no debe sumar al "Facturado" del panel.
+      amountCents: 0,
       rawPayload: { origin: "admin-grant" },
     })
     await grantEntitlement(customer.id, product.id, order.id)
@@ -81,7 +83,7 @@ export async function POST(req: Request) {
   }
 
   const delivered = parsed.data.send
-    ? await deliverAccess({ customer, product, orderId: null })
+    ? await deliverAccess({ customer, product, orderId: null, amountCents: 0 })
     : { accessUrl: await issueAccessLinkOnly(customer, product), emailStatus: null }
 
   return NextResponse.json({

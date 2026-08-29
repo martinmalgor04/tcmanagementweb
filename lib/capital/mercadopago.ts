@@ -1,12 +1,82 @@
 /**
- * Verificación de pagos contra Mercado Pago.
+ * Checkout Pro (preferencias) y verificación de pagos contra Mercado Pago.
  *
  * Los parámetros que Mercado Pago agrega en la URL de retorno los controla el
  * navegador, así que no alcanzan como prueba de pago. Con MP_ACCESS_TOKEN
  * cargado consultamos la API y ahí sí el estado es confiable.
  */
 
-import { mercadoPagoToken } from "./config"
+import { mercadoPagoToken, publicHttpsOrigin } from "./config"
+
+export type CheckoutPreference = {
+  id: string
+  initPoint: string
+}
+
+/**
+ * Una preferencia por clic. Siempre devolvemos `init_point`:
+ * `sandbox_init_point` está deprecado y con credenciales TEST- no hace falta.
+ */
+export async function createCheckoutPreference(input: {
+  title: string
+  productId: string
+  unitPrice: number
+  currency: string
+  backUrl: string
+  notificationUrl?: string | null
+}): Promise<CheckoutPreference> {
+  const token = mercadoPagoToken()
+  if (!token) throw new Error("Falta MP_ACCESS_TOKEN")
+
+  const canAutoReturn = Boolean(publicHttpsOrigin(input.backUrl))
+
+  const body: Record<string, unknown> = {
+    items: [
+      {
+        id: input.productId,
+        title: input.title,
+        quantity: 1,
+        unit_price: input.unitPrice,
+        currency_id: input.currency,
+      },
+    ],
+    back_urls: {
+      success: input.backUrl,
+      pending: input.backUrl,
+      failure: input.backUrl,
+    },
+    statement_descriptor: "TC MANAGEMENT",
+    external_reference: input.productId,
+    metadata: { product: input.productId },
+  }
+
+  if (canAutoReturn) body.auto_return = "approved"
+  if (input.notificationUrl) body.notification_url = input.notificationUrl
+
+  const res = await fetch("https://api.mercadopago.com/checkout/preferences", {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+      "X-Idempotency-Key": crypto.randomUUID(),
+    },
+    body: JSON.stringify(body),
+    cache: "no-store",
+    signal: AbortSignal.timeout(10_000),
+  })
+
+  if (!res.ok) {
+    const detail = await res.text().catch(() => "")
+    throw new Error(`Mercado Pago ${res.status}: ${detail.slice(0, 300)}`)
+  }
+
+  const data = (await res.json()) as { id?: string; init_point?: string }
+  if (!data.id || !data.init_point) {
+    throw new Error("Mercado Pago no devolvió init_point")
+  }
+
+  return { id: data.id, initPoint: data.init_point }
+}
 
 export type MpPayment = {
   id: number | string

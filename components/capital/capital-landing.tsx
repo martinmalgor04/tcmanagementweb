@@ -32,7 +32,7 @@ const FOTO_TARSILA = `${CDN}/CEV/tarsila-cicconetti.jpg`
 const PRODUCTO = "Capital de Esencia Visual"
 const CTA_TEXT = "Comprar ahora"
 
-const CHECKOUT_URL = "https://mpago.la/2kr9Sh7"
+const CHECKOUT_URL = "/api/capital/checkout"
 
 const PRECIO = "$19.999"
 const VALOR_ANCLA = "$49.999"
@@ -334,9 +334,13 @@ export default function CapitalLanding() {
   const rootRef = useRevealOnScroll<HTMLDivElement>()
   const showSticky = useStickyCta()
   const [openFaq, setOpenFaq] = useState<number | null>(0)
+  const [checkoutError, setCheckoutError] = useState(false)
 
   useEffect(() => {
     track("landing_view")
+    if (new URLSearchParams(window.location.search).get("checkout") === "error") {
+      setCheckoutError(true)
+    }
   }, [])
 
   const faqs = [
@@ -433,6 +437,11 @@ export default function CapitalLanding() {
                 </span>
               </div>
               <CtaButton pulse />
+              {checkoutError && (
+                <p className="text-sm text-red-400">
+                  No se pudo abrir Mercado Pago. Probá de nuevo en un momento.
+                </p>
+              )}
               <p className="text-[11px] uppercase tracking-[0.25em] text-neutral-500">
                 Pago con {MEDIO_PAGO}
               </p>

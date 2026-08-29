@@ -5,7 +5,7 @@
  * queda en `queued` y se puede reenviar después sin perder el registro.
  */
 
-import { ACCESS_TOKEN_TTL_DAYS, resendConfig } from "./config"
+import { ACCESS_TOKEN_TTL_DAYS, creatorEmail, ownerEmail, resendConfig } from "./config"
 import { insert, update } from "./db"
 import type { Customer, Product } from "./access"
 
@@ -103,6 +103,10 @@ function accessEmailText(args: {
   ].join("\n")
 }
 
+const CDN = "https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev"
+const EMAIL_LOGO = `${CDN}/LOGOS/tc-wordmark-white.png`
+const EMAIL_PORTADA = `${CDN}/CEV/portada-simbologia.jpg`
+
 function accessEmailHtml(args: {
   nombre: string | null
   product: Product
@@ -112,41 +116,196 @@ function accessEmailHtml(args: {
 
   return `<!doctype html>
 <html lang="es">
-  <body style="margin:0;padding:0;background:#070707;font-family:Helvetica,Arial,sans-serif;color:#f5f4f2">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+  </head>
+  <body style="margin:0;padding:0;background:#070707;font-family:Georgia,'Times New Roman',serif;color:#f5f4f2">
+    <div style="display:none;max-height:0;overflow:hidden;opacity:0">
+      Ya tenés acceso a ${escapeHtml(args.product.name)}. Entrá cuando quieras.
+    </div>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#070707">
       <tr>
-        <td align="center" style="padding:48px 24px">
+        <td align="center" style="padding:40px 20px 56px">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:520px">
             <tr>
-              <td style="padding-bottom:32px;font-size:11px;letter-spacing:4px;text-transform:uppercase;color:#c8b48a">
-                TC Management
+              <td align="center" style="padding-bottom:36px">
+                <img src="${EMAIL_LOGO}" alt="TC Management" width="128"
+                     style="display:block;width:128px;height:auto;opacity:0.9" />
               </td>
             </tr>
             <tr>
-              <td style="font-size:26px;font-weight:700;line-height:1.2;text-transform:uppercase;color:#f5f4f2">
+              <td style="border-radius:2px;overflow:hidden;border:1px solid rgba(200,180,138,0.25)">
+                <img src="${EMAIL_PORTADA}" alt="${escapeHtml(args.product.name)}" width="520"
+                     style="display:block;width:100%;height:auto" />
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding-top:36px;font-size:10px;letter-spacing:4px;text-transform:uppercase;color:#c8b48a;font-family:Helvetica,Arial,sans-serif">
+                Manual digital
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding-top:14px;font-size:30px;line-height:1.25;color:#f5f4f2">
                 ${escapeHtml(args.product.name)}
               </td>
             </tr>
             <tr>
-              <td style="padding-top:24px;font-size:15px;line-height:1.7;color:#a3a3a3">
-                ${saludo}<br /><br />
-                Tu acceso ya está listo. Entrá desde este botón:
+              <td align="center" style="padding-top:8px;padding-bottom:8px">
+                <span style="display:inline-block;width:40px;height:1px;background:#c8b48a"></span>
               </td>
             </tr>
             <tr>
-              <td style="padding:32px 0">
+              <td align="center" style="padding-top:20px;font-size:15px;line-height:1.75;color:#a3a3a3;font-family:Helvetica,Arial,sans-serif">
+                ${saludo}<br /><br />
+                Tu acceso ya está listo. Entrá desde este botón cuando quieras.
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding:32px 0 8px">
                 <a href="${args.accessUrl}"
-                   style="display:inline-block;background:#c8b48a;color:#070707;padding:16px 32px;font-size:13px;font-weight:700;letter-spacing:2px;text-transform:uppercase;text-decoration:none">
+                   style="display:inline-block;background:#c8b48a;color:#070707;padding:16px 36px;font-size:12px;font-weight:700;letter-spacing:2.5px;text-transform:uppercase;text-decoration:none;border-radius:1px;font-family:Helvetica,Arial,sans-serif">
                   Abrir el manual
                 </a>
               </td>
             </tr>
             <tr>
-              <td style="font-size:13px;line-height:1.7;color:#737373">
+              <td style="padding-top:40px">
+                <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                  <tr><td style="border-top:1px solid rgba(255,255,255,0.08)"></td></tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-top:24px;font-size:12.5px;line-height:1.8;color:#6b6b6b;font-family:Helvetica,Arial,sans-serif">
                 Guardá este mail: el link es tu llave y es personal, no lo compartas. Cuando lo
                 abrís, ese navegador queda habilitado y podés volver cuando quieras.<br /><br />
                 Si el botón no anda, copiá esta dirección:<br />
-                <span style="color:#a3a3a3;word-break:break-all">${args.accessUrl}</span>
+                <span style="color:#8a8a8a;word-break:break-all">${args.accessUrl}</span>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding-top:40px;font-size:10px;letter-spacing:3px;text-transform:uppercase;color:#4a4a4a;font-family:Helvetica,Arial,sans-serif">
+                TC Management
+              </td>
+            </tr>
+          </table>
+        </td>
+      </tr>
+    </table>
+  </body>
+</html>`
+}
+
+export type SaleNotificationInput = {
+  customer: Customer
+  product: Product
+  amountCents: number
+  orderId: string | null
+}
+
+/**
+ * Aviso de venta al dueño y a la creadora. Best-effort: no se registra en
+ * email_events ni frena la entrega si Resend falla, porque la compradora ya
+ * tiene su acceso resuelto en `sendAccessEmail`.
+ */
+export async function notifySale(input: SaleNotificationInput): Promise<void> {
+  const resend = resendConfig()
+  if (!resend) return
+
+  const to = [ownerEmail(), creatorEmail()].filter((email): email is string => Boolean(email))
+  if (to.length === 0) return
+
+  const esCortesia = input.amountCents <= 0
+  const monto = esCortesia
+    ? "Cortesía"
+    : (input.amountCents / 100).toLocaleString("es-AR", {
+        style: "currency",
+        currency: input.product.currency || "ARS",
+      })
+  const titulo = esCortesia ? "Acceso de cortesía" : "Nueva venta"
+
+  try {
+    await fetch("https://api.resend.com/emails", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${resend.apiKey}`,
+        "Content-Type": "application/json",
+      },
+      signal: AbortSignal.timeout(10_000),
+      body: JSON.stringify({
+        from: resend.from,
+        to,
+        subject: esCortesia
+          ? `🎁 Acceso de cortesía · ${input.product.name}`
+          : `💰 Nueva venta · ${input.product.name} · ${monto}`,
+        html: saleNotificationHtml({ ...input, monto, titulo }),
+        text: saleNotificationText({ ...input, monto, titulo }),
+      }),
+    })
+  } catch (error) {
+    console.error("[capital] no se pudo avisar la venta", error)
+  }
+}
+
+function saleNotificationText(args: SaleNotificationInput & { monto: string; titulo: string }): string {
+  const nombre = [args.customer.nombre, args.customer.apellido].filter(Boolean).join(" ") || "—"
+  return [
+    `${args.titulo}: ${args.product.name} (${args.monto})`,
+    "",
+    `Compradora: ${nombre}`,
+    `Mail: ${args.customer.email}`,
+    args.customer.whatsapp ? `WhatsApp: ${args.customer.whatsapp}` : null,
+    args.customer.instagram ? `Instagram: ${args.customer.instagram}` : null,
+    args.orderId ? `Orden: ${args.orderId}` : null,
+  ]
+    .filter(Boolean)
+    .join("\n")
+}
+
+function saleNotificationHtml(args: SaleNotificationInput & { monto: string; titulo: string }): string {
+  const nombre = [args.customer.nombre, args.customer.apellido].filter(Boolean).join(" ") || "—"
+
+  const row = (label: string, value: string | null) =>
+    value
+      ? `<tr>
+           <td style="padding:6px 16px 6px 0;font-size:12px;color:#8a8a8a;white-space:nowrap">${escapeHtml(label)}</td>
+           <td style="padding:6px 0;font-size:14px;color:#f5f4f2">${escapeHtml(value)}</td>
+         </tr>`
+      : ""
+
+  return `<!doctype html>
+<html lang="es">
+  <body style="margin:0;padding:0;background:#070707;font-family:Helvetica,Arial,sans-serif;color:#f5f4f2">
+    <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#070707">
+      <tr>
+        <td align="center" style="padding:40px 20px">
+          <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px">
+            <tr>
+              <td style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#c8b48a;padding-bottom:16px">
+                ${escapeHtml(args.titulo)}
+              </td>
+            </tr>
+            <tr>
+              <td style="font-size:28px;font-weight:700;color:#f5f4f2;padding-bottom:4px">
+                ${escapeHtml(args.monto)}
+              </td>
+            </tr>
+            <tr>
+              <td style="font-size:14px;color:#a3a3a3;padding-bottom:24px">
+                ${escapeHtml(args.product.name)}
+              </td>
+            </tr>
+            <tr>
+              <td style="border-top:1px solid rgba(255,255,255,0.1);padding-top:16px">
+                <table role="presentation" cellpadding="0" cellspacing="0">
+                  ${row("Compradora", nombre)}
+                  ${row("Mail", args.customer.email)}
+                  ${row("WhatsApp", args.customer.whatsapp)}
+                  ${row("Instagram", args.customer.instagram)}
+                  ${row("Orden", args.orderId)}
+                </table>
               </td>
             </tr>
           </table>

@@ -127,3 +127,8 @@ export function adminToken(): string | null {
 export function ownerEmail(): string {
   return process.env.CAPITAL_OWNER_EMAIL || "martinmmalgor@gmail.com"
 }
+
+/** Mail de la creadora del contenido. Sin esto no se le avisa de las ventas. */
+export function creatorEmail(): string | null {
+  return process.env.CAPITAL_CREATOR_EMAIL || null
+}

@@ -42,6 +42,7 @@ export type Order = {
   payment_verified: boolean
   provider_payment_id: string | null
   paid_at: string | null
+  amount_cents: number
 }
 
 export type CustomerInput = {

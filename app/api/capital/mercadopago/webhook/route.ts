@@ -97,7 +97,7 @@ async function processPayment(paymentId: string) {
   if (status !== "paid") return
 
   await grantEntitlement(customer.id, product.id, order.id)
-  await deliverAccess({ customer, product, orderId: order.id })
+  await deliverAccess({ customer, product, orderId: order.id, amountCents: order.amount_cents })
 }
 
 /**

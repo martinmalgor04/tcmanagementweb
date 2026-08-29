@@ -72,7 +72,8 @@ correr desde cero. Las keys locales salen de `supabase status -o env`.
 | `RESEND_API_KEY` | no | Sin esto los mails quedan en `queued`. |
 | `CAPITAL_FROM_EMAIL` | no | Remitente. Default `hola@tcmanagement.com.ar`. |
 
-| `MP_ACCESS_TOKEN` | no | Verifica el pago contra la API de Mercado Pago. |
+| `MP_ACCESS_TOKEN` | no | Crea el checkout (preferencia) y verifica el pago. En local, usar el token TEST-. En Vercel de producción, el token live (`APP_USR-`). |
+| `MP_PUBLIC_KEY` | no | Reservada para Checkout Bricks. Checkout Pro no la necesita en el cliente. |
 | `MP_WEBHOOK_SECRET` | no | Valida la firma del webhook. |
 | `CAPITAL_ADMIN_TOKEN` | no | Contraseña del panel y del endpoint de soporte. Sin esto el panel queda deshabilitado. |
 
