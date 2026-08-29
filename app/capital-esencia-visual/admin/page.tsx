@@ -123,55 +123,59 @@ export default async function AdminPage({
         </p>
       )}
 
-      <form action="/capital-esencia-visual/admin/acceder" method="post" className="mt-8">
-        <button
-          type="submit"
-          className="whitespace-nowrap rounded-full bg-[#f5f4f2] px-6 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#070707] transition hover:bg-white"
-        >
-          Ver el manual
-        </button>
-      </form>
-
-      <div className="mt-10 rounded-xl border border-[#c8b48a]/25 bg-[#c8b48a]/[0.04] p-6">
-        <h2 className="text-[11px] font-medium uppercase tracking-[0.35em] text-[#c8b48a]">
-          Dar acceso de cortesía
-        </h2>
-        <p className="mt-2 max-w-xl text-sm text-neutral-400">
-          Para regalos, canjes o pagos que llegaron por afuera de Mercado Pago (efectivo,
-          transferencia). Le manda el mismo mail que recibe quien compra en la landing, sin cobrarle
-          nada y sin sumar al facturado.
-        </p>
-        <form
-          action="/capital-esencia-visual/admin/cortesia"
-          method="post"
-          className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-[1fr_1fr_1fr_auto]"
-        >
-          <input
-            name="email"
-            type="email"
-            required
-            placeholder="mail@ejemplo.com"
-            className="rounded-lg border border-white/15 bg-white/[0.03] px-4 py-2.5 text-sm text-neutral-100 outline-none placeholder:text-neutral-600 focus:border-white/40"
-          />
-          <input
-            name="nombre"
-            type="text"
-            placeholder="Nombre (opcional)"
-            className="rounded-lg border border-white/15 bg-white/[0.03] px-4 py-2.5 text-sm text-neutral-100 outline-none placeholder:text-neutral-600 focus:border-white/40"
-          />
-          <input
-            name="apellido"
-            type="text"
-            placeholder="Apellido (opcional)"
-            className="rounded-lg border border-white/15 bg-white/[0.03] px-4 py-2.5 text-sm text-neutral-100 outline-none placeholder:text-neutral-600 focus:border-white/40"
-          />
+      <div className="mt-8 flex flex-wrap items-start gap-3">
+        <form action="/capital-esencia-visual/admin/acceder" method="post">
           <button
             type="submit"
-            className="whitespace-nowrap rounded-full bg-[#c8b48a] px-6 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#070707] transition hover:bg-[#d8c69a]"
+            className="whitespace-nowrap rounded-full bg-[#f5f4f2] px-6 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#070707] transition hover:bg-white"
           >
-            Dar acceso
+            Ver el manual
           </button>
         </form>
+
+        <details className="group">
+          <summary className="flex list-none items-center whitespace-nowrap rounded-full border border-[#c8b48a]/40 px-6 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#c8b48a] transition hover:border-[#c8b48a] [&::-webkit-details-marker]:hidden">
+            Dar acceso de cortesía
+          </summary>
+          <div className="mt-4 w-full max-w-xl rounded-xl border border-[#c8b48a]/25 bg-[#c8b48a]/[0.04] p-6">
+            <p className="text-sm text-neutral-400">
+              Para regalos, canjes o pagos que llegaron por afuera de Mercado Pago (efectivo,
+              transferencia). Le manda el mismo mail que recibe quien compra en la landing, sin
+              cobrarle nada y sin sumar al facturado.
+            </p>
+            <form
+              action="/capital-esencia-visual/admin/cortesia"
+              method="post"
+              className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2"
+            >
+              <input
+                name="email"
+                type="email"
+                required
+                placeholder="mail@ejemplo.com"
+                className="rounded-lg border border-white/15 bg-white/[0.03] px-4 py-2.5 text-sm text-neutral-100 outline-none placeholder:text-neutral-600 focus:border-white/40 sm:col-span-2"
+              />
+              <input
+                name="nombre"
+                type="text"
+                placeholder="Nombre (opcional)"
+                className="rounded-lg border border-white/15 bg-white/[0.03] px-4 py-2.5 text-sm text-neutral-100 outline-none placeholder:text-neutral-600 focus:border-white/40"
+              />
+              <input
+                name="apellido"
+                type="text"
+                placeholder="Apellido (opcional)"
+                className="rounded-lg border border-white/15 bg-white/[0.03] px-4 py-2.5 text-sm text-neutral-100 outline-none placeholder:text-neutral-600 focus:border-white/40"
+              />
+              <button
+                type="submit"
+                className="whitespace-nowrap rounded-full bg-[#c8b48a] px-6 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#070707] transition hover:bg-[#d8c69a] sm:col-span-2"
+              >
+                Dar acceso
+              </button>
+            </form>
+          </div>
+        </details>
       </div>
 
       <section className="mt-10 grid grid-cols-2 gap-3 lg:grid-cols-4">
