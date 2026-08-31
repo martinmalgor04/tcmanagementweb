@@ -231,26 +231,27 @@ export type SaleNotificationInput = {
   orderId: string | null
 }
 
+function formatMonto(amountCents: number, currency: string): string {
+  return (amountCents / 100).toLocaleString("es-AR", {
+    style: "currency",
+    currency: currency || "ARS",
+  })
+}
+
 /**
- * Aviso de venta al dueño y a la creadora. Best-effort: no se registra en
- * email_events ni frena la entrega si Resend falla, porque la compradora ya
- * tiene su acceso resuelto en `sendAccessEmail`.
+ * Aviso de venta al dueño y a la creadora. Misma pieza visual que el mail de
+ * acceso: una cortesía no arma otra plantilla, sólo muestra $0. Best-effort:
+ * no se registra en email_events ni frena la entrega si Resend falla.
  */
 export async function notifySale(input: SaleNotificationInput): Promise<void> {
   const resend = resendConfig()
   if (!resend) return
 
-  const to = [ownerEmail(), creatorEmail()].filter((email): email is string => Boolean(email))
+  const to = [...new Set([ownerEmail(), creatorEmail()].filter((email): email is string => Boolean(email)))]
   if (to.length === 0) return
 
   const esCortesia = input.amountCents <= 0
-  const monto = esCortesia
-    ? "Cortesía"
-    : (input.amountCents / 100).toLocaleString("es-AR", {
-        style: "currency",
-        currency: input.product.currency || "ARS",
-      })
-  const titulo = esCortesia ? "Acceso de cortesía" : "Nueva venta"
+  const monto = formatMonto(input.amountCents, input.product.currency)
 
   try {
     await fetch("https://api.resend.com/emails", {
@@ -263,11 +264,9 @@ export async function notifySale(input: SaleNotificationInput): Promise<void> {
       body: JSON.stringify({
         from: resend.from,
         to,
-        subject: esCortesia
-          ? `🎁 Acceso de cortesía · ${input.product.name}`
-          : `💰 Nueva venta · ${input.product.name} · ${monto}`,
-        html: saleNotificationHtml({ ...input, monto, titulo }),
-        text: saleNotificationText({ ...input, monto, titulo }),
+        subject: `💰 Nueva venta · ${input.product.name} · ${monto}`,
+        html: saleNotificationHtml({ ...input, monto, esCortesia }),
+        text: saleNotificationText({ ...input, monto, esCortesia }),
       }),
     })
   } catch (error) {
@@ -275,10 +274,13 @@ export async function notifySale(input: SaleNotificationInput): Promise<void> {
   }
 }
 
-function saleNotificationText(args: SaleNotificationInput & { monto: string; titulo: string }): string {
+function saleNotificationText(
+  args: SaleNotificationInput & { monto: string; esCortesia: boolean },
+): string {
   const nombre = [args.customer.nombre, args.customer.apellido].filter(Boolean).join(" ") || "—"
   return [
-    `${args.titulo}: ${args.product.name} (${args.monto})`,
+    `Nueva venta: ${args.product.name} (${args.monto})`,
+    args.esCortesia ? "Tipo: Cortesía" : null,
     "",
     `Compradora: ${nombre}`,
     `Mail: ${args.customer.email}`,
@@ -290,48 +292,79 @@ function saleNotificationText(args: SaleNotificationInput & { monto: string; tit
     .join("\n")
 }
 
-function saleNotificationHtml(args: SaleNotificationInput & { monto: string; titulo: string }): string {
+function saleNotificationHtml(
+  args: SaleNotificationInput & { monto: string; esCortesia: boolean },
+): string {
   const nombre = [args.customer.nombre, args.customer.apellido].filter(Boolean).join(" ") || "—"
 
   const row = (label: string, value: string | null) =>
     value
       ? `<tr>
-           <td style="padding:6px 16px 6px 0;font-size:12px;color:#8a8a8a;white-space:nowrap">${escapeHtml(label)}</td>
-           <td style="padding:6px 0;font-size:14px;color:#f5f4f2">${escapeHtml(value)}</td>
+           <td style="padding:8px 16px 8px 0;font-size:11px;letter-spacing:1px;text-transform:uppercase;color:#8a8a8a;white-space:nowrap;font-family:Helvetica,Arial,sans-serif">${escapeHtml(label)}</td>
+           <td style="padding:8px 0;font-size:15px;color:#f5f4f2">${escapeHtml(value)}</td>
          </tr>`
       : ""
 
   return `<!doctype html>
 <html lang="es">
-  <body style="margin:0;padding:0;background:#070707;font-family:Helvetica,Arial,sans-serif;color:#f5f4f2">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="color-scheme" content="dark" />
+    <meta name="supported-color-schemes" content="dark" />
+  </head>
+  <body style="margin:0;padding:0;background:#070707;font-family:Georgia,'Times New Roman',serif;color:#f5f4f2">
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background:#070707">
       <tr>
-        <td align="center" style="padding:40px 20px">
+        <td align="center" style="padding:52px 20px 64px">
           <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="max-width:480px">
             <tr>
-              <td style="font-size:11px;letter-spacing:3px;text-transform:uppercase;color:#c8b48a;padding-bottom:16px">
-                ${escapeHtml(args.titulo)}
+              <td align="center" style="padding-bottom:44px">
+                <img src="${EMAIL_LOGO}" alt="TC Management" width="104"
+                     style="display:block;width:104px;height:auto;opacity:0.85" />
               </td>
             </tr>
             <tr>
-              <td style="font-size:28px;font-weight:700;color:#f5f4f2;padding-bottom:4px">
+              <td align="center" style="padding-bottom:16px;font-size:10px;letter-spacing:5px;text-transform:uppercase;color:#c8b48a;font-family:Helvetica,Arial,sans-serif">
+                Nueva venta
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="font-size:32px;line-height:1.3;letter-spacing:0.5px;color:#f5f4f2">
                 ${escapeHtml(args.monto)}
               </td>
             </tr>
             <tr>
-              <td style="font-size:14px;color:#a3a3a3;padding-bottom:24px">
+              <td align="center" style="padding-top:10px;font-size:15px;line-height:1.6;color:#a8a5a0">
                 ${escapeHtml(args.product.name)}
               </td>
             </tr>
             <tr>
-              <td style="border-top:1px solid rgba(255,255,255,0.1);padding-top:16px">
+              <td align="center" style="padding-top:22px">
                 <table role="presentation" cellpadding="0" cellspacing="0">
+                  <tr>
+                    <td style="width:36px;border-top:1px solid rgba(200,180,138,0.5)"></td>
+                    <td style="padding:0 12px;font-size:9px;line-height:1;color:#c8b48a">&#9670;</td>
+                    <td style="width:36px;border-top:1px solid rgba(200,180,138,0.5)"></td>
+                  </tr>
+                </table>
+              </td>
+            </tr>
+            <tr>
+              <td style="padding-top:28px">
+                <table role="presentation" cellpadding="0" cellspacing="0" width="100%">
                   ${row("Compradora", nombre)}
                   ${row("Mail", args.customer.email)}
                   ${row("WhatsApp", args.customer.whatsapp)}
                   ${row("Instagram", args.customer.instagram)}
+                  ${args.esCortesia ? row("Tipo", "Cortesía") : ""}
                   ${row("Orden", args.orderId)}
                 </table>
+              </td>
+            </tr>
+            <tr>
+              <td align="center" style="padding-top:48px;font-size:9px;letter-spacing:4px;text-transform:uppercase;color:#45423e;font-family:Helvetica,Arial,sans-serif">
+                TC Management
               </td>
             </tr>
           </table>

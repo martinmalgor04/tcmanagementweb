@@ -55,20 +55,24 @@ export async function POST(req: Request) {
   }
 
   let customer = await findCustomerByEmail(parsed.data.email)
+  let orderId: string | null = null
 
   if (parsed.data.grant) {
     customer = customer ?? (await upsertCustomer({ email: parsed.data.email, source: "admin" }))
-    const order = await recordOrder({
-      customerId: customer.id,
-      product,
-      status: "paid",
-      paymentVerified: true,
-      provider: "cortesia",
-      // $0: una cortesía no es una venta y no debe sumar al "Facturado" del panel.
-      amountCents: 0,
-      rawPayload: { origin: "admin-grant" },
-    })
-    await grantEntitlement(customer.id, product.id, order.id)
+    if (!(await hasActiveEntitlement(customer.id, product.id))) {
+      const order = await recordOrder({
+        customerId: customer.id,
+        product,
+        status: "paid",
+        paymentVerified: true,
+        provider: "cortesia",
+        // $0: una cortesía no es una venta y no debe sumar al "Facturado" del panel.
+        amountCents: 0,
+        rawPayload: { origin: "admin-grant" },
+      })
+      orderId = order.id
+      await grantEntitlement(customer.id, product.id, order.id)
+    }
   }
 
   if (!customer) {
@@ -83,7 +87,7 @@ export async function POST(req: Request) {
   }
 
   const delivered = parsed.data.send
-    ? await deliverAccess({ customer, product, orderId: null, amountCents: 0 })
+    ? await deliverAccess({ customer, product, orderId, amountCents: 0 })
     : { accessUrl: await issueAccessLinkOnly(customer, product), emailStatus: null }
 
   return NextResponse.json({

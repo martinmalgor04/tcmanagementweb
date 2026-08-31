@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 
+import { CortesiaForm } from "@/components/capital/cortesia-form"
 import { adminToken } from "@/lib/capital/config"
 import { hasAdminSession } from "@/lib/capital/admin-session"
 import { EMPTY_EVENT, getCustomers, getDashboard } from "@/lib/capital/metrics"
@@ -143,37 +144,7 @@ export default async function AdminPage({
               transferencia). Le manda el mismo mail que recibe quien compra en la landing, sin
               cobrarle nada y sin sumar al facturado.
             </p>
-            <form
-              action="/capital-esencia-visual/admin/cortesia"
-              method="post"
-              className="mt-5 grid grid-cols-1 gap-3 sm:grid-cols-2"
-            >
-              <input
-                name="email"
-                type="email"
-                required
-                placeholder="mail@ejemplo.com"
-                className="rounded-lg border border-white/15 bg-white/[0.03] px-4 py-2.5 text-sm text-neutral-100 outline-none placeholder:text-neutral-600 focus:border-white/40 sm:col-span-2"
-              />
-              <input
-                name="nombre"
-                type="text"
-                placeholder="Nombre (opcional)"
-                className="rounded-lg border border-white/15 bg-white/[0.03] px-4 py-2.5 text-sm text-neutral-100 outline-none placeholder:text-neutral-600 focus:border-white/40"
-              />
-              <input
-                name="apellido"
-                type="text"
-                placeholder="Apellido (opcional)"
-                className="rounded-lg border border-white/15 bg-white/[0.03] px-4 py-2.5 text-sm text-neutral-100 outline-none placeholder:text-neutral-600 focus:border-white/40"
-              />
-              <button
-                type="submit"
-                className="whitespace-nowrap rounded-full bg-[#c8b48a] px-6 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-[#070707] transition hover:bg-[#d8c69a] sm:col-span-2"
-              >
-                Dar acceso
-              </button>
-            </form>
+            <CortesiaForm />
           </div>
         </details>
       </div>

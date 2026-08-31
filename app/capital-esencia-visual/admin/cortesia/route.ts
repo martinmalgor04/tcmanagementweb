@@ -4,11 +4,13 @@ import {
   findCustomerByEmail,
   getProduct,
   grantEntitlement,
+  hasActiveEntitlement,
   recordOrder,
   upsertCustomer,
 } from "@/lib/capital/access"
 import { ADMIN_PATH, hasAdminSession } from "@/lib/capital/admin-session"
 import { PRODUCT_SLUG } from "@/lib/capital/config"
+import { DbError } from "@/lib/capital/db"
 import { deliverAccess } from "@/lib/capital/deliver"
 
 export const runtime = "nodejs"
@@ -53,6 +55,14 @@ export async function POST(req: Request) {
         source: "admin-cortesia",
       }))
 
+    if (await hasActiveEntitlement(customer.id, product.id)) {
+      destino.searchParams.set(
+        "aviso",
+        `${email} ya tiene acceso. Si necesita el mail de nuevo, usá Reenviar.`,
+      )
+      return NextResponse.redirect(destino, 303)
+    }
+
     const order = await recordOrder({
       customerId: customer.id,
       product,
@@ -78,6 +88,13 @@ export async function POST(req: Request) {
         : `Se generó el acceso pero no se pudo mandar el mail a ${email} (${emailStatus}). Reenvialo desde la tabla.`,
     )
   } catch (error) {
+    if (error instanceof DbError && error.status === 409) {
+      destino.searchParams.set(
+        "aviso",
+        `${typeof email === "string" ? email : "Esa persona"} ya tiene acceso. Si necesita el mail de nuevo, usá Reenviar.`,
+      )
+      return NextResponse.redirect(destino, 303)
+    }
     console.error("[capital] cortesía desde el panel falló", error)
     destino.searchParams.set("aviso", "Algo falló al dar el acceso. Probá de nuevo.")
   }

@@ -34,13 +34,15 @@ export async function deliverAccess(
     await revokePreviousAccessTokens(customer.id, product.id, tokenId)
   }
 
-  // Best-effort: un aviso que falla no debe tocar el acceso de la compradora.
-  void notifySale({
-    customer,
-    product,
-    orderId,
-    amountCents: input.amountCents ?? product.price_cents,
-  })
+  // Reenviar no es una venta: sin orderId no avisamos de nuevo al dueño.
+  if (orderId) {
+    void notifySale({
+      customer,
+      product,
+      orderId,
+      amountCents: input.amountCents ?? product.price_cents,
+    })
+  }
 
   return { accessUrl: url, emailStatus }
 }
