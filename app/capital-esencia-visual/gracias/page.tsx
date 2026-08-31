@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 }
 
 const CDN = "https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev"
-const LOGO_WORDMARK = `${CDN}/LOGOS/tc-wordmark-white.png`
+const LOGO_WORDMARK = `${CDN}/LOGOS/tc-wordmark-black.png`
 
 export default function GraciasPage() {
   return (
@@ -22,7 +22,7 @@ export default function GraciasPage() {
         <h1 className="mt-4 text-3xl font-bold uppercase leading-tight tracking-tight sm:text-4xl">
           Completá tus datos
         </h1>
-        <p className="mt-4 leading-relaxed text-neutral-400">
+        <p className="mt-4 leading-relaxed text-neutral-600">
           Con esto te enviamos el manual y queda tu lugar en la base de TC.
           Nombre, mail y WhatsApp son obligatorios.
         </p>

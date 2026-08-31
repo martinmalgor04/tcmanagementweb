@@ -1,13 +1,14 @@
 /* ============================================================
    CAPITAL DE ESENCIA VISUAL — animaciones y textura editorial
+   Tema claro (papel)
    ============================================================ */
 
 .capital-landing {
-  --cev-bg: #070707;
-  --cev-ink: #f5f4f2;
-  --cev-gold: #c8b48a;
-  --cev-line: rgba(245, 244, 242, 0.12);
-  --cev-glow: rgba(245, 244, 242, 0.55);
+  --cev-bg: #ffffff;
+  --cev-ink: #070707;
+  --cev-gold: #9a7d4f;
+  --cev-line: rgba(7, 7, 7, 0.1);
+  --cev-glow: rgba(7, 7, 7, 0.2);
   background: var(--cev-bg);
   color: var(--cev-ink);
   overflow-x: clip;
@@ -30,7 +31,7 @@
   height: 200%;
   pointer-events: none;
   z-index: 60;
-  opacity: 0.05;
+  opacity: 0.04;
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='240' height='240'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
   animation: cev-grain 9s steps(6) infinite;
 }
@@ -57,7 +58,7 @@
   height: 55vw;
   min-width: 340px;
   min-height: 340px;
-  background: radial-gradient(circle, rgba(245,244,242,0.16) 0%, transparent 65%);
+  background: radial-gradient(circle, rgba(200,180,138,0.32) 0%, transparent 65%);
   animation: cev-orb-a 14s ease-in-out infinite alternate;
 }
 
@@ -66,7 +67,7 @@
   height: 40vw;
   min-width: 260px;
   min-height: 260px;
-  background: radial-gradient(circle, rgba(190,180,165,0.14) 0%, transparent 65%);
+  background: radial-gradient(circle, rgba(200,180,138,0.22) 0%, transparent 65%);
   animation: cev-orb-b 18s ease-in-out infinite alternate;
 }
 
@@ -89,7 +90,7 @@
     linear-gradient(to right, var(--cev-line) 1px, transparent 1px);
   background-size: calc(100% / 6) 100%;
   mask-image: radial-gradient(ellipse 90% 80% at 50% 40%, black 30%, transparent 75%);
-  opacity: 0.35;
+  opacity: 0.55;
 }
 
 /* ---------- reveal al hacer scroll ---------- */
@@ -195,7 +196,7 @@
   width: 70%;
   height: 2.4rem;
   transform: translateX(-50%);
-  background: radial-gradient(ellipse, rgba(0,0,0,0.85) 0%, transparent 70%);
+  background: radial-gradient(ellipse, rgba(0,0,0,0.28) 0%, transparent 70%);
   filter: blur(12px);
   animation: cev-shadow 7s ease-in-out infinite;
 }
@@ -215,7 +216,7 @@
 
 .cev-cta:hover {
   transform: translateY(-2px) scale(1.015);
-  box-shadow: 0 0 0 1px rgba(245,244,242,0.35), 0 18px 50px -12px var(--cev-glow);
+  box-shadow: 0 0 0 1px rgba(7,7,7,0.2), 0 18px 50px -12px var(--cev-glow);
 }
 
 .cev-cta:active {
@@ -227,7 +228,7 @@
   position: absolute;
   inset: 0;
   z-index: 1;
-  background: linear-gradient(105deg, transparent 35%, rgba(7,7,7,0.28) 50%, transparent 65%);
+  background: linear-gradient(105deg, transparent 35%, rgba(255,255,255,0.28) 50%, transparent 65%);
   transform: translateX(-120%);
   animation: cev-shine 3.4s cubic-bezier(0.4, 0, 0.2, 1) infinite;
   pointer-events: none;
@@ -242,7 +243,7 @@
   position: absolute;
   inset: -3px;
   border-radius: inherit;
-  border: 1px solid rgba(245,244,242,0.5);
+  border: 1px solid rgba(7,7,7,0.35);
   animation: cev-ring 2.6s ease-out infinite;
   pointer-events: none;
 }
@@ -256,7 +257,7 @@
 .cev-hairline {
   height: 1px;
   border: 0;
-  background: linear-gradient(to right, transparent, var(--cev-line) 20%, rgba(245,244,242,0.5) 50%, var(--cev-line) 80%, transparent);
+  background: linear-gradient(to right, transparent, var(--cev-line) 20%, rgba(7,7,7,0.28) 50%, var(--cev-line) 80%, transparent);
 }
 
 /* ---------- barra de progreso ---------- */
@@ -267,7 +268,7 @@
   height: 2px;
   width: 100%;
   transform-origin: 0 50%;
-  background: linear-gradient(to right, #8f8b84, #f5f4f2);
+  background: linear-gradient(to right, #c8b48a, #070707);
   z-index: 70;
 }
 

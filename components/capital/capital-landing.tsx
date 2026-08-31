@@ -25,7 +25,7 @@ const gloock = Gloock({
 
 const CDN = "https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev"
 const LOGO_MONOGRAM = `${CDN}/LOGOS/tc-monogram-white.png`
-const LOGO_WORDMARK = `${CDN}/LOGOS/tc-wordmark-white.png`
+const LOGO_WORDMARK = `${CDN}/LOGOS/tc-wordmark-black.png`
 const PORTADA = `${CDN}/CEV/portada-simbologia.jpg`
 const FOTO_TARSILA = `${CDN}/CEV/tarsila-cicconetti.jpg`
 
@@ -186,7 +186,7 @@ function Countdown() {
       {units.map((u) => (
         <div
           key={u.label}
-          className="min-w-[4.25rem] rounded-sm border border-white/15 bg-white/[0.03] px-3 py-4 sm:min-w-[5rem] sm:px-4"
+          className="min-w-[4.25rem] rounded-sm border border-black/10 bg-white px-3 py-4 sm:min-w-[5rem] sm:px-4"
         >
           <p className="font-mono text-3xl font-bold tabular-nums tracking-tight sm:text-4xl">
             {ready ? pad2(u.n) : "––"}
@@ -242,7 +242,7 @@ function CtaButton({
       onClick={() => {
         if (href === CHECKOUT_URL) track("checkout_click")
       }}
-      className={`cev-cta cev-shine relative inline-flex items-center justify-center gap-3 rounded-full bg-[#f5f4f2] px-10 py-4 text-sm font-bold uppercase tracking-[0.22em] text-[#070707] sm:px-12 sm:py-5 sm:text-base ${className}`}
+      className={`cev-cta cev-shine relative inline-flex items-center justify-center gap-3 rounded-full bg-[#070707] px-10 py-4 text-sm font-bold uppercase tracking-[0.22em] text-[#f5f4f2] sm:px-12 sm:py-5 sm:text-base ${className}`}
     >
       {pulse && <span className="cev-pulse-ring" aria-hidden />}
       <span className="relative z-[2]">{children}</span>
@@ -265,7 +265,7 @@ function CtaButton({
 
 function SectionLabel({ children }: { children: ReactNode }) {
   return (
-    <p className="mb-6 flex items-center gap-4 text-[11px] font-medium uppercase tracking-[0.4em] text-neutral-400">
+    <p className="mb-6 flex items-center gap-4 text-[11px] font-medium uppercase tracking-[0.4em] text-neutral-600">
       <span className="inline-block h-px w-10 bg-[#c8b48a]" aria-hidden />
       {children}
     </p>
@@ -415,12 +415,12 @@ export default function CapitalLanding() {
             </h1>
 
             <p
-              className="cev-fade-blur mx-auto mt-7 max-w-xl text-base leading-relaxed text-neutral-400 sm:text-lg md:mx-0"
+              className="cev-fade-blur mx-auto mt-7 max-w-xl text-base leading-relaxed text-neutral-600 sm:text-lg md:mx-0"
               style={{ "--cev-delay": "750ms" } as CSSProperties}
             >
               El poder de los símbolos y los colores en la estrategia de la
               vestimenta: aprendé a elegir —con conciencia—{" "}
-              <span className="text-[#f5f4f2]">los colores, las telas y los símbolos</span>{" "}
+              <span className="text-[#070707]">los colores, las telas y los símbolos</span>{" "}
               que traducen tu esencia en imagen.
             </p>
 
@@ -459,12 +459,12 @@ export default function CapitalLanding() {
         {/* indicador scroll */}
         <div className="relative z-10 mx-auto mt-auto flex flex-col items-center gap-2 pt-16 text-neutral-600">
           <span className="text-[10px] uppercase tracking-[0.4em]">Deslizá</span>
-          <span className="block h-10 w-px animate-pulse bg-gradient-to-b from-neutral-700 to-transparent" aria-hidden />
+          <span className="block h-10 w-px animate-pulse bg-gradient-to-b from-neutral-400 to-transparent" aria-hidden />
         </div>
       </header>
 
       {/* ============ marquee ============ */}
-      <div className="cev-marquee border-y border-white/10 py-5">
+      <div className="cev-marquee border-y border-black/10 py-5">
         <div className="cev-marquee-track text-sm font-medium uppercase tracking-[0.45em] text-neutral-500">
           {Array.from({ length: 2 }).map((_, dup) => (
             <span key={dup} className="flex items-center gap-12" aria-hidden={dup === 1}>
@@ -498,7 +498,7 @@ export default function CapitalLanding() {
             "Ante una reunión, una entrevista o una cita importante, dudás: no sabés qué ponerte para causar exactamente la impresión que buscás.",
           ].map((t, i) => (
             <Reveal key={i} delay={i * 110}>
-              <li className="flex gap-5 border-l border-[#c8b48a]/40 pl-6 text-lg leading-relaxed text-neutral-300">
+              <li className="flex gap-5 border-l border-[#c8b48a]/40 pl-6 text-lg leading-relaxed text-neutral-700">
                 {t}
               </li>
             </Reveal>
@@ -507,9 +507,9 @@ export default function CapitalLanding() {
       </section>
 
       {/* ============ 3 · AGITACIÓN ============ */}
-      <section className="border-y border-white/10 bg-white/[0.02] px-6 py-20 text-center sm:py-24">
+      <section className="border-y border-black/10 bg-[#f6f6f6] px-6 py-20 text-center sm:py-24">
         <Reveal className="mx-auto max-w-3xl">
-          <p className="cev-serif text-xl leading-relaxed text-neutral-300 sm:text-2xl">
+          <p className="cev-serif text-xl leading-relaxed text-neutral-700 sm:text-2xl">
             La primera impresión se forma en{" "}
             <span className="text-[#c8b48a]">siete segundos</span> y
             necesita veinte encuentros para corregirse. Y hay clientes,
@@ -525,7 +525,7 @@ export default function CapitalLanding() {
       <section id="autoridad" className="mx-auto max-w-4xl scroll-mt-10 px-6 py-24 sm:py-32">
         <div className="grid items-center gap-12 md:grid-cols-[0.9fr_1.1fr]">
           <Reveal className="flex justify-center">
-            <figure className="relative aspect-[2/3] w-full max-w-xs overflow-hidden rounded-sm border border-white/15 bg-[#111]">
+            <figure className="relative aspect-[2/3] w-full max-w-xs overflow-hidden rounded-sm border border-black/10 bg-[#111]">
               <img
                 src={FOTO_TARSILA}
                 alt="Tarsila Cicconetti"
@@ -553,7 +553,7 @@ export default function CapitalLanding() {
               </p>
             </Reveal>
             <Reveal delay={160}>
-              <p className="mt-6 leading-relaxed text-neutral-300">
+              <p className="mt-6 leading-relaxed text-neutral-700">
                 De TC — <span className="italic">Somos Esencia · Somos TC</span>.
                 Tarsila descodifica lo que la vestimenta dice antes que las
                 palabras: colores, estampas, prendas y accesorios como un idioma
@@ -567,7 +567,7 @@ export default function CapitalLanding() {
       </section>
 
       {/* ============ 5 · QUÉ INCLUYE ============ */}
-      <section className="border-y border-white/10 bg-white/[0.02] px-6 py-24 sm:py-32">
+      <section className="border-y border-black/10 bg-[#f6f6f6] px-6 py-24 sm:py-32">
         <div className="mx-auto max-w-5xl">
           <Reveal>
             <SectionLabel>Qué te llevás</SectionLabel>
@@ -578,14 +578,14 @@ export default function CapitalLanding() {
             </h2>
           </Reveal>
           <Reveal delay={120}>
-            <p className="mt-5 max-w-2xl leading-relaxed text-neutral-400">
+            <p className="mt-5 max-w-2xl leading-relaxed text-neutral-600">
               Un vocabulario de cuatro palabras —{" "}
-              <span className="text-[#f5f4f2]">color, estampa, prenda y accesorio</span>{" "}
+              <span className="text-[#070707]">color, estampa, prenda y accesorio</span>{" "}
               — que combinadas con intención se vuelven una frase. Combinadas al
               azar, ruido.
             </p>
           </Reveal>
-          <div className="mt-14 grid gap-px overflow-hidden rounded-sm border border-white/10 bg-white/10 sm:grid-cols-2">
+          <div className="mt-14 grid gap-px overflow-hidden rounded-sm border border-black/10 bg-black/10 sm:grid-cols-2">
             {[
               {
                 t: "El lenguaje de los colores",
@@ -604,15 +604,15 @@ export default function CapitalLanding() {
                 d: "Aros, collares, brazaletes y lentes como firma del mensaje. Y la secuencia de 7 pasos con el checklist del espejo para no volver a vestirte en automático.",
               },
             ].map((item, i) => (
-              <Reveal key={item.t} delay={i * 100} className="bg-[#0a0a0a]">
-                <div className="group h-full p-8 transition-colors duration-500 hover:bg-white/[0.04] sm:p-10">
+              <Reveal key={item.t} delay={i * 100} className="bg-white">
+                <div className="group h-full p-8 transition-colors duration-500 hover:bg-[#f6f6f6] sm:p-10">
                   <span className="text-xs font-bold tracking-[0.3em] text-[#c8b48a]">
                     {String(i + 1).padStart(2, "0")}
                   </span>
                   <h3 className="cev-serif mt-4 text-xl sm:text-2xl">
                     {item.t}
                   </h3>
-                  <p className="mt-3 leading-relaxed text-neutral-400">{item.d}</p>
+                  <p className="mt-3 leading-relaxed text-neutral-600">{item.d}</p>
                 </div>
               </Reveal>
             ))}
@@ -629,7 +629,7 @@ export default function CapitalLanding() {
           <Reveal delay={60}>
             <div className="h-full rounded-sm border border-[#c8b48a]/35 p-8 sm:p-10">
               <h3 className="text-lg font-bold uppercase tracking-wider">Es para vos si…</h3>
-              <ul className="mt-6 space-y-4 text-neutral-300">
+              <ul className="mt-6 space-y-4 text-neutral-700">
                 {[
                   "Tenés reuniones, clientes, entrevistas o citas donde la primera impresión juega a favor — o en contra.",
                   "Querés que tu ropa diga exactamente lo que vos querés decir: poder, cercanía, confianza, creatividad o calma.",
@@ -644,8 +644,8 @@ export default function CapitalLanding() {
             </div>
           </Reveal>
           <Reveal delay={140}>
-            <div className="h-full rounded-sm border border-white/10 bg-white/[0.02] p-8 sm:p-10">
-              <h3 className="text-lg font-bold uppercase tracking-wider text-neutral-400">
+            <div className="h-full rounded-sm border border-black/10 bg-[#f6f6f6] p-8 sm:p-10">
+              <h3 className="text-lg font-bold uppercase tracking-wider text-neutral-600">
                 No es para vos si…
               </h3>
               <ul className="mt-6 space-y-4 text-neutral-500">
@@ -655,7 +655,7 @@ export default function CapitalLanding() {
                   "Creés que la imagen es superficial — cuando es tu primer acto de comunicación del día.",
                 ].map((t) => (
                   <li key={t} className="flex gap-3">
-                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rotate-45 bg-neutral-700" aria-hidden />
+                    <span className="mt-2 h-1.5 w-1.5 shrink-0 rotate-45 bg-neutral-400" aria-hidden />
                     {t}
                   </li>
                 ))}
@@ -678,7 +678,7 @@ export default function CapitalLanding() {
             </h2>
           </Reveal>
           <Reveal delay={140}>
-            <p className="mt-6 max-w-xl leading-relaxed text-neutral-400">
+            <p className="mt-6 max-w-xl leading-relaxed text-neutral-600">
               El método completo — color, estampas, prendas y accesorios — que
               leés en una tarde y usás toda la vida. Un solo pago.
             </p>
@@ -710,7 +710,7 @@ export default function CapitalLanding() {
         <Reveal>
           <SectionLabel>Preguntas frecuentes</SectionLabel>
         </Reveal>
-        <div className="divide-y divide-white/10 border-y border-white/10">
+        <div className="divide-y divide-black/10 border-y border-black/10">
           {faqs.map((f, i) => {
             const open = openFaq === i
             return (
@@ -725,13 +725,13 @@ export default function CapitalLanding() {
                     <span className="text-base font-bold uppercase tracking-wide sm:text-lg">
                       {f.q}
                     </span>
-                    <span className="cev-faq-icon shrink-0 text-2xl font-light leading-none text-neutral-400" aria-hidden>
+                    <span className="cev-faq-icon shrink-0 text-2xl font-light leading-none text-neutral-600" aria-hidden>
                       +
                     </span>
                   </button>
                   <div className="cev-faq-body" data-open={open}>
                     <div className="cev-faq-inner">
-                      <p className="pt-4 leading-relaxed text-neutral-400">{f.a}</p>
+                      <p className="pt-4 leading-relaxed text-neutral-600">{f.a}</p>
                     </div>
                   </div>
                 </div>
@@ -742,16 +742,16 @@ export default function CapitalLanding() {
       </section>
 
       {/* ============ 11 · URGENCIA ============ */}
-      <section className="border-y border-white/10 bg-white/[0.02] px-6 py-20 text-center sm:py-24">
+      <section className="border-y border-black/10 bg-[#f6f6f6] px-6 py-20 text-center sm:py-24">
         <Reveal className="mx-auto max-w-2xl">
           <p className="text-[11px] font-medium uppercase tracking-[0.45em] text-[#c8b48a]">
             Por tiempo limitado
           </p>
-          <p className="mt-4 text-[11px] uppercase tracking-[0.35em] text-neutral-400">
+          <p className="mt-4 text-[11px] uppercase tracking-[0.35em] text-neutral-600">
             El valor de lanzamiento vence el 15 de septiembre
           </p>
           <Countdown />
-          <p className="mt-6 text-neutral-400">
+          <p className="mt-6 text-neutral-600">
             Cuando termina el lanzamiento, el valor de oportunidad desaparece.
           </p>
         </Reveal>
@@ -774,9 +774,9 @@ export default function CapitalLanding() {
             </h2>
           </Reveal>
           <Reveal delay={200}>
-            <p className="mx-auto mt-6 max-w-md text-neutral-400">
+            <p className="mx-auto mt-6 max-w-md text-neutral-600">
               Tu esencia ya existe. Empezá hoy a traducirla en imagen con{" "}
-              <span className="text-[#f5f4f2]">{PRODUCTO}</span>.
+              <span className="text-[#070707]">{PRODUCTO}</span>.
             </p>
           </Reveal>
           <Reveal delay={300}>
@@ -788,12 +788,12 @@ export default function CapitalLanding() {
             </div>
           </Reveal>
           <Reveal delay={380}>
-            <div className="mt-16 border-t border-white/10 pt-8">
+            <div className="mt-16 border-t border-black/10 pt-8">
               <img
                 src={LOGO_MONOGRAM}
                 alt=""
                 aria-hidden
-                className="mx-auto h-7 w-auto opacity-40"
+                className="mx-auto h-7 w-auto opacity-50 brightness-0"
               />
               <p className="mt-4 text-[10px] uppercase tracking-[0.3em] text-neutral-600">
                 © {new Date().getFullYear()} TC Management · Somos Esencia · Somos TC
@@ -805,7 +805,7 @@ export default function CapitalLanding() {
 
       {/* ============ sticky CTA mobile ============ */}
       <div
-        className={`cev-sticky-cta fixed inset-x-0 bottom-0 z-50 border-t border-white/15 bg-[#070707]/90 px-5 py-4 backdrop-blur-md md:hidden ${showSticky ? "cev-visible" : ""}`}
+        className={`cev-sticky-cta fixed inset-x-0 bottom-0 z-50 border-t border-black/10 bg-white/90 px-5 py-4 backdrop-blur-md md:hidden ${showSticky ? "cev-visible" : ""}`}
       >
         <div className="flex items-center justify-between gap-4">
           <div>

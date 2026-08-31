@@ -7,7 +7,6 @@ import {
   getProduct,
   grantEntitlement,
   recordOrder,
-  upsertCustomer,
 } from "@/lib/capital/access"
 import { PRODUCT_SLUG } from "@/lib/capital/config"
 import { deliverAccess } from "@/lib/capital/deliver"
@@ -19,8 +18,10 @@ export const dynamic = "force-dynamic"
 /**
  * Webhook de Mercado Pago (notificaciones de tipo `payment`).
  *
- * Es la única confirmación de pago que no depende del navegador. Queda inerte
- * hasta que estén cargadas MP_ACCESS_TOKEN y, opcionalmente, MP_WEBHOOK_SECRET.
+ * Es la única confirmación de pago que no depende del navegador. No manda el
+ * mail de acceso: eso espera al formulario de /gracias, donde está el mail
+ * que eligió la compradora. Queda inerte hasta que estén cargadas
+ * MP_ACCESS_TOKEN y, opcionalmente, MP_WEBHOOK_SECRET.
  *
  * Siempre responde 200: si devolviéramos error, Mercado Pago reintenta en loop.
  */
@@ -66,20 +67,13 @@ async function processPayment(paymentId: string) {
   const product = await getProduct(PRODUCT_SLUG)
   if (!product) throw new Error(`No existe el producto ${PRODUCT_SLUG}`)
 
-  // Si la compradora ya pasó por el formulario, la order existe y tiene los
-  // datos buenos. Si el webhook llega primero, arrancamos con el mail del payer.
+  // El mail tiene que ir al mail del formulario de /gracias, no al de la
+  // cuenta de Mercado Pago. Si el webhook llega primero, sólo esperamos:
+  // el formulario confirma el pago contra la API y recién ahí entrega.
   const existing = await findOrderByPaymentId("mercadopago", paymentId)
-  const customer = existing
-    ? await findCustomerById(existing.customer_id)
-    : payment.payer?.email
-      ? await upsertCustomer({
-          email: payment.payer.email,
-          nombre: payment.payer.first_name || null,
-          apellido: payment.payer.last_name || null,
-          source: "mercadopago-webhook",
-        })
-      : null
+  if (!existing) return
 
+  const customer = await findCustomerById(existing.customer_id)
   if (!customer) return
 
   const order = await recordOrder({
@@ -94,9 +88,13 @@ async function processPayment(paymentId: string) {
     rawPayload: payment,
   })
 
-  if (status !== "paid") return
+  if (order.status !== "paid") return
 
   await grantEntitlement(customer.id, product.id, order.id)
+
+  // Sin WhatsApp el formulario no se completó: no adelantar el acceso.
+  if (!customer.whatsapp) return
+
   await deliverAccess({ customer, product, orderId: order.id, amountCents: order.amount_cents })
 }
 

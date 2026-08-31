@@ -6,7 +6,7 @@
  */
 
 import { ACCESS_TOKEN_TTL_DAYS, creatorEmail, ownerEmail, resendConfig } from "./config"
-import { insert, update } from "./db"
+import { insert, selectOne, update } from "./db"
 import type { Customer, Product } from "./access"
 
 type EmailTemplate = "purchase_access" | "reminder" | "custom"
@@ -19,6 +19,16 @@ export type SendAccessEmailInput = {
   product: Product
   accessUrl: string
   orderId: string | null
+}
+
+/** Evita un segundo mail si el formulario y el webhook corren a la vez. */
+export async function hasAccessEmailForOrder(orderId: string): Promise<boolean> {
+  const row = await selectOne<{ id: string }>(
+    "email_events",
+    `order_id=eq.${encodeURIComponent(orderId)}` +
+      `&template=eq.purchase_access&status=in.(sent,queued)&select=id`,
+  )
+  return row !== null
 }
 
 export async function sendAccessEmail(input: SendAccessEmailInput): Promise<EmailStatus> {

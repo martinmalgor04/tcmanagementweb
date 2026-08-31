@@ -9,7 +9,7 @@
  */
 
 import { type Customer, type Product, issueAccessLink, revokePreviousAccessTokens } from "./access"
-import { type EmailStatus, notifySale, sendAccessEmail } from "./email"
+import { type EmailStatus, hasAccessEmailForOrder, notifySale, sendAccessEmail } from "./email"
 
 export type DeliverAccessInput = {
   customer: Customer
@@ -22,6 +22,10 @@ export async function deliverAccess(
   input: DeliverAccessInput,
 ): Promise<{ accessUrl: string; emailStatus: EmailStatus }> {
   const { customer, product, orderId } = input
+
+  if (orderId && (await hasAccessEmailForOrder(orderId))) {
+    return { accessUrl: "", emailStatus: "sent" }
+  }
 
   const { url, tokenId } = await issueAccessLink(customer.id, product.id)
   const emailStatus = await sendAccessEmail({ customer, product, accessUrl: url, orderId })
