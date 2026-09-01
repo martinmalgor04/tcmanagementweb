@@ -6,7 +6,7 @@
  */
 
 import { ACCESS_TOKEN_TTL_DAYS, creatorEmail, ownerEmail, resendConfig } from "./config"
-import { insert, selectOne, update } from "./db"
+import { DbError, insert, selectOne, update } from "./db"
 import type { Customer, Product } from "./access"
 
 type EmailTemplate = "purchase_access" | "reminder" | "custom"
@@ -21,11 +21,17 @@ export type SendAccessEmailInput = {
   orderId: string | null
 }
 
-/** Evita un segundo mail si el formulario y el webhook corren a la vez. */
+/**
+ * Evita un segundo mail si el formulario y el webhook corren a la vez.
+ *
+ * Sólo cuenta `sent`: una fila `queued` es un mail que NO salió (por ejemplo
+ * sin RESEND_API_KEY), y darla por entregada dejaba la orden sin mail para
+ * siempre.
+ */
 export async function hasAccessEmailForOrder(orderId: string, toEmail?: string): Promise<boolean> {
   let query =
     `order_id=eq.${encodeURIComponent(orderId)}` +
-    `&template=eq.purchase_access&status=in.(sent,queued)&select=id`
+    `&template=eq.purchase_access&status=eq.sent&select=id`
   if (toEmail) {
     query += `&to_email=eq.${encodeURIComponent(toEmail.trim().toLowerCase())}`
   }
@@ -37,17 +43,27 @@ export async function sendAccessEmail(input: SendAccessEmailInput): Promise<Emai
   const { customer, product, accessUrl, orderId } = input
   const subject = `Tu acceso a ${product.name}`
 
-  const event = await insert<EmailEvent>("email_events", {
-    customer_id: customer.id,
-    order_id: orderId,
-    product_id: product.id,
-    template: "purchase_access" satisfies EmailTemplate,
-    to_email: customer.email,
-    provider: resendConfig() ? "resend" : "none",
-    status: "queued",
-    // Nunca guardamos el link: lleva el token en claro.
-    payload: { subject, ttl_days: ACCESS_TOKEN_TTL_DAYS },
-  })
+  let event: EmailEvent
+  try {
+    event = await insert<EmailEvent>("email_events", {
+      customer_id: customer.id,
+      order_id: orderId,
+      product_id: product.id,
+      template: "purchase_access" satisfies EmailTemplate,
+      to_email: customer.email,
+      provider: resendConfig() ? "resend" : "none",
+      status: "queued",
+      // Nunca guardamos el link: lleva el token en claro.
+      payload: { subject, ttl_days: ACCESS_TOKEN_TTL_DAYS },
+    })
+  } catch (error) {
+    // Índice email_events_one_access_per_order: otra ejecución se adelantó y ya
+    // está entregando esta orden. Cortamos acá en vez de mandar el segundo mail.
+    if (error instanceof DbError && error.status === 409) {
+      return "sent"
+    }
+    throw error
+  }
 
   const resend = resendConfig()
   if (!resend) {

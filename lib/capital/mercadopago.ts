@@ -86,6 +86,9 @@ export type MpPayment = {
   status_detail?: string
   transaction_amount?: number
   currency_id?: string
+  /** Lo setea createCheckoutPreference con el id del producto. */
+  external_reference?: string | null
+  metadata?: { product?: string | null } | null
   date_approved?: string | null
   payer?: {
     email?: string
@@ -101,7 +104,7 @@ export type MpPayment = {
 }
 
 export type PaymentCheck = {
-  status: "paid" | "pending" | "failed"
+  status: "paid" | "pending" | "failed" | "refunded"
   /** true si el estado lo confirmó la API de Mercado Pago, no la URL de retorno. */
   verified: boolean
   payment: MpPayment | null
@@ -131,8 +134,10 @@ export function mapPaymentStatus(mpStatus: string | undefined): PaymentCheck["st
       return "paid"
     case "rejected":
     case "cancelled":
-    case "charged_back":
       return "failed"
+    case "refunded":
+    case "charged_back":
+      return "refunded"
     default:
       return "pending"
   }
@@ -158,6 +163,24 @@ export function payerName(payment: MpPayment): { nombre: string | null; apellido
   const apellido =
     payment.payer?.last_name?.trim() || payment.additional_info?.payer?.last_name?.trim() || null
   return { nombre, apellido }
+}
+
+/**
+ * Un pago aprobado no alcanza: tiene que ser de ESTE producto, en la moneda del
+ * producto y por el precio. Sin esto, cualquier pago a la misma cuenta de
+ * Mercado Pago —otro link, otro monto— habilitaba el manual.
+ */
+export function paymentMatchesProduct(
+  payment: MpPayment,
+  product: { id: string; price_cents: number; currency: string },
+): boolean {
+  const reference = payment.external_reference || payment.metadata?.product || null
+  if (reference !== product.id) return false
+
+  const currency = (payment.currency_id || "").toUpperCase()
+  if (currency && currency !== product.currency.toUpperCase()) return false
+
+  return paymentAmountCents(payment, 0) >= product.price_cents
 }
 
 export function paymentAmountCents(payment: MpPayment, fallbackCents: number): number {

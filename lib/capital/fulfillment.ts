@@ -8,12 +8,12 @@ import {
   type CustomerInput,
   type Order,
   type Product,
-  findCustomerByEmail,
   findCustomerById,
   findOrderByPaymentId,
   getProduct,
   grantEntitlement,
   recordOrder,
+  revokeEntitlement,
   updateCustomer,
   upsertCustomer,
 } from "./access"
@@ -29,6 +29,7 @@ import {
   payerEmail,
   payerName,
   paymentAmountCents,
+  paymentMatchesProduct,
 } from "./mercadopago"
 
 export type FulfillInput = {
@@ -61,6 +62,14 @@ export async function fulfillPurchase(input: FulfillInput): Promise<FulfillResul
   }
 
   const check = await checkPayment(input.paymentId, input.redirectStatus)
+
+  // Un pago aprobado de otro producto o por otro monto no habilita este manual.
+  const mismatched =
+    check.verified && check.payment !== null && !paymentMatchesProduct(check.payment, product)
+  if (mismatched) {
+    console.warn("[capital] pago que no corresponde al producto", input.paymentId)
+  }
+
   const customer = await customerForPurchase(input)
 
   const order = await recordOrder({
@@ -74,8 +83,12 @@ export async function fulfillPurchase(input: FulfillInput): Promise<FulfillResul
   })
 
   // Se decide sobre la order, no sobre este chequeo: si el webhook ya la
-  // confirmó antes, el formulario no tiene que volver a probar nada.
-  if (order.status !== "paid") {
+  // confirmó antes, el formulario no tiene que volver a probar nada. Pero el
+  // estado de la URL de retorno nunca alcanza por sí solo: lo que habilita es
+  // que el pago esté verificado contra la API.
+  const entitled = order.status === "paid" && order.payment_verified && !mismatched
+
+  if (!entitled) {
     return {
       product,
       customer,
@@ -122,16 +135,17 @@ async function customerForPurchase(input: FulfillInput): Promise<Customer> {
   const current = await findCustomerById(existingOrder.customer_id)
   if (!current) return upsertCustomer(input.customer)
 
+  // El formulario COMPLETA datos (WhatsApp, ciudad, Instagram); nunca cambia de
+  // quién es la orden. Si lo hiciera, cualquiera con el payment_id ajeno —que
+  // viaja a la vista en la URL de /gracias— se quedaba con el acceso y dejaba
+  // afuera a la compradora real.
   const formEmail = input.customer.email.trim().toLowerCase()
-  let email = formEmail
   if (formEmail !== current.email.toLowerCase()) {
-    const other = await findCustomerByEmail(formEmail)
-    if (other && other.id !== current.id) {
-      email = current.email
-    }
+    console.warn("[capital] el formulario llegó con otro mail que la orden", existingOrder.id)
   }
 
-  return updateCustomer(current.id, { ...input.customer, email })
+  const { email: _delFormulario, ...resto } = input.customer
+  return updateCustomer(current.id, { ...resto, email: current.email })
 }
 
 export type MpFulfillFallback = {
@@ -149,7 +163,7 @@ export type MpFulfillResult =
       order: Order
       emailStatus: EmailStatus | "skipped"
     }
-  | { ok: false; reason: "not_found" | "no_email" | "not_paid"; status?: string }
+  | { ok: false; reason: "not_found" | "no_email" | "not_paid" | "mismatch"; status?: string }
 
 /**
  * Confirma un pago contra la API de Mercado Pago y lo deja impactado.
@@ -174,6 +188,12 @@ export async function fulfillMercadoPagoPayment(
     return { ok: false, reason: "not_paid", status: payment.status }
   }
 
+  // Un pago aprobado a la misma cuenta pero de otro producto, otra moneda u
+  // otro monto no habilita nada.
+  if (status === "paid" && !paymentMatchesProduct(payment, product)) {
+    return { ok: false, reason: "mismatch", status: payment.status }
+  }
+
   const customer = await customerForMercadoPagoPayment(payment, existing, fallback)
   if (!customer) return { ok: false, reason: "no_email", status: payment.status }
 
@@ -187,7 +207,20 @@ export async function fulfillMercadoPagoPayment(
     rawPayload: payment,
   })
 
+  // Devolución o contracargo confirmados por la API: se da de baja el acceso y
+  // los links vivos dejan de servir.
+  if (order.status === "refunded") {
+    await revokeEntitlement(customer.id, product.id)
+    return { ok: true, alreadyPaid, product, customer, order, emailStatus: "skipped" }
+  }
+
   if (order.status !== "paid") {
+    return { ok: true, alreadyPaid, product, customer, order, emailStatus: "skipped" }
+  }
+
+  // Ya se entregó en una notificación anterior: Mercado Pago reintenta la misma
+  // notificación varias veces y no hay que volver a emitir token ni mail.
+  if (alreadyPaid) {
     return { ok: true, alreadyPaid, product, customer, order, emailStatus: "skipped" }
   }
 

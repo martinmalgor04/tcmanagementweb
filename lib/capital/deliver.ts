@@ -16,12 +16,19 @@ export type DeliverAccessInput = {
   product: Product
   orderId: string | null
   amountCents?: number
+  /**
+   * Da de baja los links anteriores. En una entrega por compra sí: el acceso es
+   * nuevo. En un reenvío no, porque alcanzaba con pedir reenvíos en loop para
+   * dejar a una compradora siempre con el link recién invalidado.
+   */
+  revokePrevious?: boolean
 }
 
 export async function deliverAccess(
   input: DeliverAccessInput,
 ): Promise<{ accessUrl: string; emailStatus: EmailStatus }> {
   const { customer, product, orderId } = input
+  const revokePrevious = input.revokePrevious ?? orderId !== null
 
   if (orderId && (await hasAccessEmailForOrder(orderId, customer.email))) {
     return { accessUrl: "", emailStatus: "sent" }
@@ -30,7 +37,7 @@ export async function deliverAccess(
   const { url, tokenId } = await issueAccessLink(customer.id, product.id)
   const emailStatus = await sendAccessEmail({ customer, product, accessUrl: url, orderId })
 
-  if (emailStatus === "sent") {
+  if (emailStatus === "sent" && revokePrevious) {
     await revokePreviousAccessTokens(customer.id, product.id, tokenId)
   }
 

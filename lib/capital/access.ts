@@ -101,9 +101,17 @@ export async function recordOrder(input: RecordOrderInput): Promise<Order> {
     ? await findOrderByPaymentId(provider, input.providerPaymentId)
     : null
 
-  // Un pago acreditado no se degrada: el formulario puede llegar con estado
-  // "pending" después de que el webhook ya lo confirmó.
-  const status = existing?.status === "paid" ? "paid" : input.status
+  const verified = existing?.payment_verified || Boolean(input.paymentVerified)
+
+  // Los parámetros de la URL de retorno los controla el navegador: sin
+  // confirmación del proveedor, la orden queda pendiente hasta que llegue el
+  // webhook. Antes bastaba con mandar mp_status=approved para quedar "paid".
+  const claimed = input.status === "paid" && !verified ? "pending" : input.status
+
+  // Un pago acreditado no se degrada, salvo que el proveedor confirme una
+  // devolución o un contracargo.
+  const status =
+    existing?.status === "paid" && !(verified && claimed === "refunded") ? "paid" : claimed
 
   const row: Record<string, unknown> = {
     customer_id: input.customerId,
@@ -112,7 +120,7 @@ export async function recordOrder(input: RecordOrderInput): Promise<Order> {
     provider_payment_id: input.providerPaymentId || null,
     status,
     // Una vez verificado, no se vuelve atrás.
-    payment_verified: existing?.payment_verified || Boolean(input.paymentVerified),
+    payment_verified: verified,
     amount_cents: input.amountCents ?? input.product.price_cents,
     currency: input.product.currency,
   }
@@ -180,11 +188,40 @@ export async function updateCustomer(id: string, input: CustomerInput): Promise<
   return updated
 }
 
+/**
+ * Da de baja el acceso: devolución, contracargo o baja a mano desde el panel.
+ * Los links vivos dejan de servir en el acto.
+ */
+export async function revokeEntitlement(customerId: string, productId: string): Promise<void> {
+  const now = new Date().toISOString()
+
+  await update("entitlements", `customer_id=eq.${customerId}&product_id=eq.${productId}`, {
+    status: "revoked",
+    revoked_at: now,
+  })
+
+  const live = await select<{ id: string }>(
+    "access_tokens",
+    `customer_id=eq.${customerId}&product_id=eq.${productId}&revoked_at=is.null&select=id`,
+  )
+  for (const token of live) {
+    await update("access_tokens", `id=eq.${token.id}`, { revoked_at: now })
+  }
+}
+
 export async function grantEntitlement(
   customerId: string,
   productId: string,
   orderId: string | null,
 ): Promise<void> {
+  // Una baja hecha a propósito no se revive sola: si el entitlement está
+  // revocado, hay que volver a darlo desde el panel.
+  const existing = await selectOne<{ status: string }>(
+    "entitlements",
+    `customer_id=eq.${customerId}&product_id=eq.${productId}&select=status`,
+  )
+  if (existing?.status === "revoked") return
+
   await insert("entitlements", {
     customer_id: customerId,
     product_id: productId,

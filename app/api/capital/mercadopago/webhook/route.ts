@@ -14,7 +14,10 @@ export const dynamic = "force-dynamic"
  * habilita el acceso y se manda el mail al correo de la cuenta de Mercado Pago.
  * El formulario, si llega después, sólo completa WhatsApp / Instagram.
  *
- * Siempre responde 200: si devolviéramos error, Mercado Pago reintenta en loop.
+ * Responde 200 cuando la notificación quedó resuelta (impactada, o descartada
+ * por no corresponder). Ante un fallo transitorio —Supabase o Resend caídos—
+ * responde 500 a propósito, para que Mercado Pago reintente: antes un corte de
+ * treinta segundos perdía la venta en silencio.
  */
 export async function POST(req: Request) {
   const ok = NextResponse.json({ ok: true })
@@ -43,9 +46,16 @@ export async function POST(req: Request) {
     const result = await fulfillMercadoPagoPayment(paymentId)
     if (!result.ok) {
       console.warn("[capital] webhook no impactó", paymentId, result)
+
+      // "not_found" suele ser la notificación que llega antes de que el pago
+      // esté disponible en la API: conviene que reintente.
+      if (result.reason === "not_found") {
+        return NextResponse.json({ error: "pago todavía no disponible" }, { status: 503 })
+      }
     }
   } catch (error) {
     console.error("[capital] webhook falló", paymentId, error)
+    return NextResponse.json({ error: "no se pudo procesar" }, { status: 500 })
   }
 
   return ok
@@ -57,7 +67,15 @@ export async function POST(req: Request) {
  */
 function verifySignature(req: Request, paymentId: string): boolean {
   const secret = process.env.MP_WEBHOOK_SECRET
-  if (!secret) return true
+  if (!secret) {
+    // En desarrollo se puede probar sin firma; en producción, no: sin secreto
+    // cualquiera podía postear una notificación inventada.
+    if (process.env.NODE_ENV === "production") {
+      console.error("[capital] falta MP_WEBHOOK_SECRET: webhook rechazado")
+      return false
+    }
+    return true
+  }
 
   const signature = req.headers.get("x-signature")
   const requestId = req.headers.get("x-request-id") || ""

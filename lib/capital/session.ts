@@ -3,6 +3,8 @@ import { createHmac, timingSafeEqual } from "node:crypto"
 import { ACCESS_COOKIE_TTL_DAYS, sessionSecret } from "./config"
 
 export type AccessSession = {
+  /** Discriminador de dominio. Ver lib/capital/admin-session. */
+  typ?: "access"
   /** customer_id */
   cid: string
   /** product_id */
@@ -18,6 +20,7 @@ function sign(payload: string): string {
 export function createSessionCookie(cid: string, pid: string): { value: string; maxAge: number } {
   const maxAge = ACCESS_COOKIE_TTL_DAYS * 24 * 60 * 60
   const session: AccessSession = {
+    typ: "access",
     cid,
     pid,
     exp: Math.floor(Date.now() / 1000) + maxAge,
