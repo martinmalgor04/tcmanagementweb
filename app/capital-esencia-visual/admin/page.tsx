@@ -1,6 +1,7 @@
 import type { Metadata } from "next"
 
 import { CortesiaForm } from "@/components/capital/cortesia-form"
+import { RecuperarPagoForm } from "@/components/capital/recuperar-pago-form"
 import { adminToken } from "@/lib/capital/config"
 import { hasAdminSession } from "@/lib/capital/admin-session"
 import { EMPTY_EVENT, getCustomers, getDashboard } from "@/lib/capital/metrics"
@@ -147,6 +148,20 @@ export default async function AdminPage({
             <CortesiaForm />
           </div>
         </details>
+
+        <details className="group">
+          <summary className="flex list-none items-center whitespace-nowrap rounded-full border border-white/20 px-6 py-2.5 text-[10px] font-bold uppercase tracking-[0.22em] text-neutral-300 transition hover:border-white/50 hover:text-white [&::-webkit-details-marker]:hidden">
+            Recuperar pago de Mercado Pago
+          </summary>
+          <div className="mt-4 w-full max-w-xl rounded-xl border border-white/15 bg-white/[0.03] p-6">
+            <p className="text-sm text-neutral-400">
+              Pegá el número de operación del mail de Mercado Pago. Confirma el cobro
+              contra la API, lo deja en la base y manda el acceso. El mail es opcional:
+              sólo hace falta si Mercado Pago no lo trae.
+            </p>
+            <RecuperarPagoForm />
+          </div>
+        </details>
       </div>
 
       <section className="mt-10 grid grid-cols-2 gap-3 lg:grid-cols-4">
@@ -213,6 +228,10 @@ export default async function AdminPage({
                     )}
                     <div className="text-neutral-500">{c.ciudad}</div>
                     {c.instagram && <div className="text-neutral-500">{c.instagram}</div>}
+                    {c.orden_status === "paid" &&
+                      (!c.whatsapp || /testuser\.com$|sin-mail\.tcmanagement/.test(c.email)) && (
+                      <div className="mt-1 text-xs text-amber-400">faltan datos</div>
+                    )}
                   </td>
                   <td className="py-4 pr-4">
                     <div className="text-neutral-200">{c.orden_status ?? "—"}</div>

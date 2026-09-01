@@ -92,6 +92,12 @@ export type MpPayment = {
     first_name?: string | null
     last_name?: string | null
   }
+  additional_info?: {
+    payer?: {
+      first_name?: string | null
+      last_name?: string | null
+    }
+  }
 }
 
 export type PaymentCheck = {
@@ -118,7 +124,7 @@ export async function fetchPayment(paymentId: string): Promise<MpPayment | null>
   }
 }
 
-function mapStatus(mpStatus: string | undefined): PaymentCheck["status"] {
+export function mapPaymentStatus(mpStatus: string | undefined): PaymentCheck["status"] {
   switch ((mpStatus || "").toLowerCase()) {
     case "approved":
     case "success":
@@ -132,6 +138,34 @@ function mapStatus(mpStatus: string | undefined): PaymentCheck["status"] {
   }
 }
 
+export function isUsablePayerEmail(email: string | null | undefined): email is string {
+  const value = email?.trim().toLowerCase() || ""
+  if (!value.includes("@")) return false
+  // Mercado Pago a veces devuelve el mail sandbox aun en pagos live.
+  if (value.endsWith("@testuser.com")) return false
+  if (value.endsWith("@sin-mail.tcmanagement.com.ar")) return false
+  return true
+}
+
+export function payerEmail(payment: MpPayment): string | null {
+  const email = payment.payer?.email?.trim().toLowerCase() || ""
+  return isUsablePayerEmail(email) ? email : null
+}
+
+export function payerName(payment: MpPayment): { nombre: string | null; apellido: string | null } {
+  const nombre =
+    payment.payer?.first_name?.trim() || payment.additional_info?.payer?.first_name?.trim() || null
+  const apellido =
+    payment.payer?.last_name?.trim() || payment.additional_info?.payer?.last_name?.trim() || null
+  return { nombre, apellido }
+}
+
+export function paymentAmountCents(payment: MpPayment, fallbackCents: number): number {
+  return payment.transaction_amount != null
+    ? Math.round(payment.transaction_amount * 100)
+    : fallbackCents
+}
+
 /**
  * @param paymentId      id que llega en la URL de retorno o en el webhook
  * @param redirectStatus estado que llega en la URL de retorno (no confiable)
@@ -143,9 +177,9 @@ export async function checkPayment(
   if (paymentId) {
     const payment = await fetchPayment(paymentId)
     if (payment) {
-      return { status: mapStatus(payment.status), verified: true, payment }
+      return { status: mapPaymentStatus(payment.status), verified: true, payment }
     }
   }
 
-  return { status: mapStatus(redirectStatus || undefined), verified: false, payment: null }
+  return { status: mapPaymentStatus(redirectStatus || undefined), verified: false, payment: null }
 }

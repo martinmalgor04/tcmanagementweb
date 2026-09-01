@@ -1,16 +1,7 @@
 import { createHmac, timingSafeEqual } from "node:crypto"
 import { NextResponse } from "next/server"
 
-import {
-  findCustomerById,
-  findOrderByPaymentId,
-  getProduct,
-  grantEntitlement,
-  recordOrder,
-} from "@/lib/capital/access"
-import { PRODUCT_SLUG } from "@/lib/capital/config"
-import { deliverAccess } from "@/lib/capital/deliver"
-import { fetchPayment } from "@/lib/capital/mercadopago"
+import { fulfillMercadoPagoPayment } from "@/lib/capital/fulfillment"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -18,10 +9,10 @@ export const dynamic = "force-dynamic"
 /**
  * Webhook de Mercado Pago (notificaciones de tipo `payment`).
  *
- * Es la única confirmación de pago que no depende del navegador. No manda el
- * mail de acceso: eso espera al formulario de /gracias, donde está el mail
- * que eligió la compradora. Queda inerte hasta que estén cargadas
- * MP_ACCESS_TOKEN y, opcionalmente, MP_WEBHOOK_SECRET.
+ * Es la confirmación de pago que no depende del navegador. Un pago aprobado
+ * impacta aunque la compradora no vuelva a /gracias: se crea la orden, se
+ * habilita el acceso y se manda el mail al correo de la cuenta de Mercado Pago.
+ * El formulario, si llega después, sólo completa WhatsApp / Instagram.
  *
  * Siempre responde 200: si devolviéramos error, Mercado Pago reintenta en loop.
  */
@@ -49,53 +40,15 @@ export async function POST(req: Request) {
   }
 
   try {
-    await processPayment(paymentId)
+    const result = await fulfillMercadoPagoPayment(paymentId)
+    if (!result.ok) {
+      console.warn("[capital] webhook no impactó", paymentId, result)
+    }
   } catch (error) {
     console.error("[capital] webhook falló", paymentId, error)
   }
 
   return ok
-}
-
-async function processPayment(paymentId: string) {
-  const payment = await fetchPayment(paymentId)
-  if (!payment) return
-
-  const status =
-    payment.status === "approved" ? "paid" : payment.status === "rejected" ? "failed" : "pending"
-
-  const product = await getProduct(PRODUCT_SLUG)
-  if (!product) throw new Error(`No existe el producto ${PRODUCT_SLUG}`)
-
-  // El mail tiene que ir al mail del formulario de /gracias, no al de la
-  // cuenta de Mercado Pago. Si el webhook llega primero, sólo esperamos:
-  // el formulario confirma el pago contra la API y recién ahí entrega.
-  const existing = await findOrderByPaymentId("mercadopago", paymentId)
-  if (!existing) return
-
-  const customer = await findCustomerById(existing.customer_id)
-  if (!customer) return
-
-  const order = await recordOrder({
-    customerId: customer.id,
-    product,
-    status,
-    paymentVerified: true,
-    providerPaymentId: paymentId,
-    amountCents: payment.transaction_amount
-      ? Math.round(payment.transaction_amount * 100)
-      : product.price_cents,
-    rawPayload: payment,
-  })
-
-  if (order.status !== "paid") return
-
-  await grantEntitlement(customer.id, product.id, order.id)
-
-  // Sin WhatsApp el formulario no se completó: no adelantar el acceso.
-  if (!customer.whatsapp) return
-
-  await deliverAccess({ customer, product, orderId: order.id, amountCents: order.amount_cents })
 }
 
 /**

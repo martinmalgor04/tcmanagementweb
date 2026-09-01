@@ -23,7 +23,7 @@ export async function deliverAccess(
 ): Promise<{ accessUrl: string; emailStatus: EmailStatus }> {
   const { customer, product, orderId } = input
 
-  if (orderId && (await hasAccessEmailForOrder(orderId))) {
+  if (orderId && (await hasAccessEmailForOrder(orderId, customer.email))) {
     return { accessUrl: "", emailStatus: "sent" }
   }
 

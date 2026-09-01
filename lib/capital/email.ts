@@ -22,12 +22,14 @@ export type SendAccessEmailInput = {
 }
 
 /** Evita un segundo mail si el formulario y el webhook corren a la vez. */
-export async function hasAccessEmailForOrder(orderId: string): Promise<boolean> {
-  const row = await selectOne<{ id: string }>(
-    "email_events",
+export async function hasAccessEmailForOrder(orderId: string, toEmail?: string): Promise<boolean> {
+  let query =
     `order_id=eq.${encodeURIComponent(orderId)}` +
-      `&template=eq.purchase_access&status=in.(sent,queued)&select=id`,
-  )
+    `&template=eq.purchase_access&status=in.(sent,queued)&select=id`
+  if (toEmail) {
+    query += `&to_email=eq.${encodeURIComponent(toEmail.trim().toLowerCase())}`
+  }
+  const row = await selectOne<{ id: string }>("email_events", query)
   return row !== null
 }
 

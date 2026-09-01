@@ -162,6 +162,24 @@ export async function findCustomerById(id: string): Promise<Customer | null> {
   return selectOne<Customer>("customers", `id=eq.${id}&select=*`)
 }
 
+/**
+ * Completa datos de una compradora que ya existe (pago por webhook, después
+ * el formulario de /gracias). No pisa con vacíos.
+ */
+export async function updateCustomer(id: string, input: CustomerInput): Promise<Customer> {
+  const row: Record<string, unknown> = {}
+
+  for (const field of ["nombre", "apellido", "whatsapp", "ciudad", "instagram", "source"] as const) {
+    const value = input[field]
+    if (value) row[field] = value
+  }
+  if (input.email) row.email = input.email.trim().toLowerCase()
+
+  const updated = await update<Customer>("customers", `id=eq.${id}`, row)
+  if (!updated) throw new Error("No se pudo actualizar la compradora")
+  return updated
+}
+
 export async function grantEntitlement(
   customerId: string,
   productId: string,
