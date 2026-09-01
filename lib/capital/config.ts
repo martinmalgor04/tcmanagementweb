@@ -91,6 +91,19 @@ export function siteUrl(): string {
   return "http://localhost:3000"
 }
 
+/**
+ * Origen de los magic links. Nunca localhost: un mail con esa URL no abre
+ * en el celular de la compradora.
+ */
+export function outboundSiteUrl(): string {
+  const url = siteUrl()
+  if (isLocalhost(url) || !publicHttpsOrigin(url)) {
+    console.warn(`[capital] ${url} no sirve para un mail, se usa ${PRODUCTION_SITE_URL}`)
+    return PRODUCTION_SITE_URL
+  }
+  return url
+}
+
 const FROM_PLAIN = /^[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+$/
 const FROM_NAMED = /^[^<>]+<[^\s@<>]+@[^\s@<>]+\.[^\s@<>]+>$/
 

@@ -9,7 +9,7 @@ import {
   ACCESS_ENTRY_PATH,
   ACCESS_TOKEN_MAX_USES,
   ACCESS_TOKEN_TTL_DAYS,
-  siteUrl,
+  outboundSiteUrl,
 } from "./config"
 import { insert, rpc, select, selectOne, update } from "./db"
 import { createAccessToken, hashAccessToken } from "./tokens"
@@ -225,7 +225,7 @@ export async function issueAccessLink(
   })
 
   return {
-    url: `${siteUrl()}${ACCESS_ENTRY_PATH}?token=${encodeURIComponent(raw)}`,
+    url: `${outboundSiteUrl()}${ACCESS_ENTRY_PATH}?token=${encodeURIComponent(raw)}`,
     tokenId: token.id,
   }
 }
