@@ -8,7 +8,7 @@ export const metadata: Metadata = {
 }
 
 const CDN = "https://pub-9195f8a94602486395419c2bb7beab6b.r2.dev"
-const LOGO_WORDMARK = `${CDN}/LOGOS/tc-wordmark-white.png`
+const LOGO_WORDMARK = `${CDN}/LOGOS/tc-wordmark-black.png`
 
 export default function AccesoInvalidoPage() {
   return (
@@ -21,7 +21,7 @@ export default function AccesoInvalidoPage() {
         <h1 className="mt-4 text-3xl font-bold uppercase leading-tight tracking-tight sm:text-4xl">
           Ese link ya no sirve
         </h1>
-        <p className="mt-4 leading-relaxed text-neutral-400">
+        <p className="mt-4 leading-relaxed text-neutral-600">
           Puede que lo hayas reemplazado por uno más nuevo. Poné el mail con el que
           compraste y te mandamos otro al instante.
         </p>

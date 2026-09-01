@@ -14,6 +14,18 @@
   overflow-x: clip;
 }
 
+/* El panel nació oscuro: no hereda el papel blanco de la landing. */
+.capital-admin {
+  --cev-bg: #070707;
+  --cev-ink: #f5f4f2;
+  --cev-gold: #c8b48a;
+  --cev-line: rgba(255, 255, 255, 0.1);
+  --cev-glow: rgba(200, 180, 138, 0.25);
+  background: var(--cev-bg);
+  color: var(--cev-ink);
+  overflow-x: clip;
+}
+
 /* ---------- serif editorial (Gloock) ---------- */
 .cev-serif {
   font-family: var(--font-gloock), Georgia, serif;

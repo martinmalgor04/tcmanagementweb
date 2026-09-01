@@ -284,7 +284,7 @@ function Card({
 
 function Shell({ children, wide = false }: { children: React.ReactNode; wide?: boolean }) {
   return (
-    <div className="capital-landing cev-grain relative min-h-[100svh] px-6 py-12 font-[inherit]">
+    <div className="capital-admin cev-grain relative min-h-[100svh] px-6 py-12 font-[inherit]">
       <div className={`relative z-10 mx-auto w-full ${wide ? "max-w-6xl" : "max-w-lg"}`}>
         <img src={LOGO_WORDMARK} alt="TC Management" className="mb-10 h-5 w-auto" />
         {children}

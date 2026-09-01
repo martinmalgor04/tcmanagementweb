@@ -5,10 +5,10 @@ import { useState, type FormEvent } from "react"
 type Status = "idle" | "sending" | "ok"
 
 const fieldClass =
-  "w-full rounded-sm border border-white/15 bg-white/[0.04] px-4 py-3 text-sm text-[#f5f4f2] outline-none transition placeholder:text-neutral-600 focus:border-[#c8b48a]/50"
+  "w-full rounded-sm border border-black/15 bg-white px-4 py-3 text-sm text-[#070707] outline-none transition placeholder:text-neutral-400 focus:border-[#c8b48a]/80"
 
 const labelClass =
-  "mb-2 block text-[10px] font-medium uppercase tracking-[0.32em] text-neutral-400"
+  "mb-2 block text-[10px] font-medium uppercase tracking-[0.32em] text-neutral-500"
 
 export default function ReenviarAccesoForm() {
   const [status, setStatus] = useState<Status>("idle")
@@ -36,7 +36,7 @@ export default function ReenviarAccesoForm() {
 
   if (status === "ok") {
     return (
-      <p className="border border-white/15 bg-white/[0.03] px-6 py-8 leading-relaxed text-neutral-400">
+      <p className="border border-black/10 bg-white px-6 py-8 leading-relaxed text-neutral-600">
         Si ese mail tiene una compra registrada, en un minuto te llega un link nuevo. Mirá spam.
       </p>
     )
@@ -64,7 +64,7 @@ export default function ReenviarAccesoForm() {
       <button
         type="submit"
         disabled={status === "sending"}
-        className="cev-cta cev-shine relative inline-flex w-full items-center justify-center rounded-full bg-[#f5f4f2] px-10 py-4 text-sm font-bold uppercase tracking-[0.22em] text-[#070707] disabled:opacity-60"
+        className="cev-cta cev-shine relative inline-flex w-full items-center justify-center rounded-full bg-[#070707] px-10 py-4 text-sm font-bold uppercase tracking-[0.22em] text-[#f5f4f2] disabled:opacity-60"
       >
         {status === "sending" ? "Enviando…" : "Mandame un link nuevo"}
       </button>

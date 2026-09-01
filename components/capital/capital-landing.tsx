@@ -235,15 +235,9 @@ function CtaButton({
   className?: string
   pulse?: boolean
 }) {
-  return (
-    <a
-      href={href}
-      rel="noopener noreferrer"
-      onClick={() => {
-        if (href === CHECKOUT_URL) track("checkout_click")
-      }}
-      className={`cev-cta cev-shine relative inline-flex items-center justify-center gap-3 rounded-full bg-[#070707] px-10 py-4 text-sm font-bold uppercase tracking-[0.22em] text-[#f5f4f2] sm:px-12 sm:py-5 sm:text-base ${className}`}
-    >
+  const cls = `cev-cta cev-shine relative inline-flex items-center justify-center gap-3 rounded-full bg-[#070707] px-10 py-4 text-sm font-bold uppercase tracking-[0.22em] text-[#f5f4f2] sm:px-12 sm:py-5 sm:text-base ${className}`
+  const label = (
+    <>
       {pulse && <span className="cev-pulse-ring" aria-hidden />}
       <span className="relative z-[2]">{children}</span>
       <svg
@@ -259,6 +253,27 @@ function CtaButton({
         <path d="M5 12h14" />
         <path d="m13 6 6 6-6 6" />
       </svg>
+    </>
+  )
+
+  if (href === CHECKOUT_URL) {
+    return (
+      <form
+        action={CHECKOUT_URL}
+        method="post"
+        className="inline-flex"
+        onSubmit={() => track("checkout_click")}
+      >
+        <button type="submit" className={cls}>
+          {label}
+        </button>
+      </form>
+    )
+  }
+
+  return (
+    <a href={href} rel="noopener noreferrer" className={cls}>
+      {label}
     </a>
   )
 }
@@ -334,12 +349,13 @@ export default function CapitalLanding() {
   const rootRef = useRevealOnScroll<HTMLDivElement>()
   const showSticky = useStickyCta()
   const [openFaq, setOpenFaq] = useState<number | null>(0)
-  const [checkoutError, setCheckoutError] = useState(false)
+  const [checkoutNotice, setCheckoutNotice] = useState<"error" | "cancelado" | null>(null)
 
   useEffect(() => {
     track("landing_view")
-    if (new URLSearchParams(window.location.search).get("checkout") === "error") {
-      setCheckoutError(true)
+    const checkout = new URLSearchParams(window.location.search).get("checkout")
+    if (checkout === "error" || checkout === "cancelado") {
+      setCheckoutNotice(checkout)
     }
   }, [])
 
@@ -437,9 +453,14 @@ export default function CapitalLanding() {
                 </span>
               </div>
               <CtaButton pulse />
-              {checkoutError && (
-                <p className="text-sm text-red-400">
+              {checkoutNotice === "error" && (
+                <p className="text-sm text-red-600">
                   No se pudo abrir Mercado Pago. Probá de nuevo en un momento.
+                </p>
+              )}
+              {checkoutNotice === "cancelado" && (
+                <p className="text-sm text-neutral-600">
+                  El pago no se completó. Cuando quieras, volvé a intentar.
                 </p>
               )}
               <p className="text-[11px] uppercase tracking-[0.25em] text-neutral-500">

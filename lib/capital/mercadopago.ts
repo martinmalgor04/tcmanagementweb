@@ -22,13 +22,15 @@ export async function createCheckoutPreference(input: {
   productId: string
   unitPrice: number
   currency: string
-  backUrl: string
+  successUrl: string
+  pendingUrl: string
+  failureUrl: string
   notificationUrl?: string | null
 }): Promise<CheckoutPreference> {
   const token = mercadoPagoToken()
   if (!token) throw new Error("Falta MP_ACCESS_TOKEN")
 
-  const canAutoReturn = Boolean(publicHttpsOrigin(input.backUrl))
+  const canAutoReturn = Boolean(publicHttpsOrigin(input.successUrl))
 
   const body: Record<string, unknown> = {
     items: [
@@ -41,9 +43,9 @@ export async function createCheckoutPreference(input: {
       },
     ],
     back_urls: {
-      success: input.backUrl,
-      pending: input.backUrl,
-      failure: input.backUrl,
+      success: input.successUrl,
+      pending: input.pendingUrl,
+      failure: input.failureUrl,
     },
     statement_descriptor: "TC MANAGEMENT",
     external_reference: input.productId,
