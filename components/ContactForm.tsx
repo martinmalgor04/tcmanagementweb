@@ -8,6 +8,31 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { PhoneInput } from "@/components/phone-input"
+import { looksLikeEmail } from "@/lib/customer-fields"
+import { parsePhone } from "@/lib/phone"
+
+type ContactFields = Partial<Record<"brand" | "name" | "role" | "email" | "phone" | "category" | "message", string>>
+
+const emptyForm = {
+  brand: "",
+  name: "",
+  role: "",
+  email: "",
+  phone: "",
+  phoneIso: "AR",
+  category: "",
+  message: "",
+}
+
+function FieldError({ id, error }: { id: string; error?: string }) {
+  if (!error) return null
+  return (
+    <p id={id} className="text-sm text-red-500">
+      {error}
+    </p>
+  )
+}
 
 interface ContactFormProps {
   formId?: string;
@@ -25,67 +50,64 @@ export function ContactForm({
   const { toast } = useToast()
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [isSuccess, setIsSuccess] = useState(false)
-  const [formData, setFormData] = useState({
-    brand: "",
-    name: "",
-    role: "",
-    email: "",
-    phone: "",
-    category: "",
-    message: "",
-  })
+  const [formData, setFormData] = useState(emptyForm)
+  const [fields, setFields] = useState<ContactFields>({})
+  const [phoneKey, setPhoneKey] = useState(0)
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value } = e.target
     setFormData((prev) => ({ ...prev, [name]: value }))
+    setFields((prev) => ({ ...prev, [name]: undefined }))
   }
 
   const handleSelectChange = (value: string) => {
     setFormData((prev) => ({ ...prev, category: value }))
+    setFields((prev) => ({ ...prev, category: undefined }))
   }
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Validate form
-    if (
-      !formData.brand ||
-      !formData.name ||
-      !formData.role ||
-      !formData.email ||
-      !formData.phone ||
-      !formData.category ||
-      !formData.message
-    ) {
+    const next: ContactFields = {}
+    if (!formData.brand.trim()) next.brand = "Falta el nombre de la marca."
+    if (!formData.name.trim()) next.name = "Falta tu nombre."
+    else if (!/\p{L}/u.test(formData.name)) next.name = "El nombre tiene que tener letras."
+    if (!formData.role.trim()) next.role = "Falta el rol."
+    if (!formData.email.trim()) next.email = "Falta el mail."
+    else if (!looksLikeEmail(formData.email)) next.email = "Eso no tiene forma de mail. Ej. hola@marca.com."
+    const phone = parsePhone(formData.phone, formData.phoneIso)
+    if (!phone.ok) next.phone = phone.error
+    if (!formData.category) next.category = "Elegí una categoría."
+    if (!formData.message.trim()) next.message = "Falta la consulta."
+
+    if (Object.keys(next).length > 0) {
+      setFields(next)
       toast({
-        title: "Error",
-        description: "Por favor, completá todos los campos",
+        title: "Revisá los datos",
+        description: Object.values(next)[0],
         variant: "destructive",
       })
       return
     }
 
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(formData.email)) {
-      toast({
-        title: "Error",
-        description: "Por favor, ingresá un email válido",
-        variant: "destructive",
-      })
-      return
-    }
-
+    setFields({})
     setIsSubmitting(true)
 
     try {
-      // Send to Formspree
       const response = await fetch(`https://formspree.io/f/${formId}`, {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          brand: formData.brand.trim(),
+          name: formData.name.trim(),
+          role: formData.role.trim(),
+          email: formData.email.trim(),
+          phone: phone.ok ? `+${phone.e164}` : formData.phone,
+          category: formData.category,
+          message: formData.message.trim(),
+        }),
       })
 
       if (response.ok) {
@@ -94,16 +116,8 @@ export function ContactForm({
           title: "¡Éxito!",
           description: "Mensaje enviado correctamente. Te contactaremos pronto.",
         })
-        // Reset form
-        setFormData({
-          brand: "",
-          name: "",
-          role: "",
-          email: "",
-          phone: "",
-          category: "",
-          message: "",
-        })
+        setFormData(emptyForm)
+        setPhoneKey((k) => k + 1)
       } else {
         throw new Error("Failed to submit form")
       }
@@ -153,12 +167,12 @@ export function ContactForm({
       )}
       {subtitle && <p className="text-center text-muted-foreground mb-8">{subtitle}</p>}
       
-      <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl mx-auto">
+      <form onSubmit={handleSubmit} className="space-y-6 max-w-3xl mx-auto" noValidate>
         {compact ? (
           <>
             {/* Diseño compacto con grid */}
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
+              <div className="space-y-1">
                 <Label htmlFor="brand">Marca consultante</Label>
                 <Input
                   id="brand"
@@ -166,21 +180,25 @@ export function ContactForm({
                   placeholder="Nombre de la marca"
                   value={formData.brand}
                   onChange={handleChange}
+                  aria-invalid={Boolean(fields.brand)}
                   required
                 />
+                <FieldError id="brand-error" error={fields.brand} />
               </div>
-              <div>
+              <div className="space-y-1">
                 <Label htmlFor="name">Nombre</Label>
                 <Input 
                   id="name" 
                   name="name" 
                   placeholder="Tu nombre" 
                   value={formData.name} 
-                  onChange={handleChange} 
+                  onChange={handleChange}
+                  aria-invalid={Boolean(fields.name)}
                   required 
                 />
+                <FieldError id="name-error" error={fields.name} />
               </div>
-              <div>
+              <div className="space-y-1">
                 <Label htmlFor="role">Rol en la marca</Label>
                 <Input
                   id="role"
@@ -188,10 +206,12 @@ export function ContactForm({
                   placeholder="Tu posición o rol"
                   value={formData.role}
                   onChange={handleChange}
+                  aria-invalid={Boolean(fields.role)}
                   required
                 />
+                <FieldError id="role-error" error={fields.role} />
               </div>
-              <div>
+              <div className="space-y-1">
                 <Label htmlFor="email">Email</Label>
                 <Input
                   id="email"
@@ -200,24 +220,32 @@ export function ContactForm({
                   placeholder="tu@email.com"
                   value={formData.email}
                   onChange={handleChange}
+                  aria-invalid={Boolean(fields.email)}
                   required
                 />
+                <FieldError id="email-error" error={fields.email} />
               </div>
-              <div>
+              <div className="space-y-1">
                 <Label htmlFor="phone">Teléfono</Label>
-                <Input
+                <PhoneInput
+                  key={phoneKey}
                   id="phone"
                   name="phone"
-                  placeholder="Tu número de teléfono"
-                  value={formData.phone}
-                  onChange={handleChange}
+                  isoName="phone_iso"
                   required
+                  variant="site"
+                  purpose="phone"
+                  error={fields.phone}
+                  onChange={(e164, iso) => {
+                    setFormData((prev) => ({ ...prev, phone: e164, phoneIso: iso }))
+                    setFields((prev) => ({ ...prev, phone: undefined }))
+                  }}
                 />
               </div>
-              <div>
+              <div className="space-y-1">
                 <Label htmlFor="category">Categoría</Label>
                 <Select value={formData.category} onValueChange={handleSelectChange} required>
-                  <SelectTrigger id="category">
+                  <SelectTrigger id="category" aria-invalid={Boolean(fields.category)}>
                     <SelectValue placeholder="Selecciona una categoría" />
                   </SelectTrigger>
                   <SelectContent>
@@ -226,9 +254,10 @@ export function ContactForm({
                     <SelectItem value="PRODUCCIÓN">PRODUCCIÓN</SelectItem>
                   </SelectContent>
                 </Select>
+                <FieldError id="category-error" error={fields.category} />
               </div>
             </div>
-            <div>
+            <div className="space-y-1">
               <Label htmlFor="message">Consulta</Label>
               <Textarea
                 id="message"
@@ -237,8 +266,10 @@ export function ContactForm({
                 rows={4}
                 value={formData.message}
                 onChange={handleChange}
+                aria-invalid={Boolean(fields.message)}
                 required
               />
+              <FieldError id="message-error" error={fields.message} />
             </div>
           </>
         ) : (
@@ -284,13 +315,19 @@ export function ContactForm({
             </div>
             <div className="space-y-2">
               <Label htmlFor="phone">Teléfono</Label>
-              <Input
+              <PhoneInput
+                key={phoneKey}
                 id="phone"
                 name="phone"
-                placeholder="Tu número de teléfono"
-                value={formData.phone}
-                onChange={handleChange}
+                isoName="phone_iso"
                 required
+                variant="site"
+                purpose="phone"
+                error={fields.phone}
+                onChange={(e164, iso) => {
+                  setFormData((prev) => ({ ...prev, phone: e164, phoneIso: iso }))
+                  setFields((prev) => ({ ...prev, phone: undefined }))
+                }}
               />
             </div>
             <div className="space-y-2">

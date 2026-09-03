@@ -8,6 +8,9 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 import { Textarea } from "@/components/ui/textarea"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select"
+import { PhoneInput } from "@/components/phone-input"
+import { looksLikeEmail } from "@/lib/customer-fields"
+import { parsePhone } from "@/lib/phone"
 
 export function ContactForm() {
   const { toast } = useToast()
@@ -19,6 +22,7 @@ export function ContactForm() {
     role: "",
     email: "",
     phone: "",
+    phoneIso: "AR",
     category: "",
     message: "",
   })
@@ -35,30 +39,36 @@ export function ContactForm() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
 
-    // Validate form
+    const phone = parsePhone(formData.phone, formData.phoneIso)
     if (
-      !formData.brand ||
-      !formData.name ||
-      !formData.role ||
-      !formData.email ||
-      !formData.phone ||
+      !formData.brand.trim() ||
+      !formData.name.trim() ||
+      !formData.role.trim() ||
+      !formData.email.trim() ||
       !formData.category ||
-      !formData.message
+      !formData.message.trim()
     ) {
       toast({
-        title: "Error",
-        description: "Por favor, completá todos los campos",
+        title: "Revisá los datos",
+        description: "Completá todos los campos.",
         variant: "destructive",
       })
       return
     }
 
-    // Basic email validation
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/
-    if (!emailRegex.test(formData.email)) {
+    if (!looksLikeEmail(formData.email)) {
       toast({
-        title: "Error",
-        description: "Por favor, ingresá un email válido",
+        title: "Revisá los datos",
+        description: "Eso no tiene forma de mail. Ej. hola@marca.com.",
+        variant: "destructive",
+      })
+      return
+    }
+
+    if (!phone.ok) {
+      toast({
+        title: "Revisá los datos",
+        description: phone.error,
         variant: "destructive",
       })
       return
@@ -73,7 +83,15 @@ export function ContactForm() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify(formData),
+        body: JSON.stringify({
+          brand: formData.brand.trim(),
+          name: formData.name.trim(),
+          role: formData.role.trim(),
+          email: formData.email.trim(),
+          phone: `+${phone.e164}`,
+          category: formData.category,
+          message: formData.message.trim(),
+        }),
       })
 
       if (response.ok) {
@@ -89,6 +107,7 @@ export function ContactForm() {
           role: "",
           email: "",
           phone: "",
+          phoneIso: "AR",
           category: "",
           message: "",
         })
@@ -133,7 +152,7 @@ export function ContactForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form onSubmit={handleSubmit} className="space-y-6" noValidate>
       <div className="space-y-2">
         <Label htmlFor="brand">Marca consultante</Label>
         <Input
@@ -174,13 +193,14 @@ export function ContactForm() {
       </div>
       <div className="space-y-2">
         <Label htmlFor="phone">Teléfono</Label>
-        <Input
+        <PhoneInput
           id="phone"
           name="phone"
-          placeholder="Tu número de teléfono"
-          value={formData.phone}
-          onChange={handleChange}
+          isoName="phone_iso"
           required
+          variant="site"
+          purpose="phone"
+          onChange={(e164, iso) => setFormData((prev) => ({ ...prev, phone: e164, phoneIso: iso }))}
         />
       </div>
       <div className="space-y-2">
