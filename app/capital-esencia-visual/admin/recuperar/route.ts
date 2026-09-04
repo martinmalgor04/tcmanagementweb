@@ -50,13 +50,19 @@ export async function POST(req: Request) {
     }
 
     const mail = result.customer.email
-    if (result.alreadyPaid && result.emailStatus === "skipped") {
-      destino.searchParams.set("aviso", `Ese pago ya estaba cargado para ${mail}.`)
-    } else if (result.order.status !== "paid") {
+    if (result.order.status !== "paid") {
       destino.searchParams.set(
         "aviso",
         `El pago ${paymentId} quedó registrado pero todavía no está acreditado.`,
       )
+    } else if (result.alreadyPaid) {
+      const cola =
+        result.emailStatus === "skipped"
+          ? ""
+          : result.emailStatus === "sent"
+            ? " Faltaba el acceso: lo mandamos ahora."
+            : ` El acceso se generó, pero el mail no salió (${result.emailStatus}). Reenvialo desde la tabla.`
+      destino.searchParams.set("aviso", `Ese pago ya estaba cargado para ${mail}.${cola}`)
     } else {
       destino.searchParams.set(
         "aviso",
