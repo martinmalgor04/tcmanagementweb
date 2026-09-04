@@ -42,13 +42,15 @@ export async function POST(req: Request) {
           ? `Mercado Pago no encontró el pago ${paymentId}.`
           : result.reason === "no_email"
             ? `El pago ${paymentId} no trae mail. Cargalo a mano y reintentá.`
-            : `El pago ${paymentId} no está acreditado (${result.status ?? "sin estado"}).`
+            : result.reason === "mismatch"
+              ? `El pago ${paymentId} no corresponde a este producto o al precio.`
+              : `El pago ${paymentId} no está acreditado (${result.status ?? "sin estado"}).`
       destino.searchParams.set("aviso", mensaje)
       return NextResponse.redirect(destino, 303)
     }
 
     const mail = result.customer.email
-    if (result.alreadyPaid) {
+    if (result.alreadyPaid && result.emailStatus === "skipped") {
       destino.searchParams.set("aviso", `Ese pago ya estaba cargado para ${mail}.`)
     } else if (result.order.status !== "paid") {
       destino.searchParams.set(

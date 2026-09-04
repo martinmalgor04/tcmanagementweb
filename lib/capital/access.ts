@@ -166,6 +166,17 @@ export async function findOrderByPaymentId(
   )
 }
 
+export async function findPaidVerifiedOrder(
+  customerId: string,
+  productId: string,
+): Promise<Order | null> {
+  return selectOne<Order>(
+    "orders",
+    `customer_id=eq.${customerId}&product_id=eq.${productId}` +
+      `&status=eq.paid&payment_verified=eq.true&order=paid_at.desc&select=*`,
+  )
+}
+
 export async function findCustomerById(id: string): Promise<Customer | null> {
   return selectOne<Customer>("customers", `id=eq.${id}&select=*`)
 }

@@ -86,7 +86,7 @@ export type MpPayment = {
   status_detail?: string
   transaction_amount?: number
   currency_id?: string
-  /** Lo setea createCheckoutPreference con el id del producto. */
+  /** Lo setea createCheckoutPreference con el slug del producto (no el UUID). */
   external_reference?: string | null
   metadata?: { product?: string | null } | null
   date_approved?: string | null
@@ -172,10 +172,12 @@ export function payerName(payment: MpPayment): { nombre: string | null; apellido
  */
 export function paymentMatchesProduct(
   payment: MpPayment,
-  product: { id: string; price_cents: number; currency: string },
+  product: { id: string; slug: string; price_cents: number; currency: string },
 ): boolean {
   const reference = payment.external_reference || payment.metadata?.product || null
-  if (reference !== product.id) return false
+  // Checkout Pro manda el slug (`capital-esencia-visual`). Comparar contra
+  // `product.id` (UUID) rechazaba cada venta real y dejaba paid + sin acceso.
+  if (reference !== product.id && reference !== product.slug) return false
 
   const currency = (payment.currency_id || "").toUpperCase()
   if (currency && currency !== product.currency.toUpperCase()) return false

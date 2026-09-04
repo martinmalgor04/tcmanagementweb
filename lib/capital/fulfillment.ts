@@ -12,6 +12,7 @@ import {
   findOrderByPaymentId,
   getProduct,
   grantEntitlement,
+  hasActiveEntitlement,
   recordOrder,
   revokeEntitlement,
   updateCustomer,
@@ -218,13 +219,18 @@ export async function fulfillMercadoPagoPayment(
     return { ok: true, alreadyPaid, product, customer, order, emailStatus: "skipped" }
   }
 
-  // Ya se entregó en una notificación anterior: Mercado Pago reintenta la misma
-  // notificación varias veces y no hay que volver a emitir token ni mail.
-  if (alreadyPaid) {
+  // Un retry de Mercado Pago no tiene que volver a emitir token ni mail, salvo
+  // que la corrida anterior haya grabado la orden y se haya cortado antes del
+  // entitlement: eso deja "paid" + "sin acceso" en el panel.
+  if (alreadyPaid && (await hasActiveEntitlement(customer.id, product.id))) {
     return { ok: true, alreadyPaid, product, customer, order, emailStatus: "skipped" }
   }
 
   await grantEntitlement(customer.id, product.id, order.id)
+
+  if (!(await hasActiveEntitlement(customer.id, product.id))) {
+    return { ok: true, alreadyPaid, product, customer, order, emailStatus: "skipped" }
+  }
 
   if (!isUsablePayerEmail(customer.email)) {
     return { ok: true, alreadyPaid, product, customer, order, emailStatus: "skipped" }

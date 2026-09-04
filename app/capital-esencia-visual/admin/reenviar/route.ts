@@ -1,6 +1,12 @@
 import { NextResponse } from "next/server"
 
-import { findCustomerByEmail, getProduct, hasActiveEntitlement } from "@/lib/capital/access"
+import {
+  findCustomerByEmail,
+  findPaidVerifiedOrder,
+  getProduct,
+  grantEntitlement,
+  hasActiveEntitlement,
+} from "@/lib/capital/access"
 import { ADMIN_PATH, hasAdminSession } from "@/lib/capital/admin-session"
 import { PRODUCT_SLUG } from "@/lib/capital/config"
 import { deliverAccess } from "@/lib/capital/deliver"
@@ -36,12 +42,18 @@ export async function POST(req: Request) {
       return NextResponse.redirect(destino, 303)
     }
 
+    let orderId: string | null = null
     if (!(await hasActiveEntitlement(customer.id, product.id))) {
-      destino.searchParams.set("aviso", `${email} no tiene el acceso activo.`)
-      return NextResponse.redirect(destino, 303)
+      const order = await findPaidVerifiedOrder(customer.id, product.id)
+      if (!order) {
+        destino.searchParams.set("aviso", `${email} no tiene el acceso activo.`)
+        return NextResponse.redirect(destino, 303)
+      }
+      await grantEntitlement(customer.id, product.id, order.id)
+      orderId = order.id
     }
 
-    const { emailStatus } = await deliverAccess({ customer, product, orderId: null })
+    const { emailStatus } = await deliverAccess({ customer, product, orderId })
 
     destino.searchParams.set(
       "aviso",
