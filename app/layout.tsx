@@ -5,7 +5,10 @@ import { ThemeProvider } from "@/components/theme-provider"
 import MetaPixel from "@/components/meta-pixel"
 import "./globals.css"
 
-const metaDomainVerification = process.env.NEXT_PUBLIC_META_DOMAIN_VERIFICATION
+// Verificación de dominio de Meta para tcmanagement.com.ar. No es secreto:
+// es un tag público del <head>. La env permite pisarlo en otro dominio.
+const metaDomainVerification =
+  process.env.NEXT_PUBLIC_META_DOMAIN_VERIFICATION || "g0kiiv44s3js8kl2wwrxntbkqfk0cm"
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -44,9 +47,7 @@ export const metadata: Metadata = {
     images: ["/images/og-default.jpg"],
   },
   // Verificación de dominio de Meta (Configuración del negocio > Dominios).
-  ...(metaDomainVerification
-    ? { verification: { other: { "facebook-domain-verification": [metaDomainVerification] } } }
-    : {}),
+  verification: { other: { "facebook-domain-verification": [metaDomainVerification] } },
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
