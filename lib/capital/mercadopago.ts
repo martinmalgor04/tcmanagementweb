@@ -14,6 +14,42 @@ export type CheckoutPreference = {
 }
 
 /**
+ * Datos del navegador que hizo el clic, para atribución de Meta (CAPI).
+ * Viajan en la metadata de la preferencia y Mercado Pago los devuelve en el
+ * pago: así el webhook los tiene aunque la compradora nunca vuelva a /gracias.
+ */
+export type AttributionContext = {
+  fbp?: string | null
+  fbc?: string | null
+  clientIp?: string | null
+  clientUa?: string | null
+}
+
+/** Lee cookies `_fbp`/`_fbc` e IP/user-agent del request que llega al server. */
+export function attributionFromRequest(req: Request): AttributionContext {
+  const cookies = Object.fromEntries(
+    (req.headers.get("cookie") || "")
+      .split(";")
+      .map((part) => part.trim())
+      .filter(Boolean)
+      .map((part) => {
+        const idx = part.indexOf("=")
+        return idx === -1 ? [part, ""] : [part.slice(0, idx), part.slice(idx + 1)]
+      }),
+  ) as Record<string, string>
+
+  const forwarded = req.headers.get("x-forwarded-for") || ""
+  const clientIp = forwarded.split(",")[0]?.trim() || req.headers.get("x-real-ip") || null
+
+  return {
+    fbp: cookies._fbp?.slice(0, 120) || null,
+    fbc: cookies._fbc?.slice(0, 400) || null,
+    clientIp: clientIp || null,
+    clientUa: req.headers.get("user-agent")?.slice(0, 500) || null,
+  }
+}
+
+/**
  * Una preferencia por clic. Siempre devolvemos `init_point`:
  * `sandbox_init_point` está deprecado y con credenciales TEST- no hace falta.
  */
@@ -26,6 +62,7 @@ export async function createCheckoutPreference(input: {
   pendingUrl: string
   failureUrl: string
   notificationUrl?: string | null
+  attribution?: AttributionContext
 }): Promise<CheckoutPreference> {
   const token = mercadoPagoToken()
   if (!token) throw new Error("Falta MP_ACCESS_TOKEN")
@@ -49,7 +86,13 @@ export async function createCheckoutPreference(input: {
     },
     statement_descriptor: "TC MANAGEMENT",
     external_reference: input.productId,
-    metadata: { product: input.productId },
+    metadata: {
+      product: input.productId,
+      fbp: input.attribution?.fbp || undefined,
+      fbc: input.attribution?.fbc || undefined,
+      client_ip: input.attribution?.clientIp || undefined,
+      client_ua: input.attribution?.clientUa || undefined,
+    },
   }
 
   if (canAutoReturn) body.auto_return = "approved"
@@ -88,8 +131,15 @@ export type MpPayment = {
   currency_id?: string
   /** Lo setea createCheckoutPreference con el slug del producto (no el UUID). */
   external_reference?: string | null
-  metadata?: { product?: string | null } | null
+  metadata?: {
+    product?: string | null
+    fbp?: string | null
+    fbc?: string | null
+    client_ip?: string | null
+    client_ua?: string | null
+  } | null
   date_approved?: string | null
+  date_created?: string | null
   payer?: {
     email?: string
     first_name?: string | null

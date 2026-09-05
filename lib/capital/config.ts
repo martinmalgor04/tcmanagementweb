@@ -7,6 +7,9 @@ export const PRODUCT_SLUG = "capital-esencia-visual"
 /** Ruta gated donde vive el HTML interactivo. Debe coincidir con products.access_path. */
 export const ACCESS_PATH = "/capital-esencia-visual/manual"
 
+/** Página de gracias (retorno de Mercado Pago). Es el event_source_url de Meta. */
+export const GRACIAS_PATH = "/capital-esencia-visual/gracias"
+
 /** Ruta que canjea el magic link. */
 export const ACCESS_ENTRY_PATH = "/capital-esencia-visual/acceso"
 export const ACCESS_INVALID_PATH = "/capital-esencia-visual/acceso-invalido"

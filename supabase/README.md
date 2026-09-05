@@ -77,6 +77,21 @@ correr desde cero. Las keys locales salen de `supabase status -o env`.
 | `MP_WEBHOOK_SECRET` | no | Valida la firma del webhook. |
 | `CAPITAL_ADMIN_TOKEN` | no | Contraseña del panel y del endpoint de soporte. Sin esto el panel queda deshabilitado. |
 
+### Meta Ads (Pixel + Conversions API)
+
+| Variable | Obligatoria | Para qué |
+|---|---|---|
+| `NEXT_PUBLIC_META_PIXEL_ID` | no | ID del dataset (Administrador de Eventos). Sin esto el Pixel no se renderiza. Es la única con `NEXT_PUBLIC_`: viaja al navegador. |
+| `META_CAPI_ACCESS_TOKEN` | no | Token de Conversions API (Administrador de Eventos > Conversions API > Generar token). Sólo server. Sin esto el `Purchase` server-side se saltea con warning. |
+| `META_TEST_EVENT_CODE` | no | Código de "Eventos de prueba" del dataset. Cargarlo sólo mientras se hace QA: los eventos caen en la pestaña de prueba y no cuentan. Sacarlo antes de lanzar. |
+| `NEXT_PUBLIC_META_DOMAIN_VERIFICATION` | no | Contenido del meta-tag `facebook-domain-verification` (Configuración del negocio > Dominios). Alternativa: registro DNS TXT. |
+
+Flujo: el Pixel manda `PageView` en todas las páginas, `InitiateCheckout` en el clic a
+Mercado Pago y `Purchase` en `/gracias` sólo si la API de MP confirmó el pago. El webhook
+(o el formulario) manda el mismo `Purchase` por CAPI con `event_id = payment_id`, así Meta
+lo cuenta una vez. `orders.meta_capi_sent_at` registra qué ventas ya se reportaron; si
+queda en `null` en una orden `paid`, "Recuperar pago" del panel lo reintenta.
+
 ## Panel
 
 `/capital-esencia-visual/admin`, con el `CAPITAL_ADMIN_TOKEN` como contraseña. El token se

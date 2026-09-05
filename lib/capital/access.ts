@@ -43,6 +43,9 @@ export type Order = {
   provider_payment_id: string | null
   paid_at: string | null
   amount_cents: number
+  currency: string
+  /** Cuándo se reportó el Purchase a Meta CAPI. null = pendiente o falló. */
+  meta_capi_sent_at?: string | null
 }
 
 export type CustomerInput = {

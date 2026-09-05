@@ -21,7 +21,9 @@ import {
 import { PRODUCT_SLUG } from "./config"
 import { deliverAccess } from "./deliver"
 import type { EmailStatus } from "./email"
+import { reportPurchaseToMeta } from "./meta-purchase"
 import {
+  type AttributionContext,
   type MpPayment,
   checkPayment,
   fetchPayment,
@@ -39,6 +41,8 @@ export type FulfillInput = {
   /** Estado que viene en la URL de retorno. No confiable por sí solo. */
   redirectStatus?: string | null
   rawPayload?: unknown
+  /** IP, user-agent y cookies del Pixel del request que confirma. Para Meta CAPI. */
+  attribution?: AttributionContext | null
 }
 
 export type FulfillResult = {
@@ -100,6 +104,10 @@ export async function fulfillPurchase(input: FulfillInput): Promise<FulfillResul
       accessUrl: null,
     }
   }
+
+  // Venta confirmada: a Meta, con el mail y el WhatsApp del formulario.
+  // Si el webhook ya la reportó, la base lo frena; nunca corta la entrega.
+  await reportPurchaseToMeta({ order, customer, payment: check.payment, context: input.attribution })
 
   await grantEntitlement(customer.id, product.id, order.id)
   const { accessUrl, emailStatus } = await deliverAccess({
@@ -218,6 +226,10 @@ export async function fulfillMercadoPagoPayment(
   if (order.status !== "paid") {
     return { ok: true, alreadyPaid, product, customer, order, emailStatus: "skipped" }
   }
+
+  // Venta acreditada: se reporta a Meta antes de cualquier salida temprana,
+  // así un retry del webhook o "Recuperar pago" reintenta si Meta falló.
+  await reportPurchaseToMeta({ order, customer, payment })
 
   // Un retry de Mercado Pago no tiene que volver a emitir token ni mail, salvo
   // que la corrida anterior haya grabado la orden y se haya cortado antes del

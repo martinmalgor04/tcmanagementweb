@@ -10,7 +10,9 @@ import {
 } from "react"
 import { Gloock } from "next/font/google"
 
+import { META_PRODUCT } from "@/lib/capital/product-public"
 import { track } from "@/lib/capital/track-client"
+import { fbqTrack } from "@/lib/meta-pixel-client"
 
 const gloock = Gloock({
   weight: "400",
@@ -262,7 +264,14 @@ function CtaButton({
         action={CHECKOUT_URL}
         method="post"
         className="inline-flex"
-        onSubmit={() => track("checkout_click")}
+        onSubmit={() => {
+          track("checkout_click")
+          fbqTrack("InitiateCheckout", {
+            value: META_PRODUCT.value,
+            currency: META_PRODUCT.currency,
+            content_name: META_PRODUCT.contentName,
+          })
+        }}
       >
         <button type="submit" className={cls}>
           {label}

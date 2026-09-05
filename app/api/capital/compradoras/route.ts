@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 
 import { parseCompradora } from "@/lib/customer-fields"
 import { fulfillPurchase } from "@/lib/capital/fulfillment"
+import { attributionFromRequest } from "@/lib/capital/mercadopago"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -45,6 +46,7 @@ export async function POST(req: Request) {
       paymentId: mpPaymentId || null,
       redirectStatus: mpStatus || null,
       rawPayload: { origin: "gracias-form", mp_status: mpStatus || null },
+      attribution: attributionFromRequest(req),
     })
 
     return NextResponse.json({

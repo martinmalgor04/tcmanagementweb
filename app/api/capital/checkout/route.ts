@@ -8,7 +8,7 @@ import {
   publicHttpsOrigin,
   siteUrl,
 } from "@/lib/capital/config"
-import { createCheckoutPreference } from "@/lib/capital/mercadopago"
+import { attributionFromRequest, createCheckoutPreference } from "@/lib/capital/mercadopago"
 
 export const runtime = "nodejs"
 export const dynamic = "force-dynamic"
@@ -51,6 +51,8 @@ async function startCheckout(request: Request) {
       // "Volver" o pago rechazado: de vuelta a la landing, no al formulario.
       failureUrl: `${landing}?checkout=cancelado`,
       notificationUrl: notifyBase ? `${notifyBase}/api/capital/mercadopago/webhook` : null,
+      // Cookies del Pixel + IP/UA: vuelven en el pago y alimentan CAPI.
+      attribution: attributionFromRequest(request),
     })
 
     return NextResponse.redirect(preference.initPoint, 302)

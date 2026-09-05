@@ -2,7 +2,10 @@ import type { ReactNode } from "react"
 import type { Metadata } from "next"
 import { Montserrat } from "next/font/google"
 import { ThemeProvider } from "@/components/theme-provider"
+import MetaPixel from "@/components/meta-pixel"
 import "./globals.css"
+
+const metaDomainVerification = process.env.NEXT_PUBLIC_META_DOMAIN_VERIFICATION
 
 const montserrat = Montserrat({
   subsets: ["latin"],
@@ -40,6 +43,10 @@ export const metadata: Metadata = {
     description: "Agencia de modelos y talentos en Corrientes, Argentina.",
     images: ["/images/og-default.jpg"],
   },
+  // Verificación de dominio de Meta (Configuración del negocio > Dominios).
+  ...(metaDomainVerification
+    ? { verification: { other: { "facebook-domain-verification": [metaDomainVerification] } } }
+    : {}),
 }
 
 export default function RootLayout({ children }: { children: ReactNode }) {
@@ -52,6 +59,7 @@ export default function RootLayout({ children }: { children: ReactNode }) {
       <body
         className={`${montserrat.className} bg-background text-foreground transition-colors duration-300 ease-in-out`}
       >
+        <MetaPixel />
         <ThemeProvider attribute="class" defaultTheme="system" enableSystem disableTransitionOnChange>
           {children}
         </ThemeProvider>
