@@ -40,12 +40,15 @@ export async function POST(req: Request) {
 
     if (!customer || !(await hasActiveEntitlement(customer.id, product.id))) {
       customer = customer ?? (await upsertCustomer({ email, source: "admin" }))
+      // Cortesía en $0: la entrada del dueño no es una venta. Con el precio
+      // del producto sumaba $19.999 a "Compras" y "Facturado" del panel.
       const order = await recordOrder({
         customerId: customer.id,
         product,
         status: "paid",
         paymentVerified: true,
-        provider: "manual",
+        provider: "cortesia",
+        amountCents: 0,
         rawPayload: { origin: "admin-acceder" },
       })
       await grantEntitlement(customer.id, product.id, order.id)
