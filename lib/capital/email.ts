@@ -5,7 +5,7 @@
  * queda en `queued` y se puede reenviar después sin perder el registro.
  */
 
-import { ACCESS_TOKEN_TTL_DAYS, creatorEmail, ownerEmail, resendConfig } from "./config"
+import { ACCESS_TOKEN_TTL_DAYS, creatorEmail, ownerEmail, resendConfig, saleWebhookUrl } from "./config"
 import { DbError, insert, selectOne, update } from "./db"
 import type { Customer, Product } from "./access"
 
@@ -262,14 +262,16 @@ function formatMonto(amountCents: number, currency: string): string {
  * no se registra en email_events ni frena la entrega si Resend falla.
  */
 export async function notifySale(input: SaleNotificationInput): Promise<void> {
+  const esCortesia = input.amountCents <= 0
+  const monto = formatMonto(input.amountCents, input.product.currency)
+
+  notifySaleWebhook(input, monto, esCortesia)
+
   const resend = resendConfig()
   if (!resend) return
 
   const to = [...new Set([ownerEmail(), creatorEmail()].filter((email): email is string => Boolean(email)))]
   if (to.length === 0) return
-
-  const esCortesia = input.amountCents <= 0
-  const monto = formatMonto(input.amountCents, input.product.currency)
 
   try {
     await fetch("https://api.resend.com/emails", {
@@ -290,6 +292,33 @@ export async function notifySale(input: SaleNotificationInput): Promise<void> {
   } catch (error) {
     console.error("[capital] no se pudo avisar la venta", error)
   }
+}
+
+/**
+ * Aviso instantáneo por WhatsApp vía n8n, en paralelo al mail. Best-effort y
+ * fire-and-forget: si CAPITAL_SALE_WEBHOOK_URL no está seteada o falla, no
+ * pasa nada — el mail sigue siendo el canal principal.
+ */
+function notifySaleWebhook(input: SaleNotificationInput, monto: string, esCortesia: boolean): void {
+  const url = saleWebhookUrl()
+  if (!url) return
+
+  const nombreComprador = [input.customer.nombre, input.customer.apellido].filter(Boolean).join(" ") || undefined
+
+  fetch(url, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    signal: AbortSignal.timeout(10_000),
+    body: JSON.stringify({
+      producto: input.product.name,
+      monto,
+      esCortesia,
+      nombreComprador,
+      orderId: input.orderId,
+    }),
+  }).catch((error) => {
+    console.error("[capital] no se pudo avisar la venta por WhatsApp", error)
+  })
 }
 
 function saleNotificationText(

@@ -148,3 +148,8 @@ export function ownerEmail(): string {
 export function creatorEmail(): string | null {
   return process.env.CAPITAL_CREATOR_EMAIL || null
 }
+
+/** Webhook de n8n para alertar la venta por WhatsApp. Sin esto solo se manda el mail. */
+export function saleWebhookUrl(): string | null {
+  return process.env.CAPITAL_SALE_WEBHOOK_URL || null
+}
